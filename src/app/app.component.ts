@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { Indicator, IndicatorAnimations } from './indicator';
 export interface Tile {
   color: string;
   cols: number;
@@ -10,7 +10,8 @@ export interface Tile {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: IndicatorAnimations
 })
 export class AppComponent {
   title = 'laundry';
@@ -27,4 +28,31 @@ export class AppComponent {
 
   radius: number = 0;
   color: string = 'black';
+
+  eventText = '';
+  indicators;
+
+  constructor() {
+    this.indicators = new Indicator();
+  }
+  onPan(evt: any)
+  {
+    this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;
+    const indicator = this.indicators.display(
+      evt.center.x,
+      evt.center.y,
+      50
+    );
+    this.indicators.hide(indicator);
+  }
+
+  onTap(evt) {
+    this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;
+    const indicator = this.indicators.display(
+      evt.center.x,
+      evt.center.y,
+      50
+    );
+    this.indicators.hide(indicator);
+  }
 }
