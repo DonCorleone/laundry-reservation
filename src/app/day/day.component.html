@@ -1,0 +1,5 @@
+<div *ngIf="hours"></div>
+<div *ngFor="let hour of hours; index as ix" class="w-full h-30 text-align-center">
+  {{ hour.start }} - {{ hour.end }}
+  <hr>
+</div>
