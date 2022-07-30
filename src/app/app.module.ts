@@ -8,9 +8,21 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
-import { MatRippleModule } from '@angular/material/core';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import {
+  MatSidenavContainer,
+  MatSidenavModule,
+} from '@angular/material/sidenav';
+import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +37,21 @@ import { MatButtonModule } from '@angular/material/button';
     MatRippleModule,
     MatCardModule,
     MatButtonModule,
+    MatInputModule,
+    MatSidenavModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
