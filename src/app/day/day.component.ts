@@ -1,27 +1,29 @@
 import { Component } from '@angular/core';
-import {DateRange} from "@angular/material/datepicker";
-
-interface hour {
-  start: number;
-  end: number;
-}
+import { hour } from '../models/hour';
+import {Indicator, IndicatorAnimations} from "../indicator";
 
 @Component({
   selector: 'app-day',
   templateUrl: './day.component.html',
-  styleUrls: ['./day.component.css']
+  animations: IndicatorAnimations
 })
 export class DayComponent {
-
+  indicators;
   hours: hour[] = [];
   constructor() {
-    for (let i = 6; i < 22; i++){
+    this.indicators = new Indicator();
+    for (let i = 6; i < 22; i++) {
       const h: hour = {
         start: i,
-        end: i+1
-      }
+        end: i + 1,
+      };
       this.hours.push(h);
     }
   }
 
+  onPan(evt: any) {
+    console.log(`${evt.center.x}, ${evt.center.y})`);
+    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
+    this.indicators.hide(indicator);
+  }
 }

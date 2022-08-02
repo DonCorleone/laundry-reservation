@@ -24,9 +24,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { DayComponent } from './day/day.component';
+import { ParkComponent } from './park/park.component';
+import { HourComponent } from './hour/hour.component';
+import { HourHeaderComponent } from './hour-header/hour-header.component';
+import { DayHeaderComponent } from './day-header/day-header.component';
 
 @NgModule({
-  declarations: [AppComponent, DayComponent],
+  declarations: [AppComponent, DayComponent, ParkComponent, HourComponent, HourHeaderComponent, DayHeaderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

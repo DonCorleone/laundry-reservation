@@ -1,4 +1,4 @@
-<app-day></app-day>
+<app-park></app-park>
 <div class="gesture__zone" (pan)="onPan($event)"  (tap)="onTap($event)">
   <h1>Pan Gesture</h1>
   <p [innerHTML]="eventText"></p>
@@ -15,7 +15,7 @@
   [@indicatorState]="indicator.state"></div>
 
 
-<mat-grid-list cols="4" rowHeight="100px">
+<!--mat-grid-list cols="4" rowHeight="100px">
   <mat-grid-tile
     *ngFor="let tile of tiles"
     [colspan]="tile.cols"
@@ -50,5 +50,5 @@
      [matRippleRadius]="radius"
      [matRippleColor]="color">
   Click me
-</div>
+</div-->
 
