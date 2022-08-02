@@ -28,9 +28,10 @@ import { ParkComponent } from './park/park.component';
 import { HourComponent } from './hour/hour.component';
 import { HourHeaderComponent } from './hour-header/hour-header.component';
 import { DayHeaderComponent } from './day-header/day-header.component';
+import { CalendarComponent } from './calendar/calendar.component';
 
 @NgModule({
-  declarations: [AppComponent, DayComponent, ParkComponent, HourComponent, HourHeaderComponent, DayHeaderComponent],
+  declarations: [AppComponent, DayComponent, ParkComponent, HourComponent, HourHeaderComponent, DayHeaderComponent, CalendarComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

@@ -1,54 +1,58 @@
-<app-park></app-park>
-<div class="gesture__zone" (pan)="onPan($event)"  (tap)="onTap($event)">
-  <h1>Pan Gesture</h1>
-  <p [innerHTML]="eventText"></p>
+<div class="flex-col bg-gray-700 w-full">
+  <app-calendar></app-calendar>
+  <app-park></app-park>
+  <div class="gesture__zone" (pan)="onPan($event)" (tap)="onTap($event)">
+    <h1>Pan Gesture</h1>
+    <p [innerHTML]="eventText"></p>
+  </div>
+
+  <div
+    class="gesture__indicator"
+    *ngFor="let indicator of indicators.gestureIndicators"
+    [style.top.px]="indicator.y - (indicator.size/2)"
+    [style.left.px]="indicator.x - (indicator.size/2)"
+    [style.width.px]="indicator.size"
+    [style.height.px]="indicator.size"
+    [style.transform]="indicator.transform"
+    [@indicatorState]="indicator.state"></div>
+
+
+  <!--mat-grid-list cols="4" rowHeight="100px">
+    <mat-grid-tile
+      *ngFor="let tile of tiles"
+      [colspan]="tile.cols"
+      [rowspan]="tile.rows"
+      [style.background]="tile.color">
+      <div class="example-ripple-container mat-elevation-z4 bg-red"
+           matRipple
+           [matRippleCentered]="centered"
+           [matRippleDisabled]="disabled"
+           [matRippleUnbounded]="unbounded"
+           [matRippleRadius]="radius"
+           [matRippleColor]="color">
+        Click me
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <mat-checkbox [(ngModel)]="centered" class="example-ripple-checkbox">Centered</mat-checkbox>
+  <mat-checkbox [(ngModel)]="disabled" class="example-ripple-checkbox">Disabled</mat-checkbox>
+  <mat-checkbox [(ngModel)]="unbounded" class="example-ripple-checkbox">Unbounded</mat-checkbox>
+
+  <mat-form-field class="example-ripple-form-field" appearance="fill">
+    <input matInput [(ngModel)]="radius" type="number" placeholder="Radius">
+  </mat-form-field>
+  <mat-form-field class="example-ripple-form-field" appearance="fill">
+    <input matInput [(ngModel)]="color" type="text" placeholder="Color">
+  </mat-form-field>
+  <div class="example-ripple-container mat-elevation-z4 bg-amber-900"
+       matRipple
+       [matRippleCentered]="centered"
+       [matRippleDisabled]="disabled"
+       [matRippleUnbounded]="unbounded"
+       [matRippleRadius]="radius"
+       [matRippleColor]="color">
+    Click me
+  </div-->
+
+
 </div>
-
-<div
-  class="gesture__indicator"
-  *ngFor="let indicator of indicators.gestureIndicators"
-  [style.top.px]="indicator.y - (indicator.size/2)"
-  [style.left.px]="indicator.x - (indicator.size/2)"
-  [style.width.px]="indicator.size"
-  [style.height.px]="indicator.size"
-  [style.transform]="indicator.transform"
-  [@indicatorState]="indicator.state"></div>
-
-
-<!--mat-grid-list cols="4" rowHeight="100px">
-  <mat-grid-tile
-    *ngFor="let tile of tiles"
-    [colspan]="tile.cols"
-    [rowspan]="tile.rows"
-    [style.background]="tile.color">
-    <div class="example-ripple-container mat-elevation-z4 bg-red"
-         matRipple
-         [matRippleCentered]="centered"
-         [matRippleDisabled]="disabled"
-         [matRippleUnbounded]="unbounded"
-         [matRippleRadius]="radius"
-         [matRippleColor]="color">
-      Click me
-    </div>
-  </mat-grid-tile>
-</mat-grid-list>
-<mat-checkbox [(ngModel)]="centered" class="example-ripple-checkbox">Centered</mat-checkbox>
-<mat-checkbox [(ngModel)]="disabled" class="example-ripple-checkbox">Disabled</mat-checkbox>
-<mat-checkbox [(ngModel)]="unbounded" class="example-ripple-checkbox">Unbounded</mat-checkbox>
-
-<mat-form-field class="example-ripple-form-field" appearance="fill">
-  <input matInput [(ngModel)]="radius" type="number" placeholder="Radius">
-</mat-form-field>
-<mat-form-field class="example-ripple-form-field" appearance="fill">
-  <input matInput [(ngModel)]="color" type="text" placeholder="Color">
-</mat-form-field>
-<div class="example-ripple-container mat-elevation-z4 bg-amber-900"
-     matRipple
-     [matRippleCentered]="centered"
-     [matRippleDisabled]="disabled"
-     [matRippleUnbounded]="unbounded"
-     [matRippleRadius]="radius"
-     [matRippleColor]="color">
-  Click me
-</div-->
-
