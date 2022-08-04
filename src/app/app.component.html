@@ -12,7 +12,7 @@
     [style.transform]="indicator.transform"
     [@indicatorState]="indicator.state"></div>
 
-
+<ng-container *ngIf="tiles$ | async as tiles">
   <mat-grid-list cols="6" rowHeight="fit" style="height: 100vh">
     <mat-grid-tile
       *ngFor="let tile of tiles; index as ix"
@@ -33,7 +33,7 @@
       </div-->
     </mat-grid-tile>
   </mat-grid-list>
-
+</ng-container>
 
   <mat-checkbox [(ngModel)]="centered" class="example-ripple-checkbox">Centered</mat-checkbox>
   <mat-checkbox [(ngModel)]="disabled" class="example-ripple-checkbox">Disabled</mat-checkbox>

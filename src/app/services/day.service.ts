@@ -22,7 +22,7 @@ export class DayService implements OnDestroy {
   private subscription: Subscription;
 
   machines: machine[] = [];
-  tiles: Tile[] = [];
+  tiles$ = new Subject<Tile[]>();
 
   constructor(private dateSelectionService: DateSelectorService) {
     for (let i = 1; i <= 4; i++) {
@@ -36,8 +36,8 @@ export class DayService implements OnDestroy {
       (s) => {
         this.hours$.next(this.getHours(s));
 
-        this.tiles = [];
-        this.tiles.push({
+        const tiles = [];
+        tiles.push({
           text: 'x',
           cols: 2,
           rows: 2,
@@ -46,7 +46,7 @@ export class DayService implements OnDestroy {
           hour: null,
         });
         this.machines.forEach((m) => {
-          this.tiles.push({
+          tiles.push({
             text: m.name,
             cols: 1,
             rows: 2,
@@ -59,7 +59,7 @@ export class DayService implements OnDestroy {
         const hours = this.getHours(s);
 
         hours.forEach((h) => {
-          this.tiles.push({
+          tiles.push({
             text: h.begin.toTimeString(),
             cols: 2,
             rows: 1,
@@ -68,7 +68,7 @@ export class DayService implements OnDestroy {
             hour: h,
           });
           this.machines.forEach((m) => {
-            this.tiles.push({
+            tiles.push({
               text: 'x',
               cols: 1,
               rows: 1,
@@ -78,6 +78,7 @@ export class DayService implements OnDestroy {
             });
           });
         });
+        this.tiles$.next(tiles);
       }
     );
   }

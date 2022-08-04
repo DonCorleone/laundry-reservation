@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Indicator, IndicatorAnimations } from './indicator';
-import {DayService} from "./services/day.service";
+import {DayService, Tile} from "./services/day.service";
+import {Observable} from "rxjs";
 
 
 @Component({
@@ -12,7 +13,7 @@ import {DayService} from "./services/day.service";
 export class AppComponent {
   title = 'laundry';
 
-  tiles = this.dayService.tiles;
+  tiles$: Observable<Tile[]> = this.dayService.tiles$;
 
   centered = false;
   disabled = false;
