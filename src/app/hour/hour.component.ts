@@ -30,7 +30,7 @@ export class HourComponent {
   }
 
   onTap(evt) {
-    console.log(`tab ${this.hour.date.toDateString()} : ${this.hour.start}-${this.hour.end}`);
+    console.log(`tab ${this.hour.begin}-${this.hour.end}`);
     this.selected = !this.selected;
     const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
     this.indicators.hide(indicator);

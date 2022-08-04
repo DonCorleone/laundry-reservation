@@ -18,11 +18,8 @@ export class DayHeaderComponent {
       end.setMinutes(59);
 
       const h: hour = {
-        start: i,
-        end: i + 1,
-        date: new Date(),
         begin,
-        stop: end
+        end: end
       };
       this.hours.push(h);
     }

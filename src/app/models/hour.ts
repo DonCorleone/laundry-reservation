@@ -1,9 +1,9 @@
 import {Time} from "@angular/common";
 
 export interface hour {
-  date: Date;
+//  date: Date;
   begin: Date;
-  start: number;
-  end: number;
-  stop: Date;
+//  start: number;
+//  end: number;
+  end: Date;
 }
