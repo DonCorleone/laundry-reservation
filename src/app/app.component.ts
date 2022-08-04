@@ -14,12 +14,73 @@ export interface Tile {
   animations: IndicatorAnimations
 })
 export class AppComponent {
-/*  title = 'laundry';
+  title = 'laundry';
   tiles: Tile[] = [
-    {text: 'One', cols: 3, rows: 1, color: 'lightblue'},
-    {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'},
-    {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-    {text: 'Four', cols: 2, rows: 1, color: '#DDBDF1'},
+    {text: 'x', cols: 1, rows: 1, color: 'lightblue'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightgreen'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightgreen'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightgreen'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightgreen'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: '06', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'WM1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB1', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'WM2', cols: 1, rows: 1, color: 'lightyellow'},
+    {text: 'TB2', cols: 1, rows: 1, color: 'lightyellow'}
   ];
 
   centered = false;
@@ -28,7 +89,7 @@ export class AppComponent {
 
   radius: number = 0;
   color: string = 'black';
- */
+
   eventText = '';
   indicators;
 
