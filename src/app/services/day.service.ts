@@ -7,6 +7,8 @@ export interface Tile {
   cols: number;
   rows: number;
   text: string;
+  header: boolean;
+  hour: hour;
 }
 export interface machine {
   name: string;
@@ -17,32 +19,15 @@ export interface machine {
 })
 export class DayService implements OnDestroy {
   hours$ = new Subject<hour[]>();
-  //date: Date;
   private subscription: Subscription;
 
   machines: machine[] = [];
-  tiles: Tile[] = [
-    { text: 'x', cols: 1, rows: 1, color: 'lightblue' },
-    { text: 'WM1', cols: 1, rows: 1, color: 'lightgreen' },
-    { text: 'TB1', cols: 1, rows: 1, color: 'lightgreen' },
-    { text: 'WM2', cols: 1, rows: 1, color: 'lightgreen' },
-    { text: 'TB2', cols: 1, rows: 1, color: 'lightgreen' },
-    { text: '06', cols: 1, rows: 1, color: 'lightpink' },
-    { text: 'WM1', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: 'TB1', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: 'WM2', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: 'TB2', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: '07', cols: 1, rows: 1, color: 'lightpink' },
-    { text: 'WM1', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: 'TB1', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: 'WM2', cols: 1, rows: 1, color: 'lightyellow' },
-    { text: 'TB2', cols: 1, rows: 1, color: 'lightyellow' },
-  ];
+  tiles: Tile[] = [];
 
   constructor(private dateSelectionService: DateSelectorService) {
     for (let i = 1; i <= 4; i++) {
       const m: machine = {
-        name: `machine ${i}`,
+        name: `M ${i}`,
       };
       this.machines.push(m);
     }
@@ -52,13 +37,22 @@ export class DayService implements OnDestroy {
         this.hours$.next(this.getHours(s));
 
         this.tiles = [];
-        this.tiles.push({ text: 'x', cols: 2, rows: 2, color: 'lightblue' });
+        this.tiles.push({
+          text: 'x',
+          cols: 2,
+          rows: 2,
+          color: 'lightblue',
+          header: true,
+          hour: null,
+        });
         this.machines.forEach((m) => {
           this.tiles.push({
             text: m.name,
             cols: 1,
             rows: 2,
             color: 'lightgreen',
+            header: true,
+            hour: null,
           });
         });
 
@@ -70,13 +64,17 @@ export class DayService implements OnDestroy {
             cols: 2,
             rows: 1,
             color: 'lightpink',
+            header: true,
+            hour: h,
           });
           this.machines.forEach((m) => {
             this.tiles.push({
-              text: "x",
+              text: 'x',
               cols: 1,
               rows: 1,
               color: 'lightyellow',
+              header: false,
+              hour: h,
             });
           });
         });

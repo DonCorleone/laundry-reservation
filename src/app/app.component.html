@@ -16,11 +16,12 @@
   <mat-grid-list cols="6" rowHeight="fit" style="height: 100vh">
     <mat-grid-tile
       *ngFor="let tile of tiles; index as ix"
-      [colspan]="ix % 5 === 0 ? 2: 1"
-      [rowspan]="ix <= 4 ? 2: 1"
+      [colspan]="tile.cols"
+      [rowspan]="tile.rows"
       [style.background]="tile.color">
-      <app-hour-header *ngIf="ix % 5 === 0"></app-hour-header>
-      <app-hour *ngIf="ix % 5 !== 0"></app-hour>
+      <ng-container *ngIf="tile.header && !tile.hour">{{ tile.text }}</ng-container>
+      <app-hour-header [hour]="tile.hour" *ngIf="tile.header && tile.hour"></app-hour-header>
+      <app-hour [hour]="tile.hour" *ngIf="!tile.header && tile.hour"></app-hour>
       <!--div class="example-ripple-container mat-elevation-z4 bg-red"
            matRipple
            [matRippleCentered]="centered"
