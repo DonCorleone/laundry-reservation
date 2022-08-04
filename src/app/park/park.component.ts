@@ -12,7 +12,7 @@ export class ParkComponent {
   machines: machine[] = [];
 
   constructor() {
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 4; i++){
       const m: machine = {
         name: `machine ${i}`
       }

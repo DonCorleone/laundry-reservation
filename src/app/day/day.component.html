@@ -1,21 +1,9 @@
-<div *ngIf="hours">
-  <div class="gesture__zone" (pan)="onPan($event)">
-    <div
-      *ngFor="let hour of hours; index as ix"
-      class="w-16 h-9 pr-1 text-align-center text-white"
-    >
-      <app-hour [hour]="hour" class="flex-col text-center -mb-4"></app-hour>
-      <hr />
-    </div>
+<div *ngIf="hours$ | async as hours">
+  <div
+    *ngFor="let hour of hours; index as ix"
+    class="w-16 h-9 pr-1 text-align-center text-white"
+  >
+    <app-hour [hour]="hour" class="flex-col text-center -mb-4"></app-hour>
+    <hr />
   </div>
 </div>
-<div
-  class="gesture__indicator"
-  *ngFor="let indicator of indicators.gestureIndicators"
-  [style.top.px]="indicator.y - indicator.size / 2"
-  [style.left.px]="indicator.x - indicator.size / 2"
-  [style.width.px]="indicator.size"
-  [style.height.px]="indicator.size"
-  [style.transform]="indicator.transform"
-  [@indicatorState]="indicator.state"
-></div>
