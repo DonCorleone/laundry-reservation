@@ -1,10 +1,10 @@
 <div
   *ngIf="hour"
-  [class]="selected ? 'bg-rouge-rubia' : 'bg-vert-clair'"
-  class="gesture__zone h-full mt-1 pt-1"
+  [class]="selected ? 'bg-rouge-rubia text-white' : 'bg-vert-clair text-black'"
+  class="gesture__zone h-full text-center flex justify-center items-center"
   (tap)="onTap($event)"
 >
-  {{ selected ? "mine" : "." }}
+  {{ selected ? "mine" : "" }}
 </div>
 <div
   class="gesture__indicator bg-terre-ombre-brule"
