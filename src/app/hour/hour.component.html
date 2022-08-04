@@ -1,13 +1,13 @@
 <div
   *ngIf="hour"
   [class]="selected ? 'bg-rouge-rubia' : 'bg-vert-clair'"
-  class="gesture__zone h-full mt-1"
+  class="gesture__zone h-full mt-1 pt-1"
   (tap)="onTap($event)"
 >
   {{ selected ? "mine" : "." }}
 </div>
 <div
-  class="gesture__indicator bg-vert-59"
+  class="gesture__indicator bg-terre-ombre-brule"
   *ngFor="let indicator of indicators.gestureIndicators"
   [style.top.px]="indicator.y - indicator.size / 2"
   [style.left.px]="indicator.x - indicator.size / 2"

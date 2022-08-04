@@ -2,9 +2,9 @@
   <div class="gesture__zone" (pan)="onPan($event)">
     <div
       *ngFor="let hour of hours; index as ix"
-      class="w-16 h-10 pr-1 text-align-center"
+      class="w-16 h-9 pr-1 text-align-center text-white"
     >
-      <app-hour [hour]="hour" class="-mb-4"></app-hour>
+      <app-hour [hour]="hour" class="flex-col text-center -mb-4"></app-hour>
       <hr />
     </div>
   </div>

@@ -3,7 +3,7 @@ import { hour } from '../models/hour';
 
 @Component({
   selector: 'app-hour-header',
-  templateUrl: './hour-header.component.html'
+  templateUrl: './hour-header.component.html',
 })
 export class HourHeaderComponent {
   @Input() hour: hour;
