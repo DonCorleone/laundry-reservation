@@ -2,5 +2,5 @@
   <mat-label>Choose a date</mat-label>
   <input matInput [matDatepicker]="picker" (dateChange)="selectionFinished($event)">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker touchUi #picker></mat-datepicker>
+  <mat-datepicker touchUi="true" #picker></mat-datepicker>
 </mat-form-field>
