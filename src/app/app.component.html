@@ -1,5 +1,12 @@
 <div class="flex-col bg-gray-700 w-full">
-  <app-calendar></app-calendar>
+ 
+
+<div class="gesture__zone" (pan)="onPan($event)" (tap)="onTap($event)">
+  <h1>Pan Gesture</h1>
+  <p [innerHTML]="eventText"></p>
+</div>
+
+ <app-calendar></app-calendar>
 
   <div
     class="gesture__indicator"
@@ -32,8 +39,3 @@
     </mat-grid-tile>
   </mat-grid-list>
 </ng-container>
-
-<div class="gesture__zone" (pan)="onPan($event)" (tap)="onTap($event)">
-  <h1>Pan Gesture</h1>
-  <p [innerHTML]="eventText"></p>
-</div>
