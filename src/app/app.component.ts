@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Indicator, IndicatorAnimations } from './indicator';
-import {DayService, Tile} from "./services/day.service";
-import {Observable} from "rxjs";
-
+import { DayService, cellType, Tile } from './services/day.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +11,7 @@ import {Observable} from "rxjs";
 })
 export class AppComponent {
   title = 'laundry';
+  readonly CellType = cellType;
 
   tiles$: Observable<Tile[]> = this.dayService.tiles$;
 
@@ -27,7 +27,6 @@ export class AppComponent {
 
   constructor(private dayService: DayService) {
     this.indicators = new Indicator();
-
   }
   onPan(evt: any) {
     this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;

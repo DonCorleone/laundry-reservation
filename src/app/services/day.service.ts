@@ -7,11 +7,19 @@ export interface Tile {
   cols: number;
   rows: number;
   text: string;
+  cellType: number;
   header: boolean;
   hour: hour;
 }
 export interface machine {
   name: string;
+}
+
+export enum cellType {
+  X,
+  COLUMN_HEADER,
+  ROW_HEADER,
+  HOUR,
 }
 
 @Injectable({
@@ -39,15 +47,18 @@ export class DayService implements OnDestroy {
         const tiles = [];
         tiles.push({
           text: s.toDateString(),
+          cellType: cellType.X,
           cols: 2,
           rows: 2,
           color: 'lightblue',
           header: true,
           hour: null,
         });
+
         this.machines.forEach((m) => {
           tiles.push({
             text: m.name,
+            cellType: cellType.COLUMN_HEADER,
             cols: 1,
             rows: 2,
             color: 'lightgreen',
@@ -61,6 +72,7 @@ export class DayService implements OnDestroy {
         hours.forEach((h) => {
           tiles.push({
             text: h.begin.toTimeString(),
+            cellType: cellType.ROW_HEADER,
             cols: 2,
             rows: 1,
             color: 'lightpink',
@@ -69,7 +81,8 @@ export class DayService implements OnDestroy {
           });
           this.machines.forEach((m) => {
             tiles.push({
-              text: 'x',
+              text: null,
+              cellType: cellType.HOUR,
               cols: 1,
               rows: 1,
               color: 'lightyellow',
