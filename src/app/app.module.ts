@@ -26,9 +26,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { HourComponent } from './hour/hour.component';
 import { HourHeaderComponent } from './hour-header/hour-header.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ScrollManagerDirective } from './directives/scroll-manager.directive';
+import { ScrollSectionDirective } from './directives/scroll-section.directive';
+import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
 
 @NgModule({
-  declarations: [AppComponent, HourComponent, HourHeaderComponent, CalendarComponent],
+  declarations: [AppComponent, HourComponent, HourHeaderComponent, CalendarComponent, ScrollManagerDirective, ScrollSectionDirective, ScrollAnchorDirective],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

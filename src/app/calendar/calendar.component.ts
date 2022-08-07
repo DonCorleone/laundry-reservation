@@ -6,11 +6,12 @@ import {DateSelectorService} from "../services/date-selector.service";
   templateUrl: './calendar.component.html'
 })
 export class CalendarComponent {
+  selected: Date | null;
 
   constructor(private dateSelectorService: DateSelectorService) {
   }
 
-  selectionFinished(event: any) {
-    this.dateSelectorService.selectedDate.next(new Date(event.value));
+  selectionFinished(event: Date | null) {
+    this.dateSelectorService.selectedDate.next(new Date(event));
   }
 }

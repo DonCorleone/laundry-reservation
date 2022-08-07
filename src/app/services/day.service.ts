@@ -38,7 +38,7 @@ export class DayService implements OnDestroy {
 
         const tiles = [];
         tiles.push({
-          text: 'x',
+          text: s.toDateString(),
           cols: 2,
           rows: 2,
           color: 'lightblue',
