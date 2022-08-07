@@ -1,9 +1,0 @@
-<div *ngIf="hours$ | async as hours">
-  <div
-    *ngFor="let hour of hours; index as ix"
-    class="w-16 h-9 pr-1 text-align-center text-white"
-  >
-    <app-hour [hour]="hour" class="flex-col text-center -mb-4"></app-hour>
-    <hr />
-  </div>
-</div>
