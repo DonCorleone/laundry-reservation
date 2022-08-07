@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { DateSelectorService } from './date-selector.service';
 import { hour } from '../models/hour';
-import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 export interface Tile {
   color: string;
   cols: number;
@@ -26,7 +26,6 @@ export enum cellType {
   providedIn: 'root',
 })
 export class DayService implements OnDestroy {
-  hours$ = new Subject<hour[]>();
   private subscription: Subscription;
 
   machines: machine[] = [];
@@ -42,7 +41,6 @@ export class DayService implements OnDestroy {
 
     this.subscription = this.dateSelectionService.selectedDate.subscribe(
       (s) => {
-        this.hours$.next(this.getHours(s));
 
         const tiles = [];
         tiles.push({
@@ -87,7 +85,10 @@ export class DayService implements OnDestroy {
               rows: 1,
               color: 'lightyellow',
               header: false,
-              hour: h,
+              hour: {
+                ...
+                  h
+              },
             });
           });
         });
@@ -110,6 +111,7 @@ export class DayService implements OnDestroy {
       const h: hour = {
         begin,
         end,
+        selectedBy: ''
       };
       hours.push(h);
     }

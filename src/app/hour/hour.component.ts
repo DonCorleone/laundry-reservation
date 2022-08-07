@@ -22,7 +22,6 @@ import { Indicator, IndicatorAnimations } from '../indicator';
 export class HourComponent {
   @Input() hour: hour;
 
-  selected = false;
   indicators;
 
   constructor() {
@@ -31,7 +30,8 @@ export class HourComponent {
 
   onTap(evt) {
     console.log(`tab ${this.hour.begin}-${this.hour.end}`);
-    this.selected = !this.selected;
+    this.hour.selectedBy = this.hour.selectedBy === 'xxx' ? '' : 'xxx'
+
     const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
     this.indicators.hide(indicator);
   }

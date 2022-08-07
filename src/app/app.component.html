@@ -3,7 +3,7 @@
     appScrollSection="calendar"
     appScrollAnchor="timeTable"
   ></app-calendar>
-  <ng-container *ngIf="tiles$ | async as tiles">
+  <ng-container *ngIf="tiles">
     <mat-grid-list
       cols="6"
       rowHeight="fit"
@@ -38,6 +38,7 @@
         </div>
         <div
           *ngIf="tile.cellType == CellType.COLUMN_HEADER"
+          (click)="clickHourColumn($event, tile.hour)"
           class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white"
         >
           {{ tile.text }}
@@ -45,6 +46,7 @@
         <app-hour-header
           [hour]="tile.hour"
           *ngIf="tile.cellType == CellType.ROW_HEADER"
+          (click)="clickHourHeader($event, tile.hour)"
           class="w-full h-full bg-vert-59 text-white text-right pr-2"
         ></app-hour-header>
         <app-hour
