@@ -31,36 +31,14 @@ import { ScrollSectionDirective } from './directives/scroll-section.directive';
 import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
 
 @NgModule({
-  declarations: [AppComponent, HourComponent, HourHeaderComponent, CalendarComponent, ScrollManagerDirective, ScrollSectionDirective, ScrollAnchorDirective],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatSliderModule,
-    MatGridListModule,
-    MatFormFieldModule,
-    MatCheckboxModule,
     FormsModule,
-    MatRippleModule,
-    MatCardModule,
-    MatButtonModule,
-    MatInputModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatListModule,
-    MatIconModule,
-    MatCardModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatExpansionModule,
     HammerModule
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
+
 export class AppModule {}

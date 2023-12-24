@@ -3,6 +3,7 @@ import { Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
   selector: '[appScrollSection]',
+  standalone: true
 })
 export class ScrollSectionDirective {
   @Input('appScrollSection') id: string | number;

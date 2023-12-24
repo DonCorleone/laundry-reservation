@@ -3,12 +3,32 @@ import { Subscription} from 'rxjs';
 import { Indicator, IndicatorAnimations } from './indicator';
 import { DayService, cellType, Tile } from './services/day.service';
 import { hour } from './models/hour';
+import {MatGridListModule} from "@angular/material/grid-list";
+import {CalendarComponent} from "./calendar/calendar.component";
+import {ScrollManagerDirective} from "./directives/scroll-manager.directive";
+import {NgForOf, NgIf} from "@angular/common";
+import {HourHeaderComponent} from "./hour-header/hour-header.component";
+import {HourComponent} from "./hour/hour.component";
+import {ScrollSectionDirective} from "./directives/scroll-section.directive";
+import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: IndicatorAnimations,
+  standalone: true,
+  imports: [
+    MatGridListModule,
+    CalendarComponent,
+    ScrollManagerDirective,
+    NgIf,
+    HourHeaderComponent,
+    HourComponent,
+    NgForOf,
+    ScrollSectionDirective,
+    ScrollAnchorDirective
+  ]
 })
 export class AppComponent implements OnDestroy {
   title = 'laundry';
@@ -24,7 +44,7 @@ export class AppComponent implements OnDestroy {
   color: string = 'black';
 
   eventText = '';
-  indicators;
+  indicators: Indicator;
   private subscription: Subscription;
 
   constructor(private dayService: DayService) {

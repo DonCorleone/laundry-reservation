@@ -3,6 +3,7 @@ import { Directive, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[appScrollAnchor]',
+  standalone: true
 })
 export class ScrollAnchorDirective {
   @Input('appScrollAnchor') id: string | number;

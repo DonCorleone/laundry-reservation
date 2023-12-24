@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { hour } from '../models/hour';
 import { Indicator, IndicatorAnimations } from '../indicator';
+import {NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-hour',
@@ -18,6 +19,11 @@ import { Indicator, IndicatorAnimations } from '../indicator';
     z-index: 10;
   }`],
   animations: IndicatorAnimations,
+  imports: [
+    NgIf,
+    NgForOf
+  ],
+  standalone: true
 })
 export class HourComponent {
   @Input() hour: hour;
