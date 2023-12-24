@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { hour } from '../models/hour';
 import { Indicator, IndicatorAnimations } from '../indicator';
-import {NgForOf, NgIf} from "@angular/common";
+import {CommonModule, NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-hour',
