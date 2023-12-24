@@ -19,16 +19,11 @@ import {NgForOf, NgIf} from "@angular/common";
     z-index: 10;
   }`],
   animations: IndicatorAnimations,
-  imports: [
-    NgIf,
-    NgForOf
-  ],
-  standalone: true
 })
 export class HourComponent {
   @Input() hour: hour;
 
-  indicators;
+  indicators: Indicator;
 
   constructor() {
     this.indicators = new Indicator();

@@ -20,7 +20,7 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { ScrollManagerDirective } from './directives/scroll-manager.directive';
 import { ScrollSectionDirective } from './directives/scroll-section.directive';
 import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
-import {MatCard, MatCardModule} from "@angular/material/card";
+import { MatCardModule} from "@angular/material/card";
 
 @NgModule({
   declarations: [AppComponent, HourComponent, HourHeaderComponent, CalendarComponent, ScrollManagerDirective, ScrollSectionDirective, ScrollAnchorDirective],

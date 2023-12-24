@@ -17,18 +17,6 @@ import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: IndicatorAnimations,
-  standalone: true,
-  imports: [
-    MatGridListModule,
-    CalendarComponent,
-    ScrollManagerDirective,
-    NgIf,
-    HourHeaderComponent,
-    HourComponent,
-    NgForOf,
-    ScrollSectionDirective,
-    ScrollAnchorDirective
-  ]
 })
 export class AppComponent implements OnDestroy {
   title = 'laundry';
