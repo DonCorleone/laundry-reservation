@@ -22,7 +22,7 @@ import {HourHeaderComponent} from "./hour-header/hour-header.component";
 import { HourComponent } from "./hour/hour.component";
 
 @NgModule({
-    declarations: [AppComponent, ScrollManagerDirective, ScrollSectionDirective, ScrollAnchorDirective],
+    declarations: [AppComponent],
     providers: [],
     bootstrap: [AppComponent],
     imports: [
@@ -42,7 +42,10 @@ import { HourComponent } from "./hour/hour.component";
         HammerModule,
         HourHeaderComponent,
         HourComponent,
-        CalendarComponent
+        CalendarComponent,
+        ScrollManagerDirective,
+        ScrollSectionDirective,
+        ScrollAnchorDirective
     ]
 })
 export class AppModule {}

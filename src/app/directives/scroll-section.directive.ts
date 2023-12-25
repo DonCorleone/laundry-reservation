@@ -2,7 +2,8 @@ import { ScrollManagerDirective } from './scroll-manager.directive';
 import { Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
-  selector: '[appScrollSection]'
+  selector: '[appScrollSection]',
+  standalone: true,
 })
 export class ScrollSectionDirective {
   @Input('appScrollSection') id: string | number;

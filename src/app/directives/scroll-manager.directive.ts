@@ -2,7 +2,8 @@ import { ScrollSectionDirective } from './scroll-section.directive';
 import { Directive } from '@angular/core';
 
 @Directive({
-  selector: '[appScrollManager]'
+  selector: '[appScrollManager]',
+  standalone: true,
 })
 export class ScrollManagerDirective {
   private sections = new Map<string | number, ScrollSectionDirective>();
