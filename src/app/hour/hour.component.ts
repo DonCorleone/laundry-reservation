@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { hour } from '../models/hour';
 import { Indicator, IndicatorAnimations } from '../indicator';
-import {CommonModule, NgForOf, NgIf} from "@angular/common";
+import { CommonModule, NgForOf, NgIf } from "@angular/common";
 import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +23,7 @@ import { FormsModule } from '@angular/forms';
   }`],
   animations: IndicatorAnimations,
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, HammerModule, FormsModule]
 })
 export class HourComponent {
   @Input() hour: hour;

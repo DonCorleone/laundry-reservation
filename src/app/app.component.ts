@@ -6,17 +6,19 @@ import { hour } from './models/hour';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {CalendarComponent} from "./calendar/calendar.component";
 import {ScrollManagerDirective} from "./directives/scroll-manager.directive";
-import {NgForOf, NgIf} from "@angular/common";
+import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {HourHeaderComponent} from "./hour-header/hour-header.component";
 import {HourComponent} from "./hour/hour.component";
 import {ScrollSectionDirective} from "./directives/scroll-section.directive";
 import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  animations: IndicatorAnimations,
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    animations: IndicatorAnimations,
+    standalone: true,
+    imports: [CommonModule, CalendarComponent, MatGridListModule, HourHeaderComponent, HourComponent]
 })
 export class AppComponent implements OnDestroy {
   title = 'laundry';
