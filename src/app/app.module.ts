@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {BrowserModule, HammerModule} from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,35 +17,35 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { ScrollManagerDirective } from './directives/scroll-manager.directive';
 import { ScrollSectionDirective } from './directives/scroll-section.directive';
 import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
-import { MatCardModule} from "@angular/material/card";
-import {HourHeaderComponent} from "./hour-header/hour-header.component";
+import { MatCardModule } from "@angular/material/card";
+import { HourHeaderComponent } from "./hour-header/hour-header.component";
 import { HourComponent } from "./hour/hour.component";
 
 @NgModule({
-    declarations: [AppComponent],
-    providers: [],
-    bootstrap: [AppComponent],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        MatGridListModule,
-        FormsModule,
-        MatCardModule,
-        MatRippleModule,
-        MatSidenavModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatExpansionModule,
-        HammerModule,
-        HourHeaderComponent,
-        HourComponent,
-        CalendarComponent,
-        ScrollManagerDirective,
-        ScrollSectionDirective,
-        ScrollAnchorDirective
-    ]
+  declarations: [AppComponent],
+  providers: [],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    MatGridListModule,
+    FormsModule,
+    MatCardModule,
+    MatRippleModule,
+    MatSidenavModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatExpansionModule,
+    HammerModule,
+    HourHeaderComponent,
+    HourComponent,
+    CalendarComponent,
+    ScrollManagerDirective,
+    ScrollSectionDirective,
+    ScrollAnchorDirective
+  ]
 })
-export class AppModule {}
+export class AppModule { }

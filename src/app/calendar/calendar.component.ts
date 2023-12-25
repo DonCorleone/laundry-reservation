@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
-import {DateSelectorService} from "../services/date-selector.service";
-import {MatCard, MatCardModule} from "@angular/material/card";
-import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import { Component } from '@angular/core';
+import { DateSelectorService } from "../services/date-selector.service";
+import { MatCardModule } from "@angular/material/card";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
 
 @Component({
   selector: 'app-calendar',
