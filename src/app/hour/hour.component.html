@@ -3,6 +3,12 @@
   [class]="hour.selectedBy ? 'bg-rouge-rubia text-white' : 'bg-vert-clair text-black'"
   class="gesture__zone h-full text-center flex justify-center items-center"
   (tap)="onTap($event)"
+  (pan)="onPan($event)"
+  (panstart)="onPanDown($event)"
+  (panend)="onPanUp($event)"
+  (mouseenter)="onEnter($event)"
+  (mousedown)="onPanDown($event)"
+  (mouseup)="onPanUp($event)"
 >
   {{ hour.selectedBy }}
 </div>

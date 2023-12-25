@@ -1,8 +1,8 @@
 import {Component, OnDestroy} from '@angular/core';
-import { Subscription} from 'rxjs';
-import { Indicator, IndicatorAnimations } from './indicator';
-import { DayService, cellType, Tile } from './services/day.service';
-import { hour } from './models/hour';
+import {Subscription} from 'rxjs';
+import {Indicator, IndicatorAnimations} from './indicator';
+import {DayService, cellType, Tile} from './services/day.service';
+import {hour} from './models/hour';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {CalendarComponent} from "./calendar/calendar.component";
 import {ScrollManagerDirective} from "./directives/scroll-manager.directive";
@@ -13,12 +13,16 @@ import {ScrollSectionDirective} from "./directives/scroll-section.directive";
 import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    animations: IndicatorAnimations,
-    standalone: true,
-    imports: [CommonModule, CalendarComponent, MatGridListModule, HourHeaderComponent, HourComponent]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: IndicatorAnimations,
+  standalone: true,
+  imports: [
+    CommonModule, CalendarComponent, MatGridListModule,
+    HourHeaderComponent, HourComponent, ScrollSectionDirective,
+    ScrollAnchorDirective, ScrollManagerDirective,
+  ]
 })
 export class AppComponent implements OnDestroy {
   title = 'laundry';
@@ -48,13 +52,14 @@ export class AppComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
+
   onPan(evt: any) {
     this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;
     const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
     this.indicators.hide(indicator);
   }
 
-  onTap(evt) {
+  onTap(evt: any) {
     this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;
     const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
     this.indicators.hide(indicator);
@@ -70,11 +75,11 @@ export class AppComponent implements OnDestroy {
   }
 
   clickHourColumn($event: MouseEvent, hour: hour) {
-/*    this.tiles
-      .filter((t) => t.machine == t.machine)
-      .forEach((t) => {
-        t.hour.selectedBy = 'yyy';
-        console.log(hour.end, hour.begin, hour.selectedBy);
-      });*/
+    /*    this.tiles
+          .filter((t) => t.machine == t.machine)
+          .forEach((t) => {
+            t.hour.selectedBy = 'yyy';
+            console.log(hour.end, hour.begin, hour.selectedBy);
+          });*/
   }
 }
