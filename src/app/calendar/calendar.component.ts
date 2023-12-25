@@ -7,6 +7,8 @@ import {MatNativeDateModule} from "@angular/material/core";
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
+  standalone: true,
+  imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule],
 })
 export class CalendarComponent {
   selected: Date | null;
