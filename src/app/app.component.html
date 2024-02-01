@@ -1,9 +1,9 @@
-<div class="flex-col bg-gray-700 w-full" appScrollManager>
+<div class=" bg-gray-700 w-full" appScrollManager>
   <app-calendar
     appScrollSection="calendar"
     appScrollAnchor="timeTable"
   ></app-calendar>
-  <<ng-container *ngIf="tiles">
+  <ng-container *ngIf="tiles">
     <mat-grid-list
       cols="6"
       rowHeight="fit"
@@ -71,5 +71,5 @@
     [style.transform]="indicator.transform"
     [@indicatorState]="indicator.state"
   ></div>
-  <p [innerHTML]="eventText"></p>
+
 </div>

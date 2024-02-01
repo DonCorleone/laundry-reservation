@@ -13,6 +13,14 @@
   -webkit-user-drag: none;
   -webkit-tap-highlight-color: transparent;
 }
+.mat-grid-list {
+  z-index: 0;
+  position: absolute;
+  top:500;
+  left:0;
+  width: 100%;
+  height: 100%;
+}
 
 /** Styles to make the demo look better. */
 .example-ripple-checkbox {
@@ -24,7 +32,13 @@
 }
 
 .gesture__zone {
-  background-color: #efefef;
+  position: absolute;
+  top:500;
+  left:0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: transparent;
   padding: 20px;
   margin: 10px;
   border-radius: 3px;
