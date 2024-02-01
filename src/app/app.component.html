@@ -1,9 +1,9 @@
 <div class="flex-col bg-gray-700 w-full" appScrollManager>
-  <!--app-calendar
+  <app-calendar
     appScrollSection="calendar"
     appScrollAnchor="timeTable"
-  ></app-calendar-->
-  <!-- <ng-container *ngIf="tiles">
+  ></app-calendar>
+  <<ng-container *ngIf="tiles">
     <mat-grid-list
       cols="6"
       rowHeight="fit"
@@ -56,10 +56,10 @@
         ></app-hour>
       </mat-grid-tile>
     </mat-grid-list>
-  </ng-container> -->
+  </ng-container>
 
 
-  <div class="gesture__zone" (pan)="onPan($event)" (tap)="onTap($event)">
+  <div class="gesture__zone" (pan)="onPan($event)">
   </div>
   <div
     class="gesture__indicator"
