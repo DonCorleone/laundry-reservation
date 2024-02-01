@@ -54,13 +54,13 @@ export class AppComponent implements OnDestroy {
   }
 
   onPan(evt: any) {
-    this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;
+    this.eventText += `(${evt.center.x}, ${evt.center.y})`;
     const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
     this.indicators.hide(indicator);
   }
 
   onTap(evt: any) {
-    this.eventText += `(${evt.center.x}, ${evt.center.y})<br/>`;
+    this.eventText += `(${evt.center.x}, ${evt.center.y})`;
     const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
     this.indicators.hide(indicator);
   }
