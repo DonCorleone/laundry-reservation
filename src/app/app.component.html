@@ -57,11 +57,9 @@
       </mat-grid-tile>
     </mat-grid-list>
   </ng-container>
-
-
-  <div class="gesture__zone" (pan)="onPan($event)">
-  </div>
-  <div
+  <!--div class="gesture__zone" (pan)="onPan($event)">
+  </div-->
+  <!--div
     class="gesture__indicator"
     *ngFor="let indicator of indicators.gestureIndicators"
     [style.top.px]="indicator.y - indicator.size / 2"
@@ -70,6 +68,6 @@
     [style.height.px]="indicator.size"
     [style.transform]="indicator.transform"
     [@indicatorState]="indicator.state"
-  ></div>
+  ></div-->
 
 </div>

@@ -39,8 +39,8 @@ export class HourComponent {
    // console.log(`tab ${this.hour.begin}-${this.hour.end}`);
     this.hour.selectedBy = this.hour.selectedBy === 'xxx' ? '' : 'xxx'
 
-    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
-    this.indicators.hide(indicator);
+/*    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
+    this.indicators.hide(indicator);*/
   }
   onPan(evt: any) {
  //   console.log(`pan ${this.hour.begin}-${this.hour.end}`);

@@ -31,7 +31,7 @@
   margin: 0 12px 0 0;
 }
 
-.gesture__zone {
+/*.gesture__zone {
   position: absolute;
   top:500;
   left:0;
@@ -45,7 +45,7 @@
   height: 500px;
   text-align: center;
   overflow: auto;
-}
+}*/
 
 h1, p, .gesture__indicator {
   -webkit-user-select: none; /* Chrome all / Safari all */

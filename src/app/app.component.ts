@@ -61,8 +61,8 @@ export class AppComponent implements OnDestroy {
 
   onTap(evt: any) {
     this.eventText += `(${evt.center.x}, ${evt.center.y})`;
-    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
-    this.indicators.hide(indicator);
+/*    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
+    this.indicators.hide(indicator);*/
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {
