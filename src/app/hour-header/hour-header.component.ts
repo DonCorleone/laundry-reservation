@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { hour } from '../models/hour';
+import {Component, Input} from '@angular/core';
+import {hour} from '../models/hour';
 import {DatePipe, NgIf} from "@angular/common";
 
 @Component({

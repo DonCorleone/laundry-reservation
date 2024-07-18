@@ -1,6 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Indicator, IndicatorAnimations} from './indicator';
 import {DayService, cellType, Tile} from './services/day.service';
 import {hour} from './models/hour';
 import {MatGridListModule} from "@angular/material/grid-list";
@@ -16,7 +15,6 @@ import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  animations: IndicatorAnimations,
   standalone: true,
   imports: [
     CommonModule, CalendarComponent, MatGridListModule,
@@ -29,20 +27,12 @@ export class AppComponent implements OnDestroy {
   readonly CellType = cellType;
 
   tiles: Tile[] = [];
-
-  centered = false;
-  disabled = false;
-  unbounded = false;
-
-  radius: number = 0;
   color: string = 'black';
 
   eventText = '';
-  indicators: Indicator;
   private subscription: Subscription;
 
   constructor(private dayService: DayService) {
-    this.indicators = new Indicator();
 
     this.subscription = this.dayService.tiles$.subscribe(
       (x) => (this.tiles = x)
@@ -51,18 +41,6 @@ export class AppComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  onPan(evt: any) {
-    this.eventText += `(${evt.center.x}, ${evt.center.y})`;
-    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
-    this.indicators.hide(indicator);
-  }
-
-  onTap(evt: any) {
-    this.eventText += `(${evt.center.x}, ${evt.center.y})`;
-/*    const indicator = this.indicators.display(evt.center.x, evt.center.y, 50);
-    this.indicators.hide(indicator);*/
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {

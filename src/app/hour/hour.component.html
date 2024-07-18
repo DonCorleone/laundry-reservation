@@ -1,18 +1,9 @@
-<div
-  *ngIf="hour"
-  [class]="hour.selectedBy ? 'bg-rouge-rubia text-white' : 'bg-vert-clair text-black'"
-  class="h-full text-center flex justify-center items-center"
-  (tap)="onTap($event)"
->
-  {{ hour.selectedBy }}
-</div>
-<!--div--
-  class="gesture__indicator bg-terre-ombre-brule"
-  *ngFor="let indicator of indicators.gestureIndicators"
-  [style.top.px]="indicator.y - indicator.size / 2"
-  [style.left.px]="indicator.x - indicator.size / 2"
-  [style.width.px]="indicator.size"
-  [style.height.px]="indicator.size"
-  [style.transform]="indicator.transform"
-  [@indicatorState]="indicator.state"
-></div-->
+@if(hour){
+  <div
+    [class]="hour.selectedBy ? 'bg-rouge-rubia text-white' : 'bg-vert-clair text-black'"
+    class="h-full text-center flex justify-center items-center"
+    (tap)="onTap($event)"
+  >
+    {{ hour.selectedBy }}
+  </div>
+}
