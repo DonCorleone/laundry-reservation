@@ -1,3 +1,5 @@
-<div *ngIf="hour" class="h-full mt-1 pt-1">
+@if(hour){
+  <div class="h-full mt-1 pt-1">
     {{ hour.begin | date: 'HH:mm' }}-{{ hour.end | date: 'HH:mm' }}
-</div>
+  </div>
+}
