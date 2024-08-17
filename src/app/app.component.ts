@@ -5,7 +5,7 @@ import {hour} from './models/hour';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {CalendarComponent} from "./calendar/calendar.component";
 import {ScrollManagerDirective} from "./directives/scroll-manager.directive";
-import {CommonModule, NgForOf, NgIf} from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {HourHeaderComponent} from "./hour-header/hour-header.component";
 import {HourComponent} from "./hour/hour.component";
 import {ScrollSectionDirective} from "./directives/scroll-section.directive";
@@ -14,7 +14,6 @@ import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
   standalone: true,
   imports: [
     CommonModule, CalendarComponent, MatGridListModule,
@@ -52,12 +51,11 @@ export class AppComponent implements OnDestroy {
       });
   }
 
-  clickHourColumn($event: MouseEvent, hour: hour) {
-    /*    this.tiles
-          .filter((t) => t.machine == t.machine)
+  clickMachineColumn($event: MouseEvent, machine: string) {
+    this.tiles
+          .filter((t) => t.hour && t.machine == machine)
           .forEach((t) => {
-            t.hour.selectedBy = 'yyy';
-            console.log(hour.end, hour.begin, hour.selectedBy);
-          });*/
+            t.hour.selectedBy = 'zzz';
+          });
   }
 }

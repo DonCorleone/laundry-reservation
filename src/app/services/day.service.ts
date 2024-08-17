@@ -3,6 +3,8 @@ import { DateSelectorService } from './date-selector.service';
 import { hour } from '../models/hour';
 import { Subject, Subscription } from 'rxjs';
 export interface Tile {
+  id: string;
+  machine: string;
   color: string;
   cols: number;
   rows: number;
@@ -40,11 +42,14 @@ export class DayService implements OnDestroy {
     }
 
     this.subscription = this.dateSelectionService.selectedDate.subscribe(
-      (s) => {
+      (selectedDate) => {
 
         const tiles = [];
+        const selectedDateStr = selectedDate.toDateString();
         tiles.push({
-          text: s.toDateString(),
+          id: `${selectedDateStr}-x-x`,
+          machine: null,
+          text: selectedDateStr,
           cellType: cellType.X,
           cols: 2,
           rows: 2,
@@ -53,9 +58,11 @@ export class DayService implements OnDestroy {
           hour: null,
         });
 
-        this.machines.forEach((m) => {
+        this.machines.forEach((machine) => {
           tiles.push({
-            text: m.name,
+            id: `${selectedDateStr}-x-${machine.name}`,
+            machine,
+            text: machine.name,
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
             rows: 2,
@@ -65,20 +72,25 @@ export class DayService implements OnDestroy {
           });
         });
 
-        const hours = this.getHours(s);
+        const hours = this.getHours(selectedDate);
 
-        hours.forEach((h) => {
+        hours.forEach((hour) => {
+          const hourStr = hour.begin.toTimeString();
           tiles.push({
-            text: h.begin.toTimeString(),
+            id: `${selectedDateStr}-${hourStr}-x`,
+            machine: null,
+            text: hourStr,
             cellType: cellType.ROW_HEADER,
             cols: 2,
             rows: 1,
             color: 'lightpink',
             header: true,
-            hour: h,
+            hour: hour,
           });
-          this.machines.forEach((m) => {
+          this.machines.forEach((machine) => {
             tiles.push({
+              id: `${selectedDateStr}-${hourStr}-${machine.name}`,
+              machine,
               text: null,
               cellType: cellType.HOUR,
               cols: 1,
@@ -87,7 +99,7 @@ export class DayService implements OnDestroy {
               header: false,
               hour: {
                 ...
-                  h
+                  hour
               },
             });
           });
