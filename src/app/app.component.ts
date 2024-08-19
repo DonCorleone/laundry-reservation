@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {DayService, cellType, Tile} from './services/day.service';
 import {hour} from './models/hour';
@@ -15,6 +15,7 @@ import {ScrollAnchorDirective} from "./directives/scroll-anchor.directive";
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: true,
+  providers: [ScrollSectionDirective, ScrollManagerDirective],
   imports: [
     CommonModule, CalendarComponent, MatGridListModule,
     HourHeaderComponent, HourComponent, ScrollSectionDirective,
@@ -31,12 +32,16 @@ export class AppComponent implements OnDestroy {
   eventText = '';
   private subscription: Subscription;
 
+  @ViewChild('calendarElement', { static: false })
+  calendarElement: ElementRef;
+
   constructor(private dayService: DayService) {
 
     this.subscription = this.dayService.tiles$.subscribe(
       (x) => (this.tiles = x)
     );
   }
+
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -56,6 +61,7 @@ export class AppComponent implements OnDestroy {
           .filter((t) => t.hour && t.machine == machine)
           .forEach((t) => {
             t.hour.selectedBy = 'zzz';
+            console.log(t.hour.end, t.hour.begin, t.hour.selectedBy);
           });
   }
 }
