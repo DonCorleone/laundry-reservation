@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DayService, cellType, Tile } from './services/day.service';
 import { hour } from './models/hour';
@@ -10,6 +10,7 @@ import { HourHeaderComponent } from './hour-header/hour-header.component';
 import { HourComponent } from './hour/hour.component';
 import { ScrollSectionDirective } from './directives/scroll-section.directive';
 import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
+import { UserComponent } from "./user/user.component";
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
     ScrollSectionDirective,
     ScrollAnchorDirective,
     ScrollManagerDirective,
-  ],
+    UserComponent
+],
 })
 export class AppComponent implements OnDestroy {
   title = 'laundry';
@@ -36,6 +38,8 @@ export class AppComponent implements OnDestroy {
 
   eventText = '';
   private subscription: Subscription;
+
+  username = signal('');
 
   constructor(private dayService: DayService) {
     this.subscription = this.dayService.tiles$.subscribe(
@@ -51,7 +55,7 @@ export class AppComponent implements OnDestroy {
     this.tiles
       .filter((t) => t.hour?.begin.getHours() == hour.begin.getHours())
       .forEach((t) => {
-        t.hour.selectedBy = 'yyy';
+        t.hour.selectedBy = this.username();
         console.log(hour.end, hour.begin, hour.selectedBy);
       });
   }
@@ -60,8 +64,12 @@ export class AppComponent implements OnDestroy {
     this.tiles
       .filter((t) => t.hour && t.machine == machine)
       .forEach((t) => {
-        t.hour.selectedBy = 'zzz';
+        t.hour.selectedBy = this.username();
         console.log(t.hour.end, t.hour.begin, t.hour.selectedBy);
       });
+  }
+
+  onUsernameChange(newUsername: string) {
+    this.username.set(newUsername);
   }
 }
