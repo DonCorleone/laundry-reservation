@@ -65,9 +65,10 @@ export class SignalRService {
   getMessages() {
     return this.reservationEntries.asReadonly(); // Expose messages as a readonly signal
   }
+
   public addReservation(reservationEntry: ReservationEntry) {
 
-    this.httpClient.post<ReservationEntry>(`${this.baseUrlLocal}api/ReservationEntries`, reservationEntry).subscribe(reservation => {
+    this.httpClient.post<ReservationEntry>(`${this.baseUrlLocal}/api/ReservationEntries`, reservationEntry).subscribe(reservation => {
       console.log('Updated reservation:', reservation);
     });
 

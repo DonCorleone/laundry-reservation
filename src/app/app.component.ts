@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DayService, cellType, Tile } from './services/day.service';
 import { hour } from './models/hour';
@@ -10,7 +10,9 @@ import { HourHeaderComponent } from './hour-header/hour-header.component';
 import { HourComponent } from './hour/hour.component';
 import { ScrollSectionDirective } from './directives/scroll-section.directive';
 import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
-import { UserComponent } from "./user/user.component";
+import { UserComponent } from './user/user.component';
+import { SignalRService } from './services/signalr.service';
+import { ReservationEntry } from './models/reservation-entry';
 
 @Component({
   selector: 'app-root',
@@ -26,10 +28,12 @@ import { UserComponent } from "./user/user.component";
     ScrollSectionDirective,
     ScrollAnchorDirective,
     ScrollManagerDirective,
-    UserComponent
-],
+    UserComponent,
+  ],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
+
+  reservationEntries!: Signal<ReservationEntry[]>; // Signal to store messages
   title = 'laundry';
   readonly CellType = cellType;
 
@@ -41,14 +45,42 @@ export class AppComponent implements OnDestroy {
 
   username = signal('');
 
-  constructor(private dayService: DayService) {
+  constructor(
+    private dayService: DayService,
+    private signalRService: SignalRService
+  ) {
     this.subscription = this.dayService.tiles$.subscribe(
       (x) => (this.tiles = x)
     );
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  ngOnInit() {
+    this.signalRService.startConnection();
+    this.signalRService.addDataListener();
+
+    this.reservationEntries = this.signalRService.getMessages(); // Use the signal from the service
+  }
+  onHourSelected($event: boolean, hour: hour) {
+    if ($event) {
+      this.addReservation(hour.id);
+    } else {
+      this.eventText = 'Hour unselected';
+    }
+  }
+  addReservation(hour: number) {
+
+    const reservation = {
+      id: hour,
+      name: this.username(),
+      timestamp: new Date(),
+      tags: ['Machine 1'],
+    };
+
+    this.signalRService.addReservation(reservation);
+  }
+
+  deleteReservation(reservation: ReservationEntry) {
+    this.signalRService.deleteReservation(reservation);
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {
@@ -71,5 +103,9 @@ export class AppComponent implements OnDestroy {
 
   onUsernameChange(newUsername: string) {
     this.username.set(newUsername);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

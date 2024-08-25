@@ -108,6 +108,25 @@ export class DayService implements OnDestroy {
       }
     );
   }
+  // New function to calculate a number based on date and time
+  calculateNumberFromDate(date: Date): number {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // Months are zero-based in JavaScript
+    const day = date.getDate();
+    let hour = date.getHours();
+    // for test cases, generate a random number between 0 and 24
+    hour = Math.floor(Math.random() * 24);
+
+    let minute = date.getMinutes();
+    // for test cases, generate a random number between 0 and 59
+    minute = Math.floor(Math.random() * 59);
+
+    // Example formula: weighted sum of components
+    const calculatedNumber =
+      year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
+
+    return calculatedNumber;
+  }
 
   getHours(date: Date): hour[] {
     const hours = [];
@@ -121,6 +140,7 @@ export class DayService implements OnDestroy {
       end.setMinutes(59);
 
       const h: hour = {
+        id: this.calculateNumberFromDate(begin),
         begin,
         end,
         selectedBy: ''

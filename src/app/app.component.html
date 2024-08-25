@@ -14,16 +14,16 @@
   >
     @for (tile of tiles; track tile.id){
     <mat-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
+
+      @let hour = tile.hour;
       @if (tile.cellType == CellType.X) {
       <div
         appScrollAnchor="calendar"
         class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white cursor-n-resize hover:bg-opacity-5"
       >
         <div class="flex flex-col self-center">
-          @if(tile.cellType == CellType.X){
           <span class="-mb-1 material-symbols-sharp"> expand_less </span>
           <span class="pb-1 material-symbols-sharp"> edit_calendar </span>
-          }
         </div>
         <div class="self-center">
           {{ tile.text }}
@@ -38,12 +38,18 @@
       </div>
       } @if (tile.cellType == CellType.ROW_HEADER) {
       <app-hour-header
-        [hour]="tile.hour"
-        (click)="clickHourHeader($event, tile.hour)"
+        [hour]="hour"
+        (click)="clickHourHeader($event, hour)"
         class="w-full h-full bg-vert-59 text-white text-right pr-2 hover:bg-opacity-50 cursor-e-resize"
       ></app-hour-header>
       } @else if (tile.cellType == CellType.HOUR) {
-      <app-hour [hour]="tile.hour" [user]="username()" class="w-full h-full"></app-hour>
+      <app-hour
+        [hour]="hour"
+        [user]="username()"
+        (selected)="onHourSelected($event, hour)"
+        class="w-full h-full"
+      >
+      </app-hour>
       }
     </mat-grid-tile>
     }

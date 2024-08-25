@@ -1,8 +1,7 @@
-import { Component, input, Input, signal } from '@angular/core';
+import { Component, input, Input, output, signal } from '@angular/core';
 import { hour } from '../models/hour';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 @Component({
   selector: 'app-hour',
   template: `
@@ -27,14 +26,17 @@ import { FormsModule } from '@angular/forms';
 export class HourComponent {
   hour = input<hour>();
   user = input<string>();
+  selected = output<boolean>();
 
   onTap(evt: any) {
     if (this.hour().selectedBy) {
       console.log(`unreserve ${this.hour().begin}-${this.hour().end}`);
       this.hour().selectedBy = '';
+      this.selected.emit(false);
     } else {
       console.log(`reserve ${this.hour().begin}-${this.hour().end}`);
       this.hour().selectedBy = this.user();
+      this.selected.emit(true);
     }
   }
 }
