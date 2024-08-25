@@ -35,7 +35,7 @@ export class SignalRService {
       'ReservationAdded',
       (reservationEntry: ReservationEntry) => {
         console.log(
-          `User: ${reservationEntry.name}, Time: ${reservationEntry.timestamp}`
+          `User: ${reservationEntry.name}`
         );
         this.reservationEntries.update((reservationEntries) => [
           ...reservationEntries,

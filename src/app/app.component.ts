@@ -58,29 +58,14 @@ export class AppComponent implements OnDestroy, OnInit {
     this.signalRService.startConnection();
     this.signalRService.addDataListener();
 
-    this.reservationEntries = this.signalRService.getMessages(); // Use the signal from the service
+    this.reservationEntries = this.signalRService.getMessages(); 
   }
   onHourSelected($event: boolean, hour: hour) {
     if ($event) {
-      this.addReservation(hour.id);
+      this.signalRService.addReservation({id: hour.id, name: this.username(), device: 'Machine 1'});
     } else {
-      this.eventText = 'Hour unselected';
+      this.signalRService.deleteReservation({id: hour.id, name: this.username(), device: 'Machine 1'});
     }
-  }
-  addReservation(hour: number) {
-
-    const reservation = {
-      id: hour,
-      name: this.username(),
-      timestamp: new Date(),
-      tags: ['Machine 1'],
-    };
-
-    this.signalRService.addReservation(reservation);
-  }
-
-  deleteReservation(reservation: ReservationEntry) {
-    this.signalRService.deleteReservation(reservation);
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {
