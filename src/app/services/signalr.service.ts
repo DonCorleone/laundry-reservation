@@ -15,7 +15,7 @@ export class SignalRService {
   constructor(private httpClient: HttpClient) {
     // Add custom parameters to the connection URL
     const customParams = {
-      machineid: 'Machine 1',
+      machineid: 'M-1',
     };
     const queryString = new URLSearchParams(customParams).toString();
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -35,7 +35,20 @@ export class SignalRService {
       'ReservationAdded',
       (reservationEntry: ReservationEntry) => {
         console.log(
-          `User: ${reservationEntry.name}`
+          `Reservation with id: ${reservationEntry.id} has been added`
+        );
+        this.reservationEntries.update((reservationEntries) => [
+          ...reservationEntries,
+          reservationEntry,
+        ]);
+        // expose the message to the UI
+      }
+    );
+    this.hubConnection.on(
+      'ReservationUpdated',
+      (reservationEntry: ReservationEntry) => {
+        console.log(
+          `Reservation with id: ${reservationEntry.id} has been updated`
         );
         this.reservationEntries.update((reservationEntries) => [
           ...reservationEntries,
@@ -46,7 +59,7 @@ export class SignalRService {
     );
     this.hubConnection.on(
       'ReservationDeleted',
-      (reservationId: number) => {
+      (reservationId: string) => {
         console.log(`Reservation with id: ${reservationId} has been deleted`);
         this.reservationEntries.update((reservationEntries) =>
           reservationEntries.filter((entry) => entry.id !== reservationId)

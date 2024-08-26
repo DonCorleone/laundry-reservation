@@ -1,5 +1,5 @@
 export interface hour {
-  id: number;
+  id: string;
   selectedBy: string;
   begin: Date;
   end: Date;

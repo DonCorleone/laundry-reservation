@@ -60,11 +60,12 @@ export class AppComponent implements OnDestroy, OnInit {
 
     this.reservationEntries = this.signalRService.getMessages(); 
   }
-  onHourSelected($event: boolean, hour: hour) {
+
+  onHourSelected($event: boolean, tile: Tile) {
     if ($event) {
-      this.signalRService.addReservation({id: hour.id, name: this.username(), device: 'Machine 1'});
+      this.signalRService.addReservation({id: tile.id, name: this.username(), date:tile.hour.begin.toUTCString(), deviceId: tile.machine});
     } else {
-      this.signalRService.deleteReservation({id: hour.id, name: this.username(), device: 'Machine 1'});
+      this.signalRService.deleteReservation({id: tile.id, name: this.username(), date:tile.hour.begin.toUTCString(), deviceId: tile.machine});
     }
   }
 

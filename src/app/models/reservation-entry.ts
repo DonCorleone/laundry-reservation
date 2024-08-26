@@ -1,6 +1,7 @@
 // Define the ReservationEntry interface
 export interface ReservationEntry {
-  id: number;
+  id: string; // Unique identifier
+  date: string;
   name: string;
-  device: string;
+  deviceId: string;
 }

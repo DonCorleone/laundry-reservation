@@ -36,7 +36,7 @@ export class DayService implements OnDestroy {
   constructor(private dateSelectionService: DateSelectorService) {
     for (let i = 1; i <= 4; i++) {
       const m: machine = {
-        name: `M ${i}`,
+        name: `M-${i}`,
       };
       this.machines.push(m);
     }
@@ -45,7 +45,7 @@ export class DayService implements OnDestroy {
       (selectedDate) => {
 
         const tiles = [];
-        const selectedDateStr = selectedDate.toDateString();
+        const selectedDateStr = this.calculateNumberFromDate(selectedDate).toString();
         tiles.push({
           id: `${selectedDateStr}-x-x`,
           machine: null,
@@ -61,7 +61,7 @@ export class DayService implements OnDestroy {
         this.machines.forEach((machine) => {
           tiles.push({
             id: `${selectedDateStr}-x-${machine.name}`,
-            machine,
+            machine : machine.name,
             text: machine.name,
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
@@ -72,14 +72,13 @@ export class DayService implements OnDestroy {
           });
         });
 
-        const hours = this.getHours(selectedDate);
+        const hours = this.getHours(selectedDate, selectedDateStr);
 
         hours.forEach((hour) => {
-          const hourStr = hour.begin.toTimeString();
           tiles.push({
-            id: `${selectedDateStr}-${hourStr}-x`,
-            machine: null,
-            text: hourStr,
+            id: `${hour.id}-x`,
+            machine: hour.begin.toString,
+            text: hour.id,
             cellType: cellType.ROW_HEADER,
             cols: 2,
             rows: 1,
@@ -89,8 +88,8 @@ export class DayService implements OnDestroy {
           });
           this.machines.forEach((machine) => {
             tiles.push({
-              id: `${selectedDateStr}-${hourStr}-${machine.name}`,
-              machine,
+              id: `${hour.id}-${machine.name}`,
+              machine: machine.name,
               text: null,
               cellType: cellType.HOUR,
               cols: 1,
@@ -113,22 +112,14 @@ export class DayService implements OnDestroy {
     const year = date.getFullYear();
     const month = date.getMonth() + 1; // Months are zero-based in JavaScript
     const day = date.getDate();
-    let hour = date.getHours();
-    // for test cases, generate a random number between 0 and 24
-    hour = Math.floor(Math.random() * 24);
-
-    let minute = date.getMinutes();
-    // for test cases, generate a random number between 0 and 59
-    minute = Math.floor(Math.random() * 59);
-
     // Example formula: weighted sum of components
     const calculatedNumber =
-      year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
+      year * 10000 + month * 100 + day;
 
     return calculatedNumber;
   }
 
-  getHours(date: Date): hour[] {
+  getHours(date: Date, dateString: String): hour[] {
     const hours = [];
     for (let i = 6; i < 22; i++) {
       const begin = new Date(date);
@@ -140,7 +131,7 @@ export class DayService implements OnDestroy {
       end.setMinutes(59);
 
       const h: hour = {
-        id: this.calculateNumberFromDate(begin),
+        id: dateString + '-' + i,
         begin,
         end,
         selectedBy: ''
