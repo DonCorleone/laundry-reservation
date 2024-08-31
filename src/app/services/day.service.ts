@@ -1,7 +1,9 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { DateSelectorService } from './date-selector.service';
-import { hour } from '../models/hour';
-import { Subject, Subscription } from 'rxjs';
+import {Injectable, OnDestroy} from '@angular/core';
+import {DateSelectorService} from './date-selector.service';
+import {hour} from '../models/hour';
+import {Subject, Subscription} from 'rxjs';
+import {SignalRService} from "./signalr.service";
+
 export interface Tile {
   id: string;
   machine: string;
@@ -13,6 +15,7 @@ export interface Tile {
   header: boolean;
   hour: hour;
 }
+
 export interface machine {
   name: string;
 }
@@ -33,7 +36,10 @@ export class DayService implements OnDestroy {
   machines: machine[] = [];
   tiles$ = new Subject<Tile[]>();
 
-  constructor(private dateSelectionService: DateSelectorService) {
+  reservations = this.signalRService.getMessages()
+
+  constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService) {
+
     for (let i = 1; i <= 4; i++) {
       const m: machine = {
         name: `M-${i}`,
@@ -41,11 +47,16 @@ export class DayService implements OnDestroy {
       this.machines.push(m);
     }
 
-    this.subscription = this.dateSelectionService.selectedDate.subscribe(
+    this.subscription = this.dateSelectionService.selectedDate$.subscribe(
       (selectedDate) => {
 
+        if (!selectedDate) {
+          return;
+        }
+
         const tiles = [];
-        const selectedDateStr = this.calculateNumberFromDate(selectedDate).toString();
+
+        const selectedDateStr = this.formatToISODate(selectedDate);
         tiles.push({
           id: `${selectedDateStr}-x-x`,
           machine: null,
@@ -61,7 +72,7 @@ export class DayService implements OnDestroy {
         this.machines.forEach((machine) => {
           tiles.push({
             id: `${selectedDateStr}-x-${machine.name}`,
-            machine : machine.name,
+            machine: machine.name,
             text: machine.name,
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
@@ -72,12 +83,12 @@ export class DayService implements OnDestroy {
           });
         });
 
-        const hours = this.getHours(selectedDate, selectedDateStr);
+        const hours = this.getHours(selectedDate);
 
         hours.forEach((hour) => {
           tiles.push({
             id: `${hour.id}-x`,
-            machine: hour.begin.toString,
+            machine: null,
             text: hour.id,
             cellType: cellType.ROW_HEADER,
             cols: 2,
@@ -87,6 +98,10 @@ export class DayService implements OnDestroy {
             hour: hour,
           });
           this.machines.forEach((machine) => {
+            const id = `${hour.id}-${machine.name}`;
+            if (this.reservations().some((r) => r.id === id)) {
+              hour.selectedBy = this.reservations().find((r) => r.id === id).name;
+            }
             tiles.push({
               id: `${hour.id}-${machine.name}`,
               machine: machine.name,
@@ -107,19 +122,11 @@ export class DayService implements OnDestroy {
       }
     );
   }
+
   // New function to calculate a number based on date and time
-  calculateNumberFromDate(date: Date): number {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // Months are zero-based in JavaScript
-    const day = date.getDate();
-    // Example formula: weighted sum of components
-    const calculatedNumber =
-      year * 10000 + month * 100 + day;
 
-    return calculatedNumber;
-  }
 
-  getHours(date: Date, dateString: String): hour[] {
+  getHours(date: Date): hour[] {
     const hours = [];
     for (let i = 6; i < 22; i++) {
       const begin = new Date(date);
@@ -131,14 +138,21 @@ export class DayService implements OnDestroy {
       end.setMinutes(59);
 
       const h: hour = {
-        id: dateString + '-' + i,
+        id: begin.toISOString(),
         begin,
         end,
-        selectedBy: ''
+        selectedBy: '',
       };
       hours.push(h);
     }
     return hours;
+  }
+
+  // Utility function to format date to ISO string with time set to 00:00:00.000
+  formatToISODate(date: Date): string {
+    const formattedDate = new Date(date);
+    formattedDate.setUTCHours(0, 0, 0, 0);
+    return formattedDate.toISOString();
   }
 
   ngOnDestroy(): void {

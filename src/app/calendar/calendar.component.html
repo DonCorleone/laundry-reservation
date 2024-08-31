@@ -1,3 +1,7 @@
 <mat-card class="w-full md:w-80">
-  <mat-calendar (selectedChange)="selectionFinished($event)" [(selected)]="selected"></mat-calendar>
+  <mat-calendar
+    [(selected)]="selected"
+    [dateClass]="dateClass"
+
+    (selectedChange)="selectionFinished($event)" ></mat-calendar>
 </mat-card>

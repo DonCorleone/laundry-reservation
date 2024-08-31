@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
-import { DateSelectorService } from "../services/date-selector.service";
-import { MatCardModule } from "@angular/material/card";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material/core";
+import {Component, input, OnInit} from '@angular/core';
+import {DateSelectorService} from "../services/date-selector.service";
+import {MatCardModule} from "@angular/material/card";
+import {MatCalendarCellClassFunction, MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
+import {ReservationService} from "../services/reservation.service";
+import {SignalRService} from "../services/signalr.service";
 
 @Component({
   selector: 'app-calendar',
@@ -12,11 +14,41 @@ import { MatNativeDateModule } from "@angular/material/core";
 })
 export class CalendarComponent {
   selected: Date | null;
+  // save all dates that have reservation with a counter for the occurences
+  hourPerDate = input<Map<string, number>>();
 
-  constructor(private dateSelectorService: DateSelectorService) {
+  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService) {
+
   }
+
+  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+    // Only apply to month view
+    if (view === 'month') {
+      cellDate.setHours(0, 0, 0, 0);
+      // if date has a reservation, apply special-date class
+      // if it has 10 or more reservations, apply special-date-max class
+      // if it has 20 or more reservations, apply special-date-full class
+      const hourPerDate = this.signalRService.hourPerDate();
+      if (hourPerDate.has(cellDate.toISOString())) {
+        if (hourPerDate.get(cellDate.toISOString()) >= 20) {
+          return 'reserved reserved-full';
+        } else if (hourPerDate.get(cellDate.toISOString()) >= 10) {
+          return 'reserved reserved-max';
+        }
+        return 'reserved';
+      }
+      //
+    }
+    return '';
+  };
 
   selectionFinished(event: Date | null) {
-    this.dateSelectorService.selectedDate.next(new Date(event));
+    this.dateSelectorService.setSelectedDate(new Date(event));
   }
+  // Utility function to format date to ISO string with time set to 00:00:00.000
+/*  formatToISODate(date: Date): string {
+    const formattedDate = new Date(date);
+    formattedDate.setUTCHours(0, 0, 0, 0);
+    return formattedDate.toISOString();
+  }*/
 }

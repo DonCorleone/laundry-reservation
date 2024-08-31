@@ -1,18 +1,19 @@
-import { Component, OnDestroy, OnInit, Signal, signal } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { DayService, cellType, Tile } from './services/day.service';
-import { hour } from './models/hour';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { CalendarComponent } from './calendar/calendar.component';
-import { ScrollManagerDirective } from './directives/scroll-manager.directive';
-import { CommonModule } from '@angular/common';
-import { HourHeaderComponent } from './hour-header/hour-header.component';
-import { HourComponent } from './hour/hour.component';
-import { ScrollSectionDirective } from './directives/scroll-section.directive';
-import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
-import { UserComponent } from './user/user.component';
-import { SignalRService } from './services/signalr.service';
-import { ReservationEntry } from './models/reservation-entry';
+import {Component, OnDestroy, OnInit, Signal, signal} from '@angular/core';
+import {map, Subscription} from 'rxjs';
+import {DayService, cellType, Tile} from './services/day.service';
+import {hour} from './models/hour';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {CalendarComponent} from './calendar/calendar.component';
+import {ScrollManagerDirective} from './directives/scroll-manager.directive';
+import {CommonModule} from '@angular/common';
+import {HourHeaderComponent} from './hour-header/hour-header.component';
+import {HourComponent} from './hour/hour.component';
+import {ScrollSectionDirective} from './directives/scroll-section.directive';
+import {ScrollAnchorDirective} from './directives/scroll-anchor.directive';
+import {UserComponent} from './user/user.component';
+import {SignalRService} from './services/signalr.service';
+import {ReservationEntry} from './models/reservation-entry';
+import {ReservationService} from "./services/reservation.service";
 
 @Component({
   selector: 'app-root',
@@ -33,7 +34,6 @@ import { ReservationEntry } from './models/reservation-entry';
 })
 export class AppComponent implements OnDestroy, OnInit {
 
-  reservationEntries!: Signal<ReservationEntry[]>; // Signal to store messages
   title = 'laundry';
   readonly CellType = cellType;
 
@@ -45,9 +45,14 @@ export class AppComponent implements OnDestroy, OnInit {
 
   username = signal('');
 
+  hourPerDate = this.signalRService.getHourPerDate();
+  public reservationEntries: ReservationEntry[];
+
+
   constructor(
     private dayService: DayService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    protected reservationService: ReservationService
   ) {
     this.subscription = this.dayService.tiles$.subscribe(
       (x) => (this.tiles = x)
@@ -55,17 +60,29 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
+   this.reservationService.getReservations().subscribe((reservations) => {
+      this.signalRService.setMessages(reservations);
+     this.reservationEntries = reservations;
+    });
     this.signalRService.startConnection();
     this.signalRService.addDataListener();
-
-    this.reservationEntries = this.signalRService.getMessages(); 
   }
 
   onHourSelected($event: boolean, tile: Tile) {
     if ($event) {
-      this.signalRService.addReservation({id: tile.id, name: this.username(), date:tile.hour.begin.toUTCString(), deviceId: tile.machine});
+      this.reservationService.addReservation({
+        id: tile.id,
+        name: this.username(),
+        date: tile.hour.begin.toUTCString(),
+        deviceId: tile.machine
+      });
     } else {
-      this.signalRService.deleteReservation({id: tile.id, name: this.username(), date:tile.hour.begin.toUTCString(), deviceId: tile.machine});
+      this.reservationService.deleteReservation({
+        id: tile.id,
+        name: this.username(),
+        date: tile.hour.begin.toUTCString(),
+        deviceId: tile.machine
+      });
     }
   }
 

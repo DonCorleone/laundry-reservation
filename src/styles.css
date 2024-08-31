@@ -9,3 +9,17 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.reserved {
+  background-color: #943a4d !important;
+  opacity: 30%;
+}
+.reserved-max {
+  opacity: 70% !important;
+}
+.reserved-full {
+  opacity: 100% !important;
+}
+.mat-calendar-body-selected {
+  background-color: #428f70 !important;
+}

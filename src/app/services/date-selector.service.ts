@@ -4,5 +4,10 @@ import { BehaviorSubject} from 'rxjs'
   providedIn: 'root'
 })
 export class DateSelectorService {
-  selectedDate = new BehaviorSubject<Date>(new Date());
+  private _selectedDate = new BehaviorSubject<Date | null>(null);
+  selectedDate$ = this._selectedDate.asObservable();
+
+  setSelectedDate(date: Date): void {
+    this._selectedDate.next(date);
+  }
 }
