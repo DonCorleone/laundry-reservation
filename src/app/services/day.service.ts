@@ -125,7 +125,11 @@ export class DayService implements OnDestroy {
       if (!reservation) {
         return;
       }
-      this.updateTile(reservation.id, reservation.name);
+
+      const [key, value] = Object.entries(reservation)[0];
+      console.log(`Reservation ID: ${key}, User: ${value}`);
+
+      this.updateTile(key, value);
     });
   }
 

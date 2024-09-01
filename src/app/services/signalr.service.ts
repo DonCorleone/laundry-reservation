@@ -2,7 +2,6 @@
 import {Injectable, Signal, signal} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {ReservationEntry} from '../models/reservation-entry';
-import {DayService} from "./day.service";
 import {BehaviorSubject, Observable, of} from "rxjs";
 
 @Injectable({
@@ -14,8 +13,8 @@ export class SignalRService {
   private baseUrlLocal = 'http://localhost:5263';
   private baseUrlRender = 'https://laundrysignalr-init.onrender.com/api/ReservationEntries';
   hourPerDate = signal<Map<string, number>>(new Map<string, number>());
-  updatedReservation = new BehaviorSubject<ReservationEntry | null>(null);
-  updatedReservation$: Observable<ReservationEntry | null> = this.updatedReservation.asObservable();
+  updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
+  updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
 
   constructor() {
     const customParams = {
@@ -51,7 +50,7 @@ export class SignalRService {
           ...reservationEntries,
           reservationEntry,
         ]);
-        this.updatedReservation.next(reservationEntry);
+        this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
       }
     );
     this.hubConnection.on(
@@ -64,16 +63,21 @@ export class SignalRService {
           ...reservationEntries,
           reservationEntry,
         ]);
-        this.updatedReservation.next(reservationEntry);
+        this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
       }
     );
     this.hubConnection.on(
       'ReservationDeleted',
       (reservationId: string) => {
         console.log(`Reservation with id: ${reservationId} has been deleted`);
+        const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
+
         this.reservationEntries.update((reservationEntries) =>
+          // find the reservation with the id and remove it
           reservationEntries.filter((entry) => entry.id !== reservationId)
         );
+
+        this.updatedReservation.next({ [reservationEntry.id]: "" });
       }
     );
     this.hubConnection.on(

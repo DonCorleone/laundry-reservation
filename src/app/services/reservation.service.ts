@@ -36,7 +36,7 @@ export class ReservationService {
     const options = {
       body: reservationEntry,
     };
-    this.httpClient.delete<ReservationEntry>(`${this.baseUrlLocal}/api/ReservationEntries`, options).subscribe(reservationId => {
+    this.httpClient.delete<string>(`${this.baseUrlLocal}/api/ReservationEntries`, options).subscribe(reservationId => {
       console.log('Deleted reservation:', reservationId);
     });
   }
