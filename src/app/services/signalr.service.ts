@@ -1,9 +1,9 @@
 // src/app/services/signalr.service.ts
 import {Injectable, Signal, signal} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import {HttpClient, HttpRequest} from '@angular/common/http';
 import {ReservationEntry} from '../models/reservation-entry';
-import {ReservationService} from "./reservation.service";
+import {DayService} from "./day.service";
+import {BehaviorSubject, Observable, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,8 @@ export class SignalRService {
   private baseUrlLocal = 'http://localhost:5263';
   private baseUrlRender = 'https://laundrysignalr-init.onrender.com/api/ReservationEntries';
   hourPerDate = signal<Map<string, number>>(new Map<string, number>());
+  updatedReservation = new BehaviorSubject<ReservationEntry | null>(null);
+  updatedReservation$: Observable<ReservationEntry | null> = this.updatedReservation.asObservable();
 
   constructor() {
     const customParams = {
@@ -49,7 +51,7 @@ export class SignalRService {
           ...reservationEntries,
           reservationEntry,
         ]);
-        // expose the message to the UI
+        this.updatedReservation.next(reservationEntry);
       }
     );
     this.hubConnection.on(
@@ -62,7 +64,7 @@ export class SignalRService {
           ...reservationEntries,
           reservationEntry,
         ]);
-        // expose the message to the UI
+        this.updatedReservation.next(reservationEntry);
       }
     );
     this.hubConnection.on(
@@ -77,8 +79,9 @@ export class SignalRService {
     this.hubConnection.on(
       'ReservationsLoaded',
       (reservations: ReservationEntry[]) => {
-        console.log(`reservations loded`);
-        this.reservationEntries.update((reservationEntries) => (reservationEntries) = reservations);
+        console.log(`reservations loaded`);
+        this.reservationEntries.update((reservationEntries) =>
+          (reservationEntries) = reservations);
       }
     );
   }

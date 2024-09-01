@@ -1,8 +1,10 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
 import {hour} from '../models/hour';
-import {Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, Subject, Subscription, take, takeUntil} from 'rxjs';
 import {SignalRService} from "./signalr.service";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {ReservationEntry} from "../models/reservation-entry";
 
 export interface Tile {
   id: string;
@@ -34,7 +36,8 @@ export class DayService implements OnDestroy {
   private subscription: Subscription;
 
   machines: machine[] = [];
-  tiles$ = new Subject<Tile[]>();
+  tiles = new BehaviorSubject<Tile[] | null>(null);
+  tiles$: Observable<Tile[] | null> = this.tiles.asObservable();
 
   reservations = this.signalRService.getMessages()
 
@@ -98,12 +101,14 @@ export class DayService implements OnDestroy {
             hour: hour,
           });
           this.machines.forEach((machine) => {
-            const id = `${hour.id}-${machine.name}`;
+            // clone the hour object to avoid reference issues
+            const hourClone = structuredClone(hour);
+            const id = `${hourClone.id}-${machine.name}`;
             if (this.reservations().some((r) => r.id === id)) {
-              hour.selectedBy = this.reservations().find((r) => r.id === id).name;
+              hourClone.selectedBy = this.reservations().find((r) => r.id === id).name;
             }
             tiles.push({
-              id: `${hour.id}-${machine.name}`,
+              id,
               machine: machine.name,
               text: null,
               cellType: cellType.HOUR,
@@ -113,18 +118,33 @@ export class DayService implements OnDestroy {
               header: false,
               hour: {
                 ...
-                  hour
+                  hourClone,
               },
             });
           });
         });
-        this.tiles$.next(tiles);
+        this.tiles.next(tiles);
       }
     );
+
+    this.signalRService.updatedReservation$.subscribe((reservation) => {
+      if (!reservation) {
+        return;
+      }
+      this.updateTile(reservation.id, reservation.name);
+    } );
   }
 
   // New function to calculate a number based on date and time
-
+  updateTile(reservationId: string, newUser: string) {
+    this.tiles$.subscribe((tiles) => {
+      tiles.forEach((tile) => {
+        if (tile.id === reservationId) {
+          tile.hour.selectedBy = newUser;
+        }
+      });
+    });
+  }
 
   getHours(date: Date): hour[] {
     const hours = [];
