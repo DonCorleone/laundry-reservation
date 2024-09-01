@@ -1,10 +1,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
 import {hour} from '../models/hour';
-import {BehaviorSubject, Observable, Subject, Subscription, take, takeUntil} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {SignalRService} from "./signalr.service";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {ReservationEntry} from "../models/reservation-entry";
 
 export interface Tile {
   id: string;
@@ -63,11 +61,10 @@ export class DayService implements OnDestroy {
         tiles.push({
           id: `${selectedDateStr}-x-x`,
           machine: null,
-          text: selectedDateStr,
+          text: selectedDate.toLocaleDateString('de-CH', {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}),
           cellType: cellType.X,
           cols: 2,
           rows: 2,
-          color: 'lightblue',
           header: true,
           hour: null,
         });
@@ -80,7 +77,6 @@ export class DayService implements OnDestroy {
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
             rows: 2,
-            color: 'lightgreen',
             header: true,
             hour: null,
           });
@@ -96,7 +92,6 @@ export class DayService implements OnDestroy {
             cellType: cellType.ROW_HEADER,
             cols: 2,
             rows: 1,
-            color: 'lightpink',
             header: true,
             hour: hour,
           });
@@ -114,7 +109,6 @@ export class DayService implements OnDestroy {
               cellType: cellType.HOUR,
               cols: 1,
               rows: 1,
-              color: 'lightyellow',
               header: false,
               hour: {
                 ...
@@ -132,7 +126,7 @@ export class DayService implements OnDestroy {
         return;
       }
       this.updateTile(reservation.id, reservation.name);
-    } );
+    });
   }
 
   // New function to calculate a number based on date and time
