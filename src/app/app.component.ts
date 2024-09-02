@@ -87,21 +87,21 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {
-    this.tiles
+/*    this.tiles
       .filter((t) => t.hour?.begin.getHours() == hour.begin.getHours())
       .forEach((t) => {
         t.hour.selectedBy = this.username();
         console.log(hour.end, hour.begin, hour.selectedBy);
-      });
+      });*/
   }
 
   clickMachineColumn($event: MouseEvent, machine: string) {
-    this.tiles
+/*    this.tiles
       .filter((t) => t.hour && t.machine == machine)
       .forEach((t) => {
         t.hour.selectedBy = this.username();
         console.log(t.hour.end, t.hour.begin, t.hour.selectedBy);
-      });
+      });*/
   }
 
   onUsernameChange(newUsername: string) {
