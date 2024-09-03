@@ -87,21 +87,53 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {
-/*    this.tiles
-      .filter((t) => t.hour?.begin.getHours() == hour.begin.getHours())
-      .forEach((t) => {
-        t.hour.selectedBy = this.username();
-        console.log(hour.end, hour.begin, hour.selectedBy);
-      });*/
+    // count all tiles with the same hour and find one which is not free
+    // if there is no such tile, then all tiles are free
+    // if there is such tile, then all tiles are not free
+    const notFree = this.tiles
+      .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
+      .some((t) => t.hour.selectedBy != "");
+
+    if (!notFree) {
+      this.tiles
+        .filter((t) => t.cellType == cellType.HOUR &&  t.hour && t.hour.begin.getHours() == hour.begin.getHours())
+        .forEach((tile) => {
+          this.reservationService.addReservation({
+            id: tile.id,
+            name: this.username(),
+            date: tile.hour.begin.toUTCString(),
+            deviceId: tile.machine
+          });
+        });
+    } else {
+      // Show message to the user
+      window.alert('This hour has already any reservations');
+    }
   }
 
   clickMachineColumn($event: MouseEvent, machine: string) {
-/*    this.tiles
-      .filter((t) => t.hour && t.machine == machine)
-      .forEach((t) => {
-        t.hour.selectedBy = this.username();
-        console.log(t.hour.end, t.hour.begin, t.hour.selectedBy);
-      });*/
+    // count all tiles with the same machine and find one which is not free
+    // if there is no such tile, then all tiles are free
+    // if there is such tile, then all tiles are not free
+    const notFree = this.tiles
+      .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
+      .some((t) => t.hour?.selectedBy != "");
+
+    if (!notFree) {
+      this.tiles
+        .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
+        .forEach((tile) => {
+          this.reservationService.addReservation({
+            id: tile.id,
+            name: this.username(),
+            date: tile.hour.begin.toUTCString(),
+            deviceId: tile.machine
+          });
+        });
+    } else {
+      // Show message to the user
+      window.alert('This machine has already any reservations');
+    }
   }
 
   onUsernameChange(newUsername: string) {

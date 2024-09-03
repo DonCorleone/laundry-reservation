@@ -1,6 +1,6 @@
 <div class="bg-gray-700 w-full" appScrollManager>
   <app-user (value)="onUsernameChange($event)"></app-user>
-  <app-calendar *ngIf="reservationEntries"
+  <app-calendar *ngIf="username()"
     #calendarElement
     appScrollSection="calendar"
     appScrollAnchor="timeTable"
