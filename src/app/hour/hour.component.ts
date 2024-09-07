@@ -30,11 +30,13 @@ export class HourComponent {
 
   onTap(evt: any) {
     if (this.hour().selectedBy) {
-      console.log(`unreserve ${this.hour().begin}-${this.hour().end}`);
+      if (this.hour().selectedBy != this.user()) {
+        window.alert('You can only delete your own reservations.');
+        return;
+      }
       this.hour().selectedBy = '';
       this.selected.emit(false);
     } else {
-      console.log(`reserve ${this.hour().begin}-${this.hour().end}`);
       this.hour().selectedBy = this.user();
       this.selected.emit(true);
     }

@@ -69,32 +69,27 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   onHourSelected($event: boolean, tile: Tile) {
+    const reservation = {
+      id: tile.id,
+      name: this.username(),
+      date: tile.hour.begin.toUTCString(),
+      deviceId: tile.machine
+    };
     if ($event) {
-      this.reservationService.addReservation({
-        id: tile.id,
-        name: this.username(),
-        date: tile.hour.begin.toUTCString(),
-        deviceId: tile.machine
-      });
+      this.reservationService.addReservation(reservation);
     } else {
-      this.reservationService.deleteReservation({
-        id: tile.id,
-        name: this.username(),
-        date: tile.hour.begin.toUTCString(),
-        deviceId: tile.machine
-      });
+      this.reservationService.deleteReservation(reservation);
     }
   }
 
   clickHourHeader($event: MouseEvent, hour: hour) {
-    // count all tiles with the same hour and find one which is not free
-    // if there is no such tile, then all tiles are free
-    // if there is such tile, then all tiles are not free
-    const notFree = this.tiles
-      .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
-      .some((t) => t.hour.selectedBy != "");
 
-    if (!notFree) {
+    // verify if all tiles with the same hour are free or mine
+    const isFree = this.tiles
+      .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
+      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.username());
+
+    if (isFree) {
       this.tiles
         .filter((t) => t.cellType == cellType.HOUR &&  t.hour && t.hour.begin.getHours() == hour.begin.getHours())
         .forEach((tile) => {
@@ -112,14 +107,11 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   clickMachineColumn($event: MouseEvent, machine: string) {
-    // count all tiles with the same machine and find one which is not free
-    // if there is no such tile, then all tiles are free
-    // if there is such tile, then all tiles are not free
-    const notFree = this.tiles
+    const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
-      .some((t) => t.hour?.selectedBy != "");
+      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.username());
 
-    if (!notFree) {
+    if (isFree) {
       this.tiles
         .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
         .forEach((tile) => {
