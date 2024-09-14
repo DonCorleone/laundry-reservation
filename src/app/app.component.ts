@@ -14,6 +14,7 @@ import {UserComponent} from './user/user.component';
 import {SignalRService} from './services/signalr.service';
 import {ReservationEntry} from './models/reservation-entry';
 import {ReservationService} from "./services/reservation.service";
+import {AuthComponent} from "./auth/auth.component";
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ import {ReservationService} from "./services/reservation.service";
     ScrollAnchorDirective,
     ScrollManagerDirective,
     UserComponent,
+    AuthComponent,
   ],
 })
 export class AppComponent implements OnDestroy, OnInit {
