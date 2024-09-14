@@ -45,7 +45,7 @@
       } @else if (tile.cellType == CellType.HOUR) {
       <app-hour
         [hour]="tile.hour"
-        [user]="username()"
+        [user]="laundryUser()"
         (selected)="onHourSelected($event, tile)"
         class="w-full h-full"
       >

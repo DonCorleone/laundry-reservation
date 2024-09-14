@@ -7,6 +7,7 @@ import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {MatFabButton} from "@angular/material/button";
 import {MatToolbar} from "@angular/material/toolbar";
+import {laundryUser} from "../models/user";
 
 @Component({
   selector: 'app-auth',
@@ -41,7 +42,7 @@ import {MatToolbar} from "@angular/material/toolbar";
 })
 export class AuthComponent implements OnInit {
   user: User | null = null;
-  value = output<string>();
+  value = output<laundryUser>();
 
   constructor(private netlifyIdentityService: NetlifyIdentityService) {
   }
@@ -54,12 +55,18 @@ export class AuthComponent implements OnInit {
       // If the user is not logged in, subscribe to login events
       this.openIdentityModal();
     } else {
-      this.value.emit(this.user.email);
+      this.value.emit({
+        ... this.user,
+        avatar: this.createUserAvatar(this.user)
+      });
     }
     // Subscribe to login/logout events
     this.netlifyIdentityService.onLogin((user) => {
       this.user = user;
-      this.value.emit(user.email);
+      this.value.emit({
+        ... this.user,
+        avatar: this.createUserAvatar(this.user)
+      });
     });
 
     this.netlifyIdentityService.onLogout(() => {
