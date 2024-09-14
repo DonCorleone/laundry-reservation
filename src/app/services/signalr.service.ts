@@ -12,7 +12,7 @@ export class SignalRService {
   private reservationEntries = signal<ReservationEntry[]>([]); // Signal to store messages
   private baseUrlLocal = 'http://localhost:5263';
   private baseUrlRender = 'https://laundrysignalr-init.onrender.com/api/ReservationEntries';
-  hourPerDate = signal<Map<string, number>>(new Map<string, number>());
+  hourPerDate = signal<Map<string, number>>(null);
   updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
 
@@ -102,7 +102,10 @@ export class SignalRService {
     reservationEntries.forEach((reservation) => {
       const date = new Date(reservation.date);
       date.setHours(0, 0, 0, 0);
-      if (this.hourPerDate().has(date.toISOString())) {
+      if (!this.hourPerDate() ) {
+        this.hourPerDate.set(new Map());
+      }
+      if (this.hourPerDate()?.has(date.toISOString())) {
         this.hourPerDate().set(date.toISOString(), this.hourPerDate().get(date.toISOString())! + 1);
       } else {
         this.hourPerDate().set(date.toISOString(), 1);

@@ -1,7 +1,7 @@
-<app-auth></app-auth>
+
 <div class="bg-gray-700 w-full" appScrollManager>
-  <app-user (value)="onUsernameChange($event)"></app-user>
-  <app-calendar *ngIf="username()"
+  <app-auth (value)="onUsernameChange($event)"></app-auth>
+  <app-calendar *ngIf=" signalRService.hourPerDate()"
     #calendarElement
     appScrollSection="calendar"
     appScrollAnchor="timeTable"

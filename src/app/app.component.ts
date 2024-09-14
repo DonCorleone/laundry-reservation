@@ -53,7 +53,7 @@ export class AppComponent implements OnDestroy, OnInit {
 
   constructor(
     private dayService: DayService,
-    private signalRService: SignalRService,
+    protected signalRService: SignalRService,
     protected reservationService: ReservationService
   ) {
     this.subscription = this.dayService.tiles$.subscribe(

@@ -14,8 +14,7 @@ import {SignalRService} from "../services/signalr.service";
 })
 export class CalendarComponent {
   selected: Date | null;
-  // save all dates that have reservation with a counter for the occurences
-  hourPerDate = input<Map<string, number>>();
+
 
   constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService) {
 
