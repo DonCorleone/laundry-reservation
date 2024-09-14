@@ -1,9 +1,0 @@
-@if(hour){
-  <div
-    [class]="hour.selectedBy ? 'bg-rouge-rubia text-white' : 'bg-vert-clair text-black'"
-    class="h-full text-center flex justify-center items-center"
-    (tap)="onTap($event)"
-  >
-    {{ hour.selectedBy }}
-  </div>
-}
