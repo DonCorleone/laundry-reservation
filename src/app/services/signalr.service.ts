@@ -99,6 +99,10 @@ export class SignalRService {
   }
 
   private populateHourPerDate(reservationEntries: ReservationEntry[]): void {
+    if (reservationEntries.length === 0) {
+      this.hourPerDate.set(new Map());
+      return;
+    }
     reservationEntries.forEach((reservation) => {
       const date = new Date(reservation.date);
       date.setHours(0, 0, 0, 0);
