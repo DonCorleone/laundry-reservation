@@ -6,8 +6,8 @@ import {ReservationEntry} from "../models/reservation-entry";
   providedIn: 'root'
 })
 export class ReservationService {
-  private baseUrlLocal = 'http://localhost:5263';
-  private baseUrlRender = 'https://laundrysignalr-init.onrender.com/api/Reservation';
+  // private baseUrlLocal = 'http://localhost:5263';
+  private baseUrlRender = 'https://laundrysignalr-init.onrender.com';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -20,12 +20,12 @@ export class ReservationService {
       customParams.machineids.map((id, index) => [`machineid${index}`, id])
     ).toString();
 
-    return this.httpClient.get<ReservationEntry[]>(`${this.baseUrlLocal}/api/ReservationEntries?${queryString}`);
+    return this.httpClient.get<ReservationEntry[]>(`${this.baseUrlRender}/api/ReservationEntries?${queryString}`);
   }
 
   public addReservation(reservationEntry: ReservationEntry) {
 
-    this.httpClient.post<ReservationEntry>(`${this.baseUrlLocal}/api/ReservationEntries`, reservationEntry).subscribe(reservation => {
+    this.httpClient.post<ReservationEntry>(`${this.baseUrlRender}/api/ReservationEntries`, reservationEntry).subscribe(reservation => {
       console.log('Updated reservation:', reservation);
     });
   }
@@ -36,7 +36,7 @@ export class ReservationService {
     const options = {
       body: reservationEntry,
     };
-    this.httpClient.delete<string>(`${this.baseUrlLocal}/api/ReservationEntries`, options).subscribe(reservationId => {
+    this.httpClient.delete<string>(`${this.baseUrlRender}/api/ReservationEntries`, options).subscribe(reservationId => {
       console.log('Deleted reservation:', reservationId);
     });
   }

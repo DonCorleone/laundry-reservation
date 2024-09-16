@@ -10,8 +10,8 @@ import {BehaviorSubject, Observable, of} from "rxjs";
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
   private reservationEntries = signal<ReservationEntry[]>([]); // Signal to store messages
-  private baseUrlLocal = 'http://localhost:5263';
-  private baseUrlRender = 'https://laundrysignalr-init.onrender.com/api/ReservationEntries';
+ // private baseUrlLocal = 'http://localhost:5263';
+  private baseUrlRender = 'https://laundrysignalr-init.onrender.com';
   hourPerDate = signal<Map<string, number>>(null);
   updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
@@ -26,7 +26,7 @@ export class SignalRService {
     ).toString();
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrlLocal}/hub?${queryString}`, {
+      .withUrl(`${this.baseUrlRender}/hub?${queryString}`, {
         withCredentials: true,
       })
       .build();
