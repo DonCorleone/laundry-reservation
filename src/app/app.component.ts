@@ -10,11 +10,11 @@ import {HourHeaderComponent} from './hour-header/hour-header.component';
 import {HourComponent} from './hour/hour.component';
 import {ScrollSectionDirective} from './directives/scroll-section.directive';
 import {ScrollAnchorDirective} from './directives/scroll-anchor.directive';
-import {UserComponent} from './user/user.component';
 import {SignalRService} from './services/signalr.service';
 import {ReservationEntry} from './models/reservation-entry';
 import {ReservationService} from "./services/reservation.service";
 import {AuthComponent} from "./auth/auth.component";
+import {laundryUser} from "./models/user";
 
 @Component({
   selector: 'app-root',
@@ -30,7 +30,6 @@ import {AuthComponent} from "./auth/auth.component";
     ScrollSectionDirective,
     ScrollAnchorDirective,
     ScrollManagerDirective,
-    UserComponent,
     AuthComponent,
   ],
 })
@@ -45,7 +44,7 @@ export class AppComponent implements OnDestroy, OnInit {
   eventText = '';
   private subscription: Subscription;
 
-  username = signal('');
+  laundryUser = signal<laundryUser>(null);
 
   hourPerDate = this.signalRService.getHourPerDate();
   public reservationEntries: ReservationEntry[];
@@ -53,7 +52,7 @@ export class AppComponent implements OnDestroy, OnInit {
 
   constructor(
     private dayService: DayService,
-    private signalRService: SignalRService,
+    protected signalRService: SignalRService,
     protected reservationService: ReservationService
   ) {
     this.subscription = this.dayService.tiles$.subscribe(
@@ -62,9 +61,9 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-   this.reservationService.getReservations().subscribe((reservations) => {
+    this.reservationService.getReservations().subscribe((reservations) => {
       this.signalRService.setMessages(reservations);
-     this.reservationEntries = reservations;
+      this.reservationEntries = reservations;
     });
     this.signalRService.startConnection();
     this.signalRService.addDataListener();
@@ -73,7 +72,7 @@ export class AppComponent implements OnDestroy, OnInit {
   onHourSelected($event: boolean, tile: Tile) {
     const reservation = {
       id: tile.id,
-      name: this.username(),
+      name: this.laundryUser().avatar,
       date: tile.hour.begin.toUTCString(),
       deviceId: tile.machine
     };
@@ -89,15 +88,15 @@ export class AppComponent implements OnDestroy, OnInit {
     // verify if all tiles with the same hour are free or mine
     const isFree = this.tiles
       .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.username());
+      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().avatar);
 
     if (isFree) {
       this.tiles
-        .filter((t) => t.cellType == cellType.HOUR &&  t.hour && t.hour.begin.getHours() == hour.begin.getHours())
+        .filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours())
         .forEach((tile) => {
           this.reservationService.addReservation({
             id: tile.id,
-            name: this.username(),
+            name: this.laundryUser().avatar,
             date: tile.hour.begin.toUTCString(),
             deviceId: tile.machine
           });
@@ -111,7 +110,7 @@ export class AppComponent implements OnDestroy, OnInit {
   clickMachineColumn($event: MouseEvent, machine: string) {
     const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.username());
+      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().avatar);
 
     if (isFree) {
       this.tiles
@@ -119,7 +118,7 @@ export class AppComponent implements OnDestroy, OnInit {
         .forEach((tile) => {
           this.reservationService.addReservation({
             id: tile.id,
-            name: this.username(),
+            name: this.laundryUser().avatar,
             date: tile.hour.begin.toUTCString(),
             deviceId: tile.machine
           });
@@ -130,8 +129,8 @@ export class AppComponent implements OnDestroy, OnInit {
     }
   }
 
-  onUsernameChange(newUsername: string) {
-    this.username.set(newUsername);
+  onUsernameChange(user: laundryUser) {
+    this.laundryUser.set(user);
   }
 
   ngOnDestroy(): void {
