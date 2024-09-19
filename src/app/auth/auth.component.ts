@@ -57,7 +57,7 @@ export class AuthComponent implements OnInit {
     } else {
       this.value.emit({
         ... this.user,
-        avatar: this.createUserAvatar(this.user)
+        key: this.createUserAvatar(this.user) + '|' + this.user.email
       });
     }
     // Subscribe to login/logout events
@@ -65,7 +65,7 @@ export class AuthComponent implements OnInit {
       this.user = user;
       this.value.emit({
         ... this.user,
-        avatar: this.createUserAvatar(this.user)
+        key: this.createUserAvatar(this.user) + '|' + this.user.email
       });
     });
 
