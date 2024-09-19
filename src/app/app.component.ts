@@ -74,7 +74,8 @@ export class AppComponent implements OnDestroy, OnInit {
       id: tile.id,
       name: this.laundryUser().key,
       date: tile.hour.begin.toUTCString(),
-      deviceId: tile.machine
+      deviceId: tile.machine,
+      connectionId: this.signalRService.connectionId
     };
     if ($event) {
       this.reservationService.addReservation(reservation);
@@ -98,8 +99,9 @@ export class AppComponent implements OnDestroy, OnInit {
             id: tile.id,
             name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
-            deviceId: tile.machine
-          });
+            deviceId: tile.machine,
+            connectionId: this.signalRService.connectionId
+          },);
         });
     } else {
       // Show message to the user
@@ -120,8 +122,9 @@ export class AppComponent implements OnDestroy, OnInit {
             id: tile.id,
             name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
-            deviceId: tile.machine
-          });
+            deviceId: tile.machine,
+            connectionId: this.signalRService.connectionId
+          },);
         });
     } else {
       // Show message to the user

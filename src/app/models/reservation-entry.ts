@@ -4,4 +4,5 @@ export interface ReservationEntry {
   date: string;
   name: string;
   deviceId: string;
+  connectionId: string;
 }

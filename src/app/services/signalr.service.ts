@@ -15,6 +15,7 @@ export class SignalRService {
   hourPerDate = signal<Map<string, number>>(null);
   updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
+  connectionId: string;
 
   constructor() {
     const customParams = {
@@ -35,8 +36,9 @@ export class SignalRService {
   startConnection(): void {
     this.hubConnection
       .start()
-      .then(() => console.log('Connection started'))
+      .then(() => this.connectionId = this.hubConnection.connectionId)
       .catch((err) => console.log('Error while starting connection: ' + err));
+
   }
 
   public addDataListener() {
