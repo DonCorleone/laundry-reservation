@@ -72,7 +72,7 @@ export class AppComponent implements OnDestroy, OnInit {
   onHourSelected($event: boolean, tile: Tile) {
     const reservation = {
       id: tile.id,
-      name: this.laundryUser().avatar,
+      name: this.laundryUser().key,
       date: tile.hour.begin.toUTCString(),
       deviceId: tile.machine
     };
@@ -88,7 +88,7 @@ export class AppComponent implements OnDestroy, OnInit {
     // verify if all tiles with the same hour are free or mine
     const isFree = this.tiles
       .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().avatar);
+      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
 
     if (isFree) {
       this.tiles
@@ -96,7 +96,7 @@ export class AppComponent implements OnDestroy, OnInit {
         .forEach((tile) => {
           this.reservationService.addReservation({
             id: tile.id,
-            name: this.laundryUser().avatar,
+            name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
             deviceId: tile.machine
           });
@@ -110,7 +110,7 @@ export class AppComponent implements OnDestroy, OnInit {
   clickMachineColumn($event: MouseEvent, machine: string) {
     const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().avatar);
+      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
 
     if (isFree) {
       this.tiles
@@ -118,7 +118,7 @@ export class AppComponent implements OnDestroy, OnInit {
         .forEach((tile) => {
           this.reservationService.addReservation({
             id: tile.id,
-            name: this.laundryUser().avatar,
+            name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
             deviceId: tile.machine
           });

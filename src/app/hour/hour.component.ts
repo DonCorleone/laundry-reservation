@@ -17,7 +17,7 @@ import {laundryUser} from "../models/user";
         class="h-full text-center flex justify-center items-center cursor-grab hover:bg-opacity-50"
         (tap)="onTap($event)"
       >
-        {{ hour().selectedBy }}
+        {{ hour().selectedBy?.split('|')[0] }}
       </div>
     }
   `,
@@ -32,14 +32,14 @@ export class HourComponent {
 
   onTap(evt: any) {
     if (this.hour().selectedBy) {
-      if (this.hour().selectedBy != this.user().avatar) {
+      if (this.hour().selectedBy != this.user().key) {
         window.alert('You can only delete your own reservations.');
         return;
       }
       this.hour().selectedBy = null;
       this.selected.emit(false);
     } else {
-      this.hour().selectedBy = this.user().avatar;
+      this.hour().selectedBy = this.user().key;
       this.selected.emit(true);
     }
   }
