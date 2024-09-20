@@ -22,7 +22,7 @@ import {laundryUser} from "../models/user";
   ],
   template: `
     <mat-toolbar class="justify-between">
-      <span>{{ user ? 'User: ' + createUserAvatar(user) : 'No User found. Please Login.' }}</span>
+      <span class="font-light text-base">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
       <span>
         @if (!user) {
           <button mat-fab extended aria-label="" (click)="openIdentityModal()">
