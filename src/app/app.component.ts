@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, Signal, signal} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, Signal, signal} from '@angular/core';
 import {map, Subscription} from 'rxjs';
 import {DayService, cellType, Tile} from './services/day.service';
 import {hour} from './models/hour';
@@ -15,6 +15,7 @@ import {ReservationEntry} from './models/reservation-entry';
 import {ReservationService} from "./services/reservation.service";
 import {AuthComponent} from "./auth/auth.component";
 import {laundryUser} from "./models/user";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-root',
@@ -41,14 +42,13 @@ export class AppComponent implements OnDestroy, OnInit {
   tiles: Tile[] = [];
   color: string = 'black';
 
-  eventText = '';
-  private subscription: Subscription;
-
   laundryUser = signal<laundryUser>(null);
 
   hourPerDate = this.signalRService.getHourPerDate();
   public reservationEntries: ReservationEntry[];
 
+  private subscription: Subscription;
+  private _snackBar = inject(MatSnackBar);
 
   constructor(
     private dayService: DayService,
@@ -107,8 +107,12 @@ export class AppComponent implements OnDestroy, OnInit {
         });
     } else {
       // Show message to the user
-      window.alert('This hour has already any reservations');
+      this.openSnackBar('This hour has already any reservations');
     }
+  }
+
+  openSnackBar(message: string) {
+    this._snackBar.open(message, '', { duration: 1500, verticalPosition: 'top' });
   }
 
   clickMachineColumn($event: MouseEvent, machine: string) {
@@ -131,7 +135,7 @@ export class AppComponent implements OnDestroy, OnInit {
         });
     } else {
       // Show message to the user
-      window.alert('This machine has already any reservations');
+      this.openSnackBar('This machine has already any reservations');
     }
   }
 
