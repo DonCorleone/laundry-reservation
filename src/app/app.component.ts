@@ -95,6 +95,8 @@ export class AppComponent implements OnDestroy, OnInit {
       this.tiles
         .filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours())
         .forEach((tile) => {
+
+          tile.hour.selectedBy = this.laundryUser().key;
           this.reservationService.addReservation({
             id: tile.id,
             name: this.laundryUser().key,
@@ -118,6 +120,7 @@ export class AppComponent implements OnDestroy, OnInit {
       this.tiles
         .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
         .forEach((tile) => {
+          tile.hour.selectedBy = this.laundryUser().key;
           this.reservationService.addReservation({
             id: tile.id,
             name: this.laundryUser().key,
