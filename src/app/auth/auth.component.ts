@@ -22,8 +22,8 @@ import {laundryUser} from "../models/user";
   ],
   template: `
     <mat-toolbar class="justify-between">
-      <span class="font-light text-base">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
-      <span>
+      <span class="userinfo text-base font-light">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
+
         @if (!user) {
           <button mat-fab extended aria-label="" (click)="openIdentityModal()">
             Login
@@ -35,10 +35,14 @@ import {laundryUser} from "../models/user";
             <mat-icon>logout</mat-icon>
           </button>
         }
-      </span>
+
     </mat-toolbar>
   `,
-  styles: ``
+  styles: `
+    span.userinfo {
+      text-wrap: auto;
+    }
+  `
 })
 export class AuthComponent implements OnInit {
   user: User | null = null;
