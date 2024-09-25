@@ -1,58 +1,60 @@
-
 <div class="bg-gray-700 w-full" appScrollManager>
   <app-auth (value)="onUsernameChange($event)"></app-auth>
   <app-calendar *ngIf="signalRService.hourPerDate()"
-    #calendarElement
-    appScrollSection="calendar"
-    appScrollAnchor="timeTable"
+                #calendarElement
+                appScrollSection="calendar"
+                appScrollAnchor="timeTable"
   ></app-calendar>
   @if (tiles?.length > 0) {
-  <mat-grid-list
-    cols="6"
-    rowHeight="fit"
-    style="height: 100vh"
-    appScrollSection="timeTable"
-  >
-    @for (tile of tiles; track tile.id){
-    <mat-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
+    <mat-grid-list
+      cols="6"
+      rowHeight="fit"
+      style="height: 100vh"
+      appScrollSection="timeTable"
+    >
+      @for (tile of tiles; track tile.id) {
+        <mat-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
 
-      @if (tile.cellType == CellType.X) {
-      <div
-        appScrollAnchor="calendar"
-        class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white cursor-n-resize hover:bg-opacity-5"
-      >
-        <div class="flex flex-col self-center">
-          <span class="-mb-1 material-symbols-sharp"> expand_less </span>
-          <span class="pb-1 material-symbols-sharp"> edit_calendar </span>
-        </div>
-        <div>
-          {{ tile.text }}
-        </div>
-      </div>
-      } @else if (tile.cellType == CellType.COLUMN_HEADER) {
-      <div
-        (click)="clickMachineColumn($event, tile.machine)"
-        class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white hover:bg-opacity-5 cursor-s-resize"
-      >
-        {{ tile.text }}
-      </div>
-      } @if (tile.cellType == CellType.ROW_HEADER) {
-      <app-hour-header
-        [hour]="tile.hour"
-        (click)="clickHourHeader($event, tile.hour)"
-        class="w-full h-full bg-vert-59 text-white text-right pr-2 hover:bg-opacity-50 cursor-e-resize"
-      ></app-hour-header>
-      } @else if (tile.cellType == CellType.HOUR) {
-      <app-hour
-        [hour]="tile.hour"
-        [user]="laundryUser()"
-        (selected)="onHourSelected($event, tile)"
-        class="w-full h-full"
-      >
-      </app-hour>
+          @if (tile.cellType == CellType.X) {
+            <div
+              appScrollAnchor="calendar"
+              class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white cursor-n-resize hover:bg-opacity-5"
+            >
+              <div class="flex flex-row self-center">
+                <mat-icon>stat_2</mat-icon><mat-icon>calendar_month</mat-icon>
+              </div>
+              <div>
+                {{ tile.text }}
+              </div>
+            </div>
+          } @else if (tile.cellType == CellType.COLUMN_HEADER) {
+            <div class="flex-col">
+              <mat-icon>local_fire_department</mat-icon>
+              <div
+                (click)="clickMachineColumn($event, tile.machine)"
+                class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white hover:bg-opacity-5 cursor-s-resize"
+              >
+                {{ tile.text }}
+              </div>
+            </div>
+          }
+          @if (tile.cellType == CellType.ROW_HEADER) {
+            <app-hour-header
+              [hour]="tile.hour"
+              (click)="clickHourHeader($event, tile.hour)"
+              class="w-full h-full bg-vert-59 text-white text-right pr-2 hover:bg-opacity-50 cursor-e-resize"
+            ></app-hour-header>
+          } @else if (tile.cellType == CellType.HOUR) {
+            <app-hour
+              [hour]="tile.hour"
+              [user]="laundryUser()"
+              (selected)="onHourSelected($event, tile)"
+              class="w-full h-full"
+            >
+            </app-hour>
+          }
+        </mat-grid-tile>
       }
-    </mat-grid-tile>
-    }
-  </mat-grid-list>
+    </mat-grid-list>
   }
 </div>
