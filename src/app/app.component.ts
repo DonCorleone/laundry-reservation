@@ -16,6 +16,7 @@ import {ReservationService} from "./services/reservation.service";
 import {AuthComponent} from "./auth/auth.component";
 import {laundryUser} from "./models/user";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatIcon, MatIconRegistry} from "@angular/material/icon";
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     ScrollAnchorDirective,
     ScrollManagerDirective,
     AuthComponent,
+    MatIcon,
   ],
 })
 export class AppComponent implements OnDestroy, OnInit {
@@ -53,14 +55,17 @@ export class AppComponent implements OnDestroy, OnInit {
   constructor(
     private dayService: DayService,
     protected signalRService: SignalRService,
-    protected reservationService: ReservationService
-  ) {
+    protected reservationService: ReservationService,
+    private matIconReg: MatIconRegistry
+) {
     this.subscription = this.dayService.tiles$.subscribe(
       (x) => (this.tiles = x)
     );
   }
 
   ngOnInit() {
+    this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
+
     this.reservationService.getReservations().subscribe((reservations) => {
       this.signalRService.setMessages(reservations);
       this.reservationEntries = reservations;
