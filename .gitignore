@@ -42,4 +42,6 @@ testem.log
 Thumbs.db
 
 # data
+data/
 db.json
+
