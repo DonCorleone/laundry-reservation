@@ -4,9 +4,9 @@ import * as signalR from '@microsoft/signalr';
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {IReservation} from "../models/reservation";
 
-const baseUrl = 'http://localhost:3000'; // json-server
+// const baseUrl = 'http://localhost:3000'; // json-server
 // const baseUrl = 'http://localhost:5263'; // dotNet
-// const baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
+const baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
 
 @Injectable({
   providedIn: 'root',
