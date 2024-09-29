@@ -7,8 +7,8 @@ import {IReservation} from "../models/reservation";
 })
 export class ReservationService {
 
-  private baseUrl = 'http://localhost:3000'; // json-server
-  // private baseUrl = 'http://localhost:5263'; // dotNet
+  // private baseUrl = 'http://localhost:3000'; // json-server
+  private baseUrl = 'http://localhost:5263'; // dotNet
   // private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
 
   constructor(private httpClient: HttpClient) {}

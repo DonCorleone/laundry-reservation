@@ -90,7 +90,7 @@ export class AppComponent implements OnDestroy, OnInit {
       id: tile.id,
       name: this.laundryUser().key,
       date: tile.hour.begin.toUTCString(),
-      deviceId: tile.subject.avatar,
+      deviceId: tile.subject.key,
       connectionId: this.signalRService.connectionId
     };
     if ($event) {
@@ -117,7 +117,7 @@ export class AppComponent implements OnDestroy, OnInit {
             id: tile.id,
             name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
-            deviceId: tile.subject.avatar,
+            deviceId: tile.subject.key,
             connectionId: this.signalRService.connectionId
           },);
         });
@@ -127,8 +127,8 @@ export class AppComponent implements OnDestroy, OnInit {
     }
   }
 
-  openSnackBar(message: string) {
-    this._snackBar.open(message, '', { duration: 1500, verticalPosition: 'top' });
+  openSnackBar(message: string, position: 'top' | 'bottom' = 'top') {
+    this._snackBar.open(message, '', { duration: 1500, verticalPosition: position });
   }
 
   clickMachineColumn($event: MouseEvent, subject: ISubject) {
@@ -145,7 +145,7 @@ export class AppComponent implements OnDestroy, OnInit {
             id: tile.id,
             name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
-            deviceId: tile.subject.avatar,
+            deviceId: tile.subject.key,
             connectionId: this.signalRService.connectionId
           },);
         });
@@ -161,5 +161,9 @@ export class AppComponent implements OnDestroy, OnInit {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  clickSubjectIcon($event: MouseEvent, subject: ISubject) {
+    this.openSnackBar(subject.name, 'bottom');
   }
 }
