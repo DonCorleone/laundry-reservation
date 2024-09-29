@@ -1,5 +1,5 @@
 import {Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 import {DayService, cellType, Tile} from './services/day.service';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './calendar/calendar.component';
@@ -70,17 +70,17 @@ export class AppComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
-    this.subjectService.getSubjects().pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(
-        (subjects) => {
-          this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1
-        }
-      );
 
-    this.reservationService.getReservations().subscribe((reservations) => {
-      this.signalRService.setMessages(reservations);
-      this.reservationEntries = reservations;
-    });
+    combineLatest([
+      this.subjectService.getSubjects(),
+      this.reservationService.getReservations()
+    ]).pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([subjects, reservations]) => {
+        this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1;
+        this.signalRService.setMessages(reservations);
+        this.reservationEntries = reservations;
+      });
+
     this.signalRService.startConnection();
     this.signalRService.addDataListener();
   }

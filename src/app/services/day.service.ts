@@ -1,6 +1,6 @@
 import {DestroyRef, inject, Injectable} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {SignalRService} from "./signalr.service";
 import {IHour} from "../models/hour";
 import {SubjectService} from "./subject.service";
@@ -40,42 +40,17 @@ export class DayService {
 
   constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService, private subjectService: SubjectService) {
 
-    this.subjects.push({
-      key: "1234x",
-      name: "A",
-      avatar: "M-1",
-      icon: "local_fire_department"
-    });
-    this.subjects.push({
-      key: "1234y",
-      name: "B",
-      avatar: "M-2",
-      icon: "local_fire_department"
-    });
-
-    this.subjects.push({
-      key: "123z",
-      name: "C",
-      avatar: "M-3",
-      icon: "local_fire_department"
-    });
-
-/*    this.subjects.push({
-      name: "D",
-      avatar: "M-4",
-      icon: "s"
-    });*/
-/*    this.subjectService.getSubjects().subscribe(subjects => {
-      this.subjects = subjects;
-    })*/
-
-    this.dateSelectionService.selectedDate$.pipe(
-      takeUntilDestroyed(this.destroyRef)).subscribe(
-        selectedDate => {
+    combineLatest([
+      this.subjectService.getSubjects(),
+      this.dateSelectionService.selectedDate$,
+      this.signalRService.updatedReservation$
+    ]).pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([subjects, selectedDate, reservation]) => {
         if (!selectedDate) {
           return;
         }
 
+        this.subjects = subjects;
         const tiles = [];
 
         const selectedDateStr = this.formatToISODate(selectedDate);
@@ -84,7 +59,7 @@ export class DayService {
         tiles.push({
           id: `${selectedDateStr}-x-x`,
           subject: null,
-          text: selectedDate.toLocaleDateString('de-CH', {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}),
+          text: selectedDate.toLocaleDateString('de-CH', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }),
           cellType: cellType.X,
           cols: colspan,
           rows: 2,
@@ -119,7 +94,6 @@ export class DayService {
             hour: hour,
           });
           this.subjects.forEach((subject) => {
-            // clone the hour object to avoid reference issues
             const hourClone = structuredClone(hour);
             const id = `${hourClone.id}-${subject.key}`;
             if (this.reservations().some((r) => r.id === id)) {
@@ -134,26 +108,20 @@ export class DayService {
               rows: 1,
               header: false,
               hour: {
-                ...
-                  hourClone,
+                ...hourClone,
               },
             });
           });
         });
+
         this.tiles.next(tiles);
-      }
-    );
 
-    this.signalRService.updatedReservation$.subscribe((reservation) => {
-      if (!reservation) {
-        return;
-      }
-
-      const [key, value] = Object.entries(reservation)[0];
-      console.log(`Reservation ID: ${key}, User: ${value}`);
-
-      this.updateTile(key, value);
-    });
+        if (reservation) {
+          const [key, value] = Object.entries(reservation)[0];
+          console.log(`Reservation ID: ${key}, User: ${value}`);
+          this.updateTile(key, value);
+        }
+      });
   }
 
   // New function to calculate a number based on date and time
