@@ -17,18 +17,18 @@
           @if (tile.cellType == CellType.X) {
             <div
               appScrollAnchor="calendar"
-              class="flex items-end pl-1 justify-around text-right w-full h-full bg-ceruleen-moyen text-terre-ombre-brule cursor-n-resize hover:bg-opacity-95"
+              class="flex md:flex-row items-end md:items-center pl-1 justify-around w-full h-full bg-ceruleen-moyen text-terre-ombre-brule cursor-n-resize hover:bg-opacity-95"
             >
+              <div class="pr-1">
+                {{ tile.text }}
+              </div>
               <div class="flex flex-col md:flex-row">
                 <mat-icon>calendar_month</mat-icon>
                 <mat-icon>stat_2</mat-icon>
               </div>
-              <div class="pr-1">
-                {{ tile.text }}
-              </div>
             </div>
           } @else if (tile.cellType == CellType.COLUMN_HEADER) {
-            <div class="flex flex-col place-items-center place-content-end w-full h-full text-terre-ombre-brule bg-ceruleen-moyen">
+            <div class="flex flex-col md:flex-row place-items-center place-content-end md:place-content-center w-full h-full text-terre-ombre-brule bg-ceruleen-moyen">
               <mat-icon class="text-terre-ombre-brule" (click)="clickSubjectIcon($event, tile.subject)">{{tile.subject.icon}}</mat-icon>
               <div
                 (click)="clickMachineColumn($event, tile.subject)"

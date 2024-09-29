@@ -1,6 +1,6 @@
-import {Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {combineLatest, Subscription} from 'rxjs';
-import {DayService, cellType, Tile} from './services/day.service';
+import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {combineLatest} from 'rxjs';
+import {DayService, cellType} from './services/day.service';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
@@ -20,6 +20,7 @@ import {IHour} from "./models/hour";
 import {SubjectService} from "./services/subject.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {ISubject} from "./models/subject";
+import {Tile} from "./models/tile";
 
 @Component({
   selector: 'app-root',
@@ -39,7 +40,7 @@ import {ISubject} from "./models/subject";
     MatIcon,
   ],
 })
-export class AppComponent implements OnDestroy, OnInit {
+export class AppComponent implements OnInit {
 
   readonly CellType = cellType;
 
@@ -51,7 +52,6 @@ export class AppComponent implements OnDestroy, OnInit {
   hourPerDate = this.signalRService.getHourPerDate();
   public reservationEntries: IReservation[];
 
-  private subscription: Subscription;
   private _snackBar = inject(MatSnackBar);
   protected colsAmount: number = 0;
   private destroyRef = inject(DestroyRef);
@@ -63,19 +63,19 @@ export class AppComponent implements OnDestroy, OnInit {
     private matIconReg: MatIconRegistry,
     private subjectService: SubjectService
 ) {
-    this.subscription = this.dayService.tiles$.subscribe(
-      (x) => (this.tiles = x)
-    );
+
   }
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
 
     combineLatest([
-      this.subjectService.getSubjects(),
+      this.dayService.tiles$,
+      this.subjectService.subjects$,
       this.reservationService.getReservations()
     ]).pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([subjects, reservations]) => {
+      .subscribe(([tiles, subjects, reservations]) => {
+        this.tiles = tiles;
         this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1;
         this.signalRService.setMessages(reservations);
         this.reservationEntries = reservations;
@@ -155,15 +155,11 @@ export class AppComponent implements OnDestroy, OnInit {
     }
   }
 
-  onUsernameChange(user: ILaundryUser) {
-    this.laundryUser.set(user);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
   clickSubjectIcon($event: MouseEvent, subject: ISubject) {
     this.openSnackBar(subject.name, 'bottom');
+  }
+
+  onUsernameChange(user: ILaundryUser) {
+    this.laundryUser.set(user);
   }
 }

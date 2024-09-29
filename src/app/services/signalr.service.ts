@@ -4,6 +4,10 @@ import * as signalR from '@microsoft/signalr';
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {IReservation} from "../models/reservation";
 
+const baseUrl = 'http://localhost:3000'; // json-server
+// const baseUrl = 'http://localhost:5263'; // dotNet
+// const baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,9 +15,6 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
 
-  // private baseUrl = 'http://localhost:3000'; // json-server
-  private baseUrl = 'http://localhost:5263'; // dotNet
-  // private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
   hourPerDate = signal<Map<string, number>>(null);
   updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
@@ -22,7 +23,7 @@ export class SignalRService {
   constructor() {
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrl}/hub`, {
+      .withUrl(`${baseUrl}/hub`, {
         withCredentials: true,
       })
       .build();
@@ -33,7 +34,6 @@ export class SignalRService {
       .start()
       .then(() => this.connectionId = this.hubConnection.connectionId)
       .catch((err) => console.log('Error while starting connection: ' + err));
-
   }
 
   public addDataListener() {

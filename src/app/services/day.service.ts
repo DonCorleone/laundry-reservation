@@ -6,18 +6,9 @@ import {IHour} from "../models/hour";
 import {SubjectService} from "./subject.service";
 import {ISubject} from "../models/subject";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {Tile} from "../models/tile";
 
-export interface Tile {
-  id: string;
-  subject: ISubject;
-  color: string;
-  cols: number;
-  rows: number;
-  text: string;
-  cellType: number;
-  header: boolean;
-  hour: IHour;
-}
+
 export enum cellType {
   X,
   COLUMN_HEADER,
@@ -29,7 +20,6 @@ export enum cellType {
   providedIn: 'root',
 })
 export class DayService {
-  private subscription: Subscription;
 
   subjects: ISubject[] = [];
   tiles = new BehaviorSubject<Tile[] | null>(null);
@@ -41,7 +31,7 @@ export class DayService {
   constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService, private subjectService: SubjectService) {
 
     combineLatest([
-      this.subjectService.getSubjects(),
+      this.subjectService.subjects$,
       this.dateSelectionService.selectedDate$,
       this.signalRService.updatedReservation$
     ]).pipe(takeUntilDestroyed(this.destroyRef))
@@ -55,6 +45,7 @@ export class DayService {
 
         const selectedDateStr = this.formatToISODate(selectedDate);
         const colspan = this.subjects.length > 3 ? 2 : 1;
+        const isMobile = window.innerWidth < 450;
 
         tiles.push({
           id: `${selectedDateStr}-x-x`,
@@ -62,7 +53,7 @@ export class DayService {
           text: selectedDate.toLocaleDateString('de-CH', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }),
           cellType: cellType.X,
           cols: colspan,
-          rows: 2,
+          rows: isMobile ? 2: 1,
           header: true,
           hour: null,
         });
@@ -74,7 +65,7 @@ export class DayService {
             text: subject.avatar,
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
-            rows: 2,
+            rows: isMobile ? 2 : 1,
             header: true,
             hour: null,
           });
