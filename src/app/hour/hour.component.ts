@@ -1,4 +1,4 @@
-import {Component, inject, input, Input, output, signal} from '@angular/core';
+import {Component, inject, input, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatIcon} from "@angular/material/icon";
@@ -35,7 +35,8 @@ export class HourComponent {
   user = input<ILaundryUser>();
   selected = output<boolean>();
   private _snackBar = inject(MatSnackBar);
-  onTap(evt: any) {
+  onTap($event: any) {
+    console.log($event);
     if (this.hour().selectedBy) {
       if (this.hour().selectedBy != this.user().key) {
         this.openSnackBar('This hour is already selected by ' + this.hour().selectedBy.split('|')[1]);
