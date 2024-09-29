@@ -1,5 +1,5 @@
 // Define the ReservationEntry interface
-export interface ReservationEntry {
+export interface IReservation {
   id: string; // Unique identifier
   date: string;
   name: string;

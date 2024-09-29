@@ -1,10 +1,10 @@
 import {Component, inject, input, Input, output, signal} from '@angular/core';
-import {hour} from '../models/hour';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {laundryUser} from "../models/user";
 import {MatIcon} from "@angular/material/icon";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {IHour} from "../models/hour";
+import {ILaundryUser} from "../models/user";
 
 @Component({
   selector: 'app-hour',
@@ -31,8 +31,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   imports: [CommonModule, FormsModule, MatIcon],
 })
 export class HourComponent {
-  hour = input<hour>();
-  user = input<laundryUser>();
+  hour = input<IHour>();
+  user = input<ILaundryUser>();
   selected = output<boolean>();
   private _snackBar = inject(MatSnackBar);
   onTap(evt: any) {

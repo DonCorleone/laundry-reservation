@@ -14,11 +14,7 @@ import {SignalRService} from "../services/signalr.service";
 })
 export class CalendarComponent {
   selected: Date | null;
-
-
-  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService) {
-
-  }
+  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService) {}
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
     // Only apply to month view

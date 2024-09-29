@@ -7,32 +7,32 @@
   ></app-calendar>
   @if (tiles?.length > 0) {
     <mat-grid-list
-      cols="6"
+      [cols]="colsAmount"
       rowHeight="fit"
       style="height: 100vh"
       appScrollSection="timeTable"
     >
       @for (tile of tiles; track tile.id) {
         <mat-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
-
           @if (tile.cellType == CellType.X) {
             <div
               appScrollAnchor="calendar"
-              class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white cursor-n-resize hover:bg-opacity-5"
+              class="flex md:flex-row items-end md:items-center pl-1 justify-around w-full h-full bg-ceruleen-moyen text-terre-ombre-brule cursor-n-resize hover:bg-opacity-95"
             >
-              <div class="flex flex-row self-center">
-                <mat-icon>stat_2</mat-icon><mat-icon>calendar_month</mat-icon>
-              </div>
-              <div>
+              <div class="pr-1">
                 {{ tile.text }}
+              </div>
+              <div class="flex flex-col md:flex-row">
+                <mat-icon>calendar_month</mat-icon>
+                <mat-icon>stat_2</mat-icon>
               </div>
             </div>
           } @else if (tile.cellType == CellType.COLUMN_HEADER) {
-            <div class="flex-col">
-              <mat-icon>local_fire_department</mat-icon>
+            <div class="flex flex-col md:flex-row place-items-center place-content-end md:place-content-center w-full h-full text-terre-ombre-brule bg-ceruleen-moyen">
+              <mat-icon class="text-terre-ombre-brule" (click)="clickSubjectIcon($event, tile.subject)">{{tile.subject.icon}}</mat-icon>
               <div
-                (click)="clickMachineColumn($event, tile.machine)"
-                class="flex items-end pl-3 pr-3 text-right w-full h-full bg-terre-ombre-brule text-white hover:bg-opacity-5 cursor-s-resize"
+                (click)="clickMachineColumn($event, tile.subject)"
+                class="hover:bg-opacity-5 cursor-s-resize"
               >
                 {{ tile.text }}
               </div>
@@ -42,7 +42,7 @@
             <app-hour-header
               [hour]="tile.hour"
               (click)="clickHourHeader($event, tile.hour)"
-              class="w-full h-full bg-vert-59 text-white text-right pr-2 hover:bg-opacity-50 cursor-e-resize"
+              class="w-full h-full justify-items-center bg-vert-59 text-white text-right hover:bg-opacity-50 cursor-e-resize"
             ></app-hour-header>
           } @else if (tile.cellType == CellType.HOUR) {
             <app-hour

@@ -1,5 +1,5 @@
 import {User} from "netlify-identity-widget";
 
-export interface laundryUser extends User {
+export interface ILaundryUser extends User {
   key: string;
 }

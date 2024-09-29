@@ -1,33 +1,29 @@
 // src/app/services/signalr.service.ts
 import {Injectable, Signal, signal} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import {ReservationEntry} from '../models/reservation-entry';
 import {BehaviorSubject, Observable, of} from "rxjs";
+import {IReservation} from "../models/reservation";
+
+// const baseUrl = 'http://localhost:3000'; // json-server
+// const baseUrl = 'http://localhost:5263'; // dotNet
+const baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
-  private reservationEntries = signal<ReservationEntry[]>([]); // Signal to store messages
- // private baseUrlLocal = 'http://localhost:5263';
-  private baseUrlRender = 'https://laundrysignalr-init.onrender.com';
+  private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
+
   hourPerDate = signal<Map<string, number>>(null);
   updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
   connectionId: string;
 
   constructor() {
-    const customParams = {
-      machineids: ['M-1', 'M-2', 'M-3', 'M-4'], // Array of machine IDs
-    };
-
-    const queryString = new URLSearchParams(
-      customParams.machineids.map((id, index) => [`machineid${index}`, id])
-    ).toString();
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrlRender}/hub?${queryString}`, {
+      .withUrl(`${baseUrl}/hub`, {
         withCredentials: true,
       })
       .build();
@@ -38,13 +34,12 @@ export class SignalRService {
       .start()
       .then(() => this.connectionId = this.hubConnection.connectionId)
       .catch((err) => console.log('Error while starting connection: ' + err));
-
   }
 
   public addDataListener() {
     this.hubConnection.on(
       'ReservationAdded',
-      (reservationEntry: ReservationEntry) => {
+      (reservationEntry: IReservation) => {
         console.log(
           `Reservation with id: ${reservationEntry.id} has been added`
         );
@@ -57,7 +52,7 @@ export class SignalRService {
     );
     this.hubConnection.on(
       'ReservationUpdated',
-      (reservationEntry: ReservationEntry) => {
+      (reservationEntry: IReservation) => {
         console.log(
           `Reservation with id: ${reservationEntry.id} has been updated`
         );
@@ -84,7 +79,7 @@ export class SignalRService {
     );
     this.hubConnection.on(
       'ReservationsLoaded',
-      (reservations: ReservationEntry[]) => {
+      (reservations: IReservation[]) => {
         console.log(`reservations loaded`);
         this.reservationEntries.update((reservationEntries) =>
           (reservationEntries) = reservations);
@@ -95,12 +90,12 @@ export class SignalRService {
   public getMessages() {
     return this.reservationEntries.asReadonly(); // Expose messages as a readonly signal
   }
-  setMessages(messages: ReservationEntry[]) {
+  setMessages(messages: IReservation[]) {
     this.populateHourPerDate(messages);
     this.reservationEntries.set(messages);
   }
 
-  private populateHourPerDate(reservationEntries: ReservationEntry[]): void {
+  private populateHourPerDate(reservationEntries: IReservation[]): void {
     if (reservationEntries.length === 0) {
       this.hourPerDate.set(new Map());
       return;

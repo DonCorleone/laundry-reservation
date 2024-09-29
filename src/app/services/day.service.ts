@@ -1,24 +1,12 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {DestroyRef, inject, Injectable} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
-import {hour} from '../models/hour';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {SignalRService} from "./signalr.service";
-
-export interface Tile {
-  id: string;
-  machine: string;
-  color: string;
-  cols: number;
-  rows: number;
-  text: string;
-  cellType: number;
-  header: boolean;
-  hour: hour;
-}
-
-export interface machine {
-  name: string;
-}
+import {IHour} from "../models/hour";
+import {SubjectService} from "./subject.service";
+import {ISubject} from "../models/subject";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {Tile} from "../models/tile";
 
 export enum cellType {
   X,
@@ -30,53 +18,53 @@ export enum cellType {
 @Injectable({
   providedIn: 'root',
 })
-export class DayService implements OnDestroy {
-  private subscription: Subscription;
+export class DayService {
 
-  machines: machine[] = [];
+  subjects: ISubject[] = [];
   tiles = new BehaviorSubject<Tile[] | null>(null);
   tiles$: Observable<Tile[] | null> = this.tiles.asObservable();
 
-  reservations = this.signalRService.getMessages()
+  reservations = this.signalRService.getMessages();
+  destroyRef = inject(DestroyRef);
 
-  constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService) {
+  constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService, private subjectService: SubjectService) {
 
-    for (let i = 1; i <= 4; i++) {
-      const m: machine = {
-        name: `M-${i}`,
-      };
-      this.machines.push(m);
-    }
-
-    this.subscription = this.dateSelectionService.selectedDate$.subscribe(
-      (selectedDate) => {
-
+    combineLatest([
+      this.subjectService.subjects$,
+      this.dateSelectionService.selectedDate$,
+      this.signalRService.updatedReservation$
+    ]).pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([subjects, selectedDate, reservation]) => {
         if (!selectedDate) {
           return;
         }
 
+        this.subjects = subjects;
         const tiles = [];
 
         const selectedDateStr = this.formatToISODate(selectedDate);
+        const colspan = this.subjects.length > 3 ? 2 : 1;
+        const isMobile = window.innerWidth < 450;
+
         tiles.push({
           id: `${selectedDateStr}-x-x`,
-          machine: null,
-          text: selectedDate.toLocaleDateString('de-CH', {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}),
+          subject: null,
+          text: selectedDate.toLocaleDateString('de-CH', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }),
           cellType: cellType.X,
-          cols: 2,
-          rows: 2,
+          cols: colspan,
+          rows: isMobile ? 2: 1,
           header: true,
           hour: null,
         });
 
-        this.machines.forEach((machine) => {
+        this.subjects.forEach((subject) => {
           tiles.push({
-            id: `${selectedDateStr}-x-${machine.name}`,
-            machine: machine.name,
-            text: machine.name,
+            id: `${selectedDateStr}-x-${subject.key}`,
+            subject,
+            text: subject.avatar,
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
-            rows: 2,
+            rows: isMobile ? 2 : 1,
             header: true,
             hour: null,
           });
@@ -87,50 +75,43 @@ export class DayService implements OnDestroy {
         hours.forEach((hour) => {
           tiles.push({
             id: `${hour.id}-x`,
-            machine: null,
+            subject: null,
             text: hour.id,
             cellType: cellType.ROW_HEADER,
-            cols: 2,
+            cols: colspan,
             rows: 1,
             header: true,
             hour: hour,
           });
-          this.machines.forEach((machine) => {
-            // clone the hour object to avoid reference issues
+          this.subjects.forEach((subject) => {
             const hourClone = structuredClone(hour);
-            const id = `${hourClone.id}-${machine.name}`;
+            const id = `${hourClone.id}-${subject.key}`;
             if (this.reservations().some((r) => r.id === id)) {
               hourClone.selectedBy = this.reservations().find((r) => r.id === id).name;
             }
             tiles.push({
               id,
-              machine: machine.name,
+              subject,
               text: null,
               cellType: cellType.HOUR,
               cols: 1,
               rows: 1,
               header: false,
               hour: {
-                ...
-                  hourClone,
+                ...hourClone,
               },
             });
           });
         });
+
         this.tiles.next(tiles);
-      }
-    );
 
-    this.signalRService.updatedReservation$.subscribe((reservation) => {
-      if (!reservation) {
-        return;
-      }
-
-      const [key, value] = Object.entries(reservation)[0];
-      console.log(`Reservation ID: ${key}, User: ${value}`);
-
-      this.updateTile(key, value);
-    });
+        if (reservation) {
+          const [key, value] = Object.entries(reservation)[0];
+          console.log(`Reservation ID: ${key}, User: ${value}`);
+          this.updateTile(key, value);
+        }
+      });
   }
 
   // New function to calculate a number based on date and time
@@ -144,7 +125,7 @@ export class DayService implements OnDestroy {
     });
   }
 
-  getHours(date: Date): hour[] {
+  getHours(date: Date): IHour[] {
     const hours = [];
     for (let i = 6; i < 22; i++) {
       const begin = new Date(date);
@@ -155,7 +136,7 @@ export class DayService implements OnDestroy {
       end.setHours(i);
       end.setMinutes(59);
 
-      const h: hour = {
+      const h: IHour = {
         id: begin.toISOString(),
         begin,
         end,
@@ -171,9 +152,5 @@ export class DayService implements OnDestroy {
     const formattedDate = new Date(date);
     formattedDate.setUTCHours(0, 0, 0, 0);
     return formattedDate.toISOString();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }
