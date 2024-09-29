@@ -1,19 +1,26 @@
-import {Component, input, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {DateSelectorService} from "../services/date-selector.service";
 import {MatCardModule} from "@angular/material/card";
 import {MatCalendarCellClassFunction, MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
-import {ReservationService} from "../services/reservation.service";
 import {SignalRService} from "../services/signalr.service";
 
 @Component({
   selector: 'app-calendar',
-  templateUrl: './calendar.component.html',
+  template: `
+    <mat-card class="w-full md:w-80">
+      <mat-calendar
+        [(selected)]="selected"
+        [dateClass]="dateClass"
+        (selectedChange)="selectionFinished($event)" />
+    </mat-card>
+  `,
   standalone: true,
   imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule],
 })
 export class CalendarComponent {
   selected: Date | null;
+
   constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService) {}
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
@@ -40,10 +47,4 @@ export class CalendarComponent {
   selectionFinished(event: Date | null) {
     this.dateSelectorService.setSelectedDate(new Date(event));
   }
-  // Utility function to format date to ISO string with time set to 00:00:00.000
-/*  formatToISODate(date: Date): string {
-    const formattedDate = new Date(date);
-    formattedDate.setUTCHours(0, 0, 0, 0);
-    return formattedDate.toISOString();
-  }*/
 }

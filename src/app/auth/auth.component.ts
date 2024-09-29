@@ -48,8 +48,7 @@ export class AuthComponent implements OnInit {
   user: User | null = null;
   value = output<ILaundryUser>();
 
-  constructor(private netlifyIdentityService: NetlifyIdentityService) {
-  }
+  constructor(private netlifyIdentityService: NetlifyIdentityService) {}
 
   ngOnInit(): void {
     // Check if the user is logged in when the component initializes

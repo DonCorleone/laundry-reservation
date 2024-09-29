@@ -1,6 +1,5 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {combineLatest} from 'rxjs';
-import {DayService, cellType} from './services/day.service';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
@@ -20,8 +19,8 @@ import {IHour} from "./models/hour";
 import {SubjectService} from "./services/subject.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {ISubject} from "./models/subject";
+import {cellType, TileService} from "./services/tile.service";
 import {Tile} from "./models/tile";
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -48,8 +47,6 @@ export class AppComponent implements OnInit {
   color: string = 'black';
 
   laundryUser = signal<ILaundryUser>(null);
-
-  hourPerDate = this.signalRService.getHourPerDate();
   public reservationEntries: IReservation[];
 
   private _snackBar = inject(MatSnackBar);
@@ -57,20 +54,18 @@ export class AppComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   constructor(
-    private dayService: DayService,
+    private tileService: TileService,
     protected signalRService: SignalRService,
     protected reservationService: ReservationService,
     private matIconReg: MatIconRegistry,
     private subjectService: SubjectService
-) {
-
-  }
+) {}
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
 
     combineLatest([
-      this.dayService.tiles$,
+      this.tileService.tiles$,
       this.subjectService.subjects$,
       this.reservationService.getReservations()
     ]).pipe(takeUntilDestroyed(this.destroyRef))
@@ -101,7 +96,7 @@ export class AppComponent implements OnInit {
   }
 
   clickHourHeader($event: MouseEvent, hour: IHour) {
-
+    console.log($event);
     // verify if all tiles with the same hour are free or mine
     const isFree = this.tiles
       .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
@@ -132,6 +127,7 @@ export class AppComponent implements OnInit {
   }
 
   clickMachineColumn($event: MouseEvent, subject: ISubject) {
+    console.log($event);
     const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
       .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
@@ -156,6 +152,7 @@ export class AppComponent implements OnInit {
   }
 
   clickSubjectIcon($event: MouseEvent, subject: ISubject) {
+    console.log($event);
     this.openSnackBar(subject.name, 'bottom');
   }
 

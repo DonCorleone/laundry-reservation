@@ -1,7 +1,6 @@
-// src/app/services/signalr.service.ts
-import {Injectable, Signal, signal} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {IReservation} from "../models/reservation";
 
 // const baseUrl = 'http://localhost:3000'; // json-server
@@ -90,7 +89,7 @@ export class SignalRService {
   public getMessages() {
     return this.reservationEntries.asReadonly(); // Expose messages as a readonly signal
   }
-  setMessages(messages: IReservation[]) {
+  public setMessages(messages: IReservation[]) {
     this.populateHourPerDate(messages);
     this.reservationEntries.set(messages);
   }
@@ -112,9 +111,5 @@ export class SignalRService {
         this.hourPerDate().set(date.toISOString(), 1);
       }
     });
-  }
-
-  getHourPerDate(): Signal<Map<string, number>> {
-    return this.hourPerDate.asReadonly();
   }
 }
