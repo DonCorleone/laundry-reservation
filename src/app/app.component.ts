@@ -1,7 +1,6 @@
-import {Component, inject, OnDestroy, OnInit, Signal, signal} from '@angular/core';
-import {map, Subscription} from 'rxjs';
+import {Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {DayService, cellType, Tile} from './services/day.service';
-import {hour} from './models/hour';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
@@ -11,12 +10,16 @@ import {HourComponent} from './hour/hour.component';
 import {ScrollSectionDirective} from './directives/scroll-section.directive';
 import {ScrollAnchorDirective} from './directives/scroll-anchor.directive';
 import {SignalRService} from './services/signalr.service';
-import {ReservationEntry} from './models/reservation-entry';
 import {ReservationService} from "./services/reservation.service";
 import {AuthComponent} from "./auth/auth.component";
-import {laundryUser} from "./models/user";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatIcon, MatIconRegistry} from "@angular/material/icon";
+import {IReservation} from "./models/reservation";
+import {ILaundryUser} from "./models/user";
+import {IHour} from "./models/hour";
+import {SubjectService} from "./services/subject.service";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {ISubject} from "./models/subject";
 
 @Component({
   selector: 'app-root',
@@ -38,25 +41,27 @@ import {MatIcon, MatIconRegistry} from "@angular/material/icon";
 })
 export class AppComponent implements OnDestroy, OnInit {
 
-  title = 'laundry';
   readonly CellType = cellType;
 
   tiles: Tile[] = [];
   color: string = 'black';
 
-  laundryUser = signal<laundryUser>(null);
+  laundryUser = signal<ILaundryUser>(null);
 
   hourPerDate = this.signalRService.getHourPerDate();
-  public reservationEntries: ReservationEntry[];
+  public reservationEntries: IReservation[];
 
   private subscription: Subscription;
   private _snackBar = inject(MatSnackBar);
+  protected colsAmount: number = 0;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private dayService: DayService,
     protected signalRService: SignalRService,
     protected reservationService: ReservationService,
-    private matIconReg: MatIconRegistry
+    private matIconReg: MatIconRegistry,
+    private subjectService: SubjectService
 ) {
     this.subscription = this.dayService.tiles$.subscribe(
       (x) => (this.tiles = x)
@@ -65,6 +70,12 @@ export class AppComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
+    this.subjectService.getSubjects().pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(
+        (subjects) => {
+          this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1
+        }
+      );
 
     this.reservationService.getReservations().subscribe((reservations) => {
       this.signalRService.setMessages(reservations);
@@ -79,7 +90,7 @@ export class AppComponent implements OnDestroy, OnInit {
       id: tile.id,
       name: this.laundryUser().key,
       date: tile.hour.begin.toUTCString(),
-      deviceId: tile.machine,
+      deviceId: tile.subject.avatar,
       connectionId: this.signalRService.connectionId
     };
     if ($event) {
@@ -89,7 +100,7 @@ export class AppComponent implements OnDestroy, OnInit {
     }
   }
 
-  clickHourHeader($event: MouseEvent, hour: hour) {
+  clickHourHeader($event: MouseEvent, hour: IHour) {
 
     // verify if all tiles with the same hour are free or mine
     const isFree = this.tiles
@@ -106,7 +117,7 @@ export class AppComponent implements OnDestroy, OnInit {
             id: tile.id,
             name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
-            deviceId: tile.machine,
+            deviceId: tile.subject.avatar,
             connectionId: this.signalRService.connectionId
           },);
         });
@@ -120,21 +131,21 @@ export class AppComponent implements OnDestroy, OnInit {
     this._snackBar.open(message, '', { duration: 1500, verticalPosition: 'top' });
   }
 
-  clickMachineColumn($event: MouseEvent, machine: string) {
+  clickMachineColumn($event: MouseEvent, subject: ISubject) {
     const isFree = this.tiles
-      .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
+      .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
       .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
 
     if (isFree) {
       this.tiles
-        .filter((t) => t.cellType == cellType.HOUR && t.machine == machine)
+        .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
         .forEach((tile) => {
           tile.hour.selectedBy = this.laundryUser().key;
           this.reservationService.addReservation({
             id: tile.id,
             name: this.laundryUser().key,
             date: tile.hour.begin.toUTCString(),
-            deviceId: tile.machine,
+            deviceId: tile.subject.avatar,
             connectionId: this.signalRService.connectionId
           },);
         });
@@ -144,7 +155,7 @@ export class AppComponent implements OnDestroy, OnInit {
     }
   }
 
-  onUsernameChange(user: laundryUser) {
+  onUsernameChange(user: ILaundryUser) {
     this.laundryUser.set(user);
   }
 

@@ -1,39 +1,29 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ReservationEntry} from "../models/reservation-entry";
+import {IReservation} from "../models/reservation";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
 
-  // private baseUrl = 'http://localhost:3000'; // json-server
-  // private url = 'http://localhost:5263'; // dotNet
-  private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
+  private baseUrl = 'http://localhost:3000'; // json-server
+  // private baseUrl = 'http://localhost:5263'; // dotNet
+  // private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
 
   constructor(private httpClient: HttpClient) {}
 
   public getReservations() {
-    const customParams = {
-      machineids: ['M-1', 'M-2', 'M-3', 'M-4'], // Array of machine IDs
-    };
-
-    const queryString = new URLSearchParams(
-      customParams.machineids.map((id, index) => [`machineid${index}`, id])
-    ).toString();
-
-    return this.httpClient.get<ReservationEntry[]>(`${this.baseUrl}/api/ReservationEntries?${queryString}`);
+    return this.httpClient.get<IReservation[]>(`${this.baseUrl}/api/ReservationEntries`);
   }
 
-  public addReservation(reservationEntry: ReservationEntry) {
-
-    this.httpClient.post<ReservationEntry>(`${this.baseUrl}/api/ReservationEntries`, reservationEntry).subscribe(reservation => {
+  public addReservation(reservationEntry: IReservation) {
+    this.httpClient.post<IReservation>(`${this.baseUrl}/api/ReservationEntries`, reservationEntry).subscribe(reservation => {
       console.log('Updated reservation:', reservation);
     });
   }
 
-  public deleteReservation(reservationEntry: ReservationEntry) {
-
+  public deleteReservation(reservationEntry: IReservation) {
     // call the API to delete the reservation with the reservation as http body
     const options = {
       body: reservationEntry,

@@ -1,25 +1,23 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {DestroyRef, inject, Injectable} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
-import {hour} from '../models/hour';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {SignalRService} from "./signalr.service";
+import {IHour} from "../models/hour";
+import {SubjectService} from "./subject.service";
+import {ISubject} from "../models/subject";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 export interface Tile {
   id: string;
-  machine: string;
+  subject: ISubject;
   color: string;
   cols: number;
   rows: number;
   text: string;
   cellType: number;
   header: boolean;
-  hour: hour;
+  hour: IHour;
 }
-
-export interface machine {
-  name: string;
-}
-
 export enum cellType {
   X,
   COLUMN_HEADER,
@@ -30,27 +28,50 @@ export enum cellType {
 @Injectable({
   providedIn: 'root',
 })
-export class DayService implements OnDestroy {
+export class DayService {
   private subscription: Subscription;
 
-  machines: machine[] = [];
+  subjects: ISubject[] = [];
   tiles = new BehaviorSubject<Tile[] | null>(null);
   tiles$: Observable<Tile[] | null> = this.tiles.asObservable();
 
-  reservations = this.signalRService.getMessages()
+  reservations = this.signalRService.getMessages();
+  destroyRef = inject(DestroyRef);
 
-  constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService) {
+  constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService, private subjectService: SubjectService) {
 
-    for (let i = 1; i <= 4; i++) {
-      const m: machine = {
-        name: `M-${i}`,
-      };
-      this.machines.push(m);
-    }
+    this.subjects.push({
+      key: "1234x",
+      name: "A",
+      avatar: "M-1",
+      icon: "local_fire_department"
+    });
+    this.subjects.push({
+      key: "1234y",
+      name: "B",
+      avatar: "M-2",
+      icon: "local_fire_department"
+    });
 
-    this.subscription = this.dateSelectionService.selectedDate$.subscribe(
-      (selectedDate) => {
+    this.subjects.push({
+      key: "123z",
+      name: "C",
+      avatar: "M-3",
+      icon: "local_fire_department"
+    });
 
+/*    this.subjects.push({
+      name: "D",
+      avatar: "M-4",
+      icon: "s"
+    });*/
+/*    this.subjectService.getSubjects().subscribe(subjects => {
+      this.subjects = subjects;
+    })*/
+
+    this.dateSelectionService.selectedDate$.pipe(
+      takeUntilDestroyed(this.destroyRef)).subscribe(
+        selectedDate => {
         if (!selectedDate) {
           return;
         }
@@ -58,22 +79,24 @@ export class DayService implements OnDestroy {
         const tiles = [];
 
         const selectedDateStr = this.formatToISODate(selectedDate);
+        const colspan = this.subjects.length > 3 ? 2 : 1;
+
         tiles.push({
           id: `${selectedDateStr}-x-x`,
-          machine: null,
+          subject: null,
           text: selectedDate.toLocaleDateString('de-CH', {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}),
           cellType: cellType.X,
-          cols: 2,
+          cols: colspan,
           rows: 2,
           header: true,
           hour: null,
         });
 
-        this.machines.forEach((machine) => {
+        this.subjects.forEach((subject) => {
           tiles.push({
-            id: `${selectedDateStr}-x-${machine.name}`,
-            machine: machine.name,
-            text: machine.name,
+            id: `${selectedDateStr}-x-${subject.key}`,
+            subject,
+            text: subject.avatar,
             cellType: cellType.COLUMN_HEADER,
             cols: 1,
             rows: 2,
@@ -87,24 +110,24 @@ export class DayService implements OnDestroy {
         hours.forEach((hour) => {
           tiles.push({
             id: `${hour.id}-x`,
-            machine: null,
+            subject: null,
             text: hour.id,
             cellType: cellType.ROW_HEADER,
-            cols: 2,
+            cols: colspan,
             rows: 1,
             header: true,
             hour: hour,
           });
-          this.machines.forEach((machine) => {
+          this.subjects.forEach((subject) => {
             // clone the hour object to avoid reference issues
             const hourClone = structuredClone(hour);
-            const id = `${hourClone.id}-${machine.name}`;
+            const id = `${hourClone.id}-${subject.key}`;
             if (this.reservations().some((r) => r.id === id)) {
               hourClone.selectedBy = this.reservations().find((r) => r.id === id).name;
             }
             tiles.push({
               id,
-              machine: machine.name,
+              subject,
               text: null,
               cellType: cellType.HOUR,
               cols: 1,
@@ -144,7 +167,7 @@ export class DayService implements OnDestroy {
     });
   }
 
-  getHours(date: Date): hour[] {
+  getHours(date: Date): IHour[] {
     const hours = [];
     for (let i = 6; i < 22; i++) {
       const begin = new Date(date);
@@ -155,7 +178,7 @@ export class DayService implements OnDestroy {
       end.setHours(i);
       end.setMinutes(59);
 
-      const h: hour = {
+      const h: IHour = {
         id: begin.toISOString(),
         begin,
         end,
@@ -171,9 +194,5 @@ export class DayService implements OnDestroy {
     const formattedDate = new Date(date);
     formattedDate.setUTCHours(0, 0, 0, 0);
     return formattedDate.toISOString();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }

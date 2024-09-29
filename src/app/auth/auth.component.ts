@@ -7,7 +7,7 @@ import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {MatFabButton} from "@angular/material/button";
 import {MatToolbar} from "@angular/material/toolbar";
-import {laundryUser} from "../models/user";
+import {ILaundryUser} from "../models/user";
 
 @Component({
   selector: 'app-auth',
@@ -46,7 +46,7 @@ import {laundryUser} from "../models/user";
 })
 export class AuthComponent implements OnInit {
   user: User | null = null;
-  value = output<laundryUser>();
+  value = output<ILaundryUser>();
 
   constructor(private netlifyIdentityService: NetlifyIdentityService) {
   }

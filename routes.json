@@ -1,4 +1,4 @@
 {
   "/api/ReservationEntries": "/ReservationEntries",
-  "/api/ReservationEntries?*": "/ReservationEntries"
+  "/api/Subjects": "/Subjects"
 }

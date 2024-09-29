@@ -1,6 +1,4 @@
-import {laundryUser} from "./user";
-
-export interface hour {
+export interface IHour {
   id: string;
   selectedBy: string;
   begin: Date;
