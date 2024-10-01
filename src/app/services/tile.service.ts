@@ -7,14 +7,12 @@ import {SubjectService} from "./subject.service";
 import {ISubject} from "../models/subject";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {Tile} from "../models/tile";
-
 export enum cellType {
   X,
   COLUMN_HEADER,
   ROW_HEADER,
   HOUR,
 }
-
 @Injectable({
   providedIn: 'root',
 })

@@ -6,7 +6,7 @@ import {IHour} from "../models/hour";
   selector: 'app-hour-header',
   template: `
     @if (hour) {
-      <div class="h-full mt-1 pt-1">
+      <div class="h-full place-content-center">
         {{ hour.begin | date: 'HH:mm' }}-{{ hour.end | date: 'HH:mm' }}
       </div>
     }

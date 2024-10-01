@@ -1,6 +1,6 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {AfterViewInit, Component, DestroyRef, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {combineLatest} from 'rxjs';
-import {MatGridListModule} from '@angular/material/grid-list';
+import {MatGridList, MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
 import {CommonModule} from '@angular/common';
@@ -39,7 +39,7 @@ import {Tile} from "./models/tile";
     MatIcon,
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   readonly CellType = cellType;
 
@@ -53,13 +53,18 @@ export class AppComponent implements OnInit {
   protected colsAmount: number = 0;
   private destroyRef = inject(DestroyRef);
 
+  @ViewChild('gridList') timeTableRef: any;
+
   constructor(
     private tileService: TileService,
     protected signalRService: SignalRService,
     protected reservationService: ReservationService,
     private matIconReg: MatIconRegistry,
-    private subjectService: SubjectService
-) {}
+    private subjectService: SubjectService,
+    private scrollManager: ScrollManagerDirective
+) {
+
+  }
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
@@ -150,13 +155,16 @@ export class AppComponent implements OnInit {
       this.openSnackBar('This machine has already any reservations');
     }
   }
-
   clickSubjectIcon($event: MouseEvent, subject: ISubject) {
     console.log($event);
     this.openSnackBar(subject.name, 'bottom');
   }
-
   onUsernameChange(user: ILaundryUser) {
     this.laundryUser.set(user);
+  }
+
+  ngAfterViewInit(): void {
+    const directive = new ScrollSectionDirective(this.timeTableRef.nativeElement, this.scrollManager);
+    this.scrollManager.register(directive);
   }
 }

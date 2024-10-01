@@ -5,7 +5,7 @@ import {NetlifyIdentityService} from "../services/netlify-identity.service";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
-import {MatFabButton} from "@angular/material/button";
+import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatToolbar} from "@angular/material/toolbar";
 import {ILaundryUser} from "../models/user";
 
@@ -18,24 +18,23 @@ import {ILaundryUser} from "../models/user";
     MatInput,
     MatIcon,
     MatFabButton,
-    MatToolbar
+    MatToolbar,
+    MatButton
   ],
   template: `
-    <mat-toolbar class="justify-between">
+    <mat-toolbar class="justify-between bg-bleu-cerelueen-31">
       <span class="userinfo text-base font-light">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
-
         @if (!user) {
-          <button mat-fab extended aria-label="" (click)="openIdentityModal()">
+          <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-outremer-moyen text-terre-ombre-brule">
             Login
             <mat-icon>login</mat-icon>
           </button>
         } @else {
-          <button mat-fab extended aria-label="" (click)="logout()">
+          <button mat-stroked-button aria-label="" (click)="logout()" class="bg-outremer-moyen text-terre-ombre-brule">
             Logout
             <mat-icon>logout</mat-icon>
           </button>
         }
-
     </mat-toolbar>
   `,
   styles: `
