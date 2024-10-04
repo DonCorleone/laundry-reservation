@@ -1,57 +1,42 @@
-import {Component} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DateSelectorService} from "../services/date-selector.service";
 import {MatCardModule} from "@angular/material/card";
-import {MatCalendarCellClassFunction, MatCalendarView, MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
+import {
+  MatCalendar,
+  MatCalendarCellClassFunction,
+  MatCalendarView,
+  MatDatepickerModule
+} from "@angular/material/datepicker";
+import {MatNativeDateModule, MatRipple} from "@angular/material/core";
 import {SignalRService} from "../services/signalr.service";
 import {ScrollAnchorDirective} from "../directives/scroll-anchor.directive";
 import {ScrollSectionDirective} from "../directives/scroll-section.directive";
 import {ScrollManagerDirective} from "../directives/scroll-manager.directive";
+import {MatIcon} from "@angular/material/icon";
+
 
 @Component({
   selector: 'app-calendar',
-  template: `
-    <div class="flex flex-row">
-      <!--mat-card class="w-full md:w-80"-->
-        <mat-calendar
-          class="bg-terre-ombre-brule w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
-          [(selected)]="selected"
-          [dateClass]="dateClass"
-          (selectedChange)="selectionFinished($event)" />
-        <mat-calendar
-          [startView]="'month'"
-          [startAt]="getNextDate(1)"
-          class="bg-terre-ombre-brule w-full hidden sm:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
-          [dateClass]="dateClass"
-          (selectedChange)="selectionFinished($event)" />
-        <mat-calendar
-          [startView]="'month'"
-          [startAt]="getNextDate(2)"
-          class="bg-terre-ombre-brule w-full hidden md:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
-          [dateClass]="dateClass"
-          (selectedChange)="selectionFinished($event)" />
-        <mat-calendar
-          [startView]="'month'"
-          [startAt]="getNextDate(3)"
-          class="bg-terre-ombre-brule w-full hidden lg:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
-          [dateClass]="dateClass"
-          (selectedChange)="selectionFinished($event)" />
-        <mat-calendar
-          [startView]="'month'"
-          [startAt]="getNextDate(4)"
-          class="bg-terre-ombre-brule w-full hidden xl:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
-          [dateClass]="dateClass"
-          (selectedChange)="selectionFinished($event)" />
-      <!-- /mat-card-->
-    </div>
-  `,
+  templateUrl: './calendar.component.html',
+  styles: ``,
   standalone: true,
-  imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective],
+  imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnInit{
   selected: Date | null;
+  baseDate: Date;
+
+  @ViewChild('calendarOne') calendarOne: MatCalendar<Date>;
+  @ViewChild('calendarTwo') calendarTwo: MatCalendar<Date>;
+  @ViewChild('calendarThree') calendarThree: MatCalendar<Date>;
+  @ViewChild('calendarFour') calendarFour: MatCalendar<Date>;
+  @ViewChild('calendarFive') calendarFive: MatCalendar<Date>;
 
   constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService, private scrollX: ScrollManagerDirective) {}
+
+  ngOnInit(): void {
+   this.baseDate = new Date();
+  }
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
     // Only apply to month view
@@ -74,16 +59,6 @@ export class CalendarComponent {
     return '';
   };
 
-/*  getNextMonth() : MatCalendarView{
-    const today = new Date();
-
-    return {
-
-    }
-
-    return new Date(2024,11,1);
-  }*/
-
   selectionFinished(event: Date | null) {
     this.dateSelectorService.setSelectedDate(new Date(event));
     const anchor = new ScrollAnchorDirective(this.scrollX);
@@ -91,12 +66,27 @@ export class CalendarComponent {
     anchor.scroll();
   }
 
-  getNextDate(gap: number): Date {
-    const today = new Date();
-    const thisMonth = today.getMonth();
-    const nextMonth = thisMonth + gap < 11 ? thisMonth + gap : (thisMonth + gap) - 12
-    const thisYear = today.getFullYear();
-    const nextYear = thisMonth + gap < 11 ? thisYear : thisYear + 1;
+  getNewDate(date: Date, gap: number): Date {
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    const nextMonth = currentMonth + gap < 11 ? currentMonth + gap : (currentMonth + gap) - 12
+    const nextYear = currentMonth + gap < 11 ? currentYear : currentYear + 1;
     return new Date(nextYear, nextMonth, 1);
+  }
+  previousMonth($event: MouseEvent) {
+    this.baseDate = this.getNewDate(this.baseDate, -1);
+    this.calendarOne.activeDate = this.baseDate;
+    this.calendarTwo.activeDate = this.getNewDate(this.baseDate, + 1);
+    this.calendarThree.activeDate = this.getNewDate(this.baseDate, + 2);
+    this.calendarFour.activeDate = this.getNewDate(this.baseDate, + 3);
+    this.calendarFive.activeDate = this.getNewDate(this.baseDate, + 4);
+  }
+  nextMonth($event: MouseEvent) {
+    this.baseDate = this.getNewDate(this.baseDate, 1);
+    this.calendarOne.activeDate = this.baseDate;
+    this.calendarTwo.activeDate = this.getNewDate(this.baseDate, 1);
+    this.calendarThree.activeDate = this.getNewDate(this.baseDate, 2);
+    this.calendarFour.activeDate = this.getNewDate(this.baseDate, 3);
+    this.calendarFive.activeDate = this.getNewDate(this.baseDate, 4);
   }
 }

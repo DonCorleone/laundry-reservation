@@ -23,3 +23,6 @@ body {
 .mat-calendar-body-selected {
   background-color: #428f70 !important;
 }
+.mat-calendar-previous-button, .mat-calendar-next-button {
+  display: none !important;
+}
