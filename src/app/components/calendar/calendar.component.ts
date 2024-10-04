@@ -1,14 +1,13 @@
 import {AfterViewInit, Component, OnInit, output, ViewChild} from '@angular/core';
-import { DateSelectorService } from '../services/date-selector.service';
+import { DateSelectorService } from '../../services/date-selector.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRipple } from '@angular/material/core';
-import { SignalRService } from '../services/signalr.service';
-import { ScrollAnchorDirective } from '../directives/scroll-anchor.directive';
-import { ScrollSectionDirective } from '../directives/scroll-section.directive';
-import { ScrollManagerDirective } from '../directives/scroll-manager.directive';
+import { SignalRService } from '../../services/signalr.service';
+import { ScrollAnchorDirective } from '../../directives/scroll-anchor.directive';
+import { ScrollSectionDirective } from '../../directives/scroll-section.directive';
+import { ScrollManagerDirective } from '../../directives/scroll-manager.directive';
 import { MatIcon } from '@angular/material/icon';
-import {ILaundryUser} from "../models/user";
 
 @Component({
   selector: 'app-calendar',

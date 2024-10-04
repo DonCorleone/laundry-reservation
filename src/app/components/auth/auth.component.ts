@@ -1,13 +1,13 @@
 import {Component, OnInit, output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {User} from "netlify-identity-widget";
-import {NetlifyIdentityService} from "../services/netlify-identity.service";
+import {NetlifyIdentityService} from "../../services/netlify-identity.service";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatToolbar} from "@angular/material/toolbar";
-import {ILaundryUser} from "../models/user";
+import {ILaundryUser} from "../../models/user";
 
 @Component({
   selector: 'app-auth',
