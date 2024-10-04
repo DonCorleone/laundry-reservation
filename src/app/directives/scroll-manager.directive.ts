@@ -9,7 +9,7 @@ export class ScrollManagerDirective {
   private sections = new Map<string | number, ScrollSectionDirective>();
 
   scroll(id: string | number) {
-    this.sections.get(id)!.scroll();
+    this.sections.get(id)?.scroll();
   }
 
   register(section: ScrollSectionDirective) {

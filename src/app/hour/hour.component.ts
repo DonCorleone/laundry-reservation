@@ -10,13 +10,16 @@ import {ILaundryUser} from "../models/user";
   selector: 'app-hour',
   template: `
     @if (hour) {
+      @let isFree = !hour().selectedBy;
+      @let isMine = hour().selectedBy == user().key;
       <div
         [class]="
         hour().selectedBy
           ? 'bg-rouge-rubia text-white'
           : 'bg-vert-clair text-black'
-      "
-        class="h-full text-center flex justify-center items-center cursor-grab hover:bg-opacity-50"
+        "
+        [ngClass]="{'cursor-all-scroll': isMine, 'cursor-cell': isFree, 'cursor-help': !isMine && !isFree}"
+        class="h-full text-center flex justify-center items-center hover:bg-opacity-50"
         (tap)="onTap($event)"
       >
         @if (hour().selectedBy) {

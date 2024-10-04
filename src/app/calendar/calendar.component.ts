@@ -1,35 +1,40 @@
-import {Component} from '@angular/core';
-import {DateSelectorService} from "../services/date-selector.service";
-import {MatCardModule} from "@angular/material/card";
-import {MatCalendarCellClassFunction, MatDatepickerModule} from "@angular/material/datepicker";
-import {MatNativeDateModule} from "@angular/material/core";
-import {SignalRService} from "../services/signalr.service";
+import {AfterViewInit, Component, OnInit, output, ViewChild} from '@angular/core';
+import { DateSelectorService } from '../services/date-selector.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MatRipple } from '@angular/material/core';
+import { SignalRService } from '../services/signalr.service';
+import { ScrollAnchorDirective } from '../directives/scroll-anchor.directive';
+import { ScrollSectionDirective } from '../directives/scroll-section.directive';
+import { ScrollManagerDirective } from '../directives/scroll-manager.directive';
+import { MatIcon } from '@angular/material/icon';
+import {ILaundryUser} from "../models/user";
 
 @Component({
   selector: 'app-calendar',
-  template: `
-    <mat-card class="w-full md:w-80">
-      <mat-calendar
-        [(selected)]="selected"
-        [dateClass]="dateClass"
-        (selectedChange)="selectionFinished($event)" />
-    </mat-card>
-  `,
+  templateUrl: './calendar.component.html',
+  styles: ``,
   standalone: true,
-  imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
 })
-export class CalendarComponent {
+export class CalendarComponent implements AfterViewInit {
   selected: Date | null;
+  baseDate: Date;
+  calendarDates: Date[] = [];
 
-  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService) {}
+  @ViewChild('calendarOne') calendarOne: MatCalendar<Date>;
+  @ViewChild('calendarTwo') calendarTwo: MatCalendar<Date>;
+  @ViewChild('calendarThree') calendarThree: MatCalendar<Date>;
+  @ViewChild('calendarFour') calendarFour: MatCalendar<Date>;
+  @ViewChild('calendarFive') calendarFive: MatCalendar<Date>;
+
+  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService, private scrollX: ScrollManagerDirective) {
+    this.baseDate = new Date();
+  }
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    // Only apply to month view
     if (view === 'month') {
       cellDate.setHours(0, 0, 0, 0);
-      // if date has a reservation, apply special-date class
-      // if it has 10 or more reservations, apply special-date-max class
-      // if it has 20 or more reservations, apply special-date-full class
       const hourPerDate = this.signalRService.hourPerDate();
       if (hourPerDate.has(cellDate.toISOString())) {
         if (hourPerDate.get(cellDate.toISOString()) >= 20) {
@@ -39,12 +44,45 @@ export class CalendarComponent {
         }
         return 'reserved';
       }
-      //
     }
     return '';
   };
 
   selectionFinished(event: Date | null) {
     this.dateSelectorService.setSelectedDate(new Date(event));
+    const anchor = new ScrollAnchorDirective(this.scrollX);
+    anchor.id = 'timeTable';
+    anchor.scroll();
+  }
+
+  getNewDate(date: Date, gap: number): Date {
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    const totalMonths = currentMonth + gap;
+    const nextYear = currentYear + Math.floor(totalMonths / 12);
+    const nextMonth = (totalMonths % 12 + 12) % 12; // Ensure the month is within 0-11 range
+    return new Date(nextYear, nextMonth, 1);
+  }
+  updateCalendarDates(baseDate: Date) {
+    this.calendarDates = Array.from({ length: 5 }, (_, i) => this.getNewDate(baseDate, i));
+    this.calendarOne.activeDate = this.calendarDates[0];
+    this.calendarTwo.activeDate = this.calendarDates[1];
+    this.calendarThree.activeDate = this.calendarDates[2];
+    this.calendarFour.activeDate = this.calendarDates[3];
+    this.calendarFive.activeDate = this.calendarDates[4];
+  }
+
+  previousMonth($event: MouseEvent) {
+    this.baseDate = this.getNewDate(this.baseDate, -1);
+    this.updateCalendarDates(this.baseDate);
+  }
+
+  nextMonth($event: MouseEvent) {
+    this.baseDate = this.getNewDate(this.baseDate, 1);
+    this.updateCalendarDates(this.baseDate);
+  }
+
+  ngAfterViewInit(): void {
+    this.updateCalendarDates(this.baseDate);
   }
 }

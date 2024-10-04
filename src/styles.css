@@ -4,6 +4,7 @@
 html,
 body {
   height: 100%;
+  background-color: rgb(62, 110, 144);
 }
 body {
   margin: 0;
@@ -22,4 +23,7 @@ body {
 }
 .mat-calendar-body-selected {
   background-color: #428f70 !important;
+}
+.mat-calendar-previous-button, .mat-calendar-next-button {
+  display: none !important;
 }
