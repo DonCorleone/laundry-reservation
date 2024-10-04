@@ -1,14 +1,13 @@
 <div class="bg-terre-ombre-brule w-full" appScrollManager>
   <app-auth (value)="onUsernameChange($event)"></app-auth>
   <app-calendar *ngIf="signalRService.hourPerDate()"
-                #calendarElement
                 appScrollSection="calendar"
   ></app-calendar>
     <mat-grid-list
       #gridList
       [cols]="colsAmount"
       rowHeight="fit"
-      style="height: 100vh"
+      [style.height]="(tiles && tiles.length) ? '100vh' : '100%'"
       appScrollSection="timeTable"
     >
       @for (tile of tiles; track tile.id) {

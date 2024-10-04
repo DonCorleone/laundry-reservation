@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, OnInit, output, ViewChild} from '@angular/core';
 import { DateSelectorService } from '../services/date-selector.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
@@ -8,6 +8,7 @@ import { ScrollAnchorDirective } from '../directives/scroll-anchor.directive';
 import { ScrollSectionDirective } from '../directives/scroll-section.directive';
 import { ScrollManagerDirective } from '../directives/scroll-manager.directive';
 import { MatIcon } from '@angular/material/icon';
+import {ILaundryUser} from "../models/user";
 
 @Component({
   selector: 'app-calendar',
@@ -16,7 +17,7 @@ import { MatIcon } from '@angular/material/icon';
   standalone: true,
   imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements AfterViewInit {
   selected: Date | null;
   baseDate: Date;
   calendarDates: Date[] = [];
@@ -27,11 +28,8 @@ export class CalendarComponent implements OnInit {
   @ViewChild('calendarFour') calendarFour: MatCalendar<Date>;
   @ViewChild('calendarFive') calendarFive: MatCalendar<Date>;
 
-  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService, private scrollX: ScrollManagerDirective) {}
-
-  ngOnInit(): void {
+  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService, private scrollX: ScrollManagerDirective) {
     this.baseDate = new Date();
-    this.updateCalendarDates(this.baseDate);
   }
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
@@ -81,6 +79,10 @@ export class CalendarComponent implements OnInit {
 
   nextMonth($event: MouseEvent) {
     this.baseDate = this.getNewDate(this.baseDate, 1);
+    this.updateCalendarDates(this.baseDate);
+  }
+
+  ngAfterViewInit(): void {
     this.updateCalendarDates(this.baseDate);
   }
 }

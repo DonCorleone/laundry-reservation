@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, DestroyRef, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Observable, of} from 'rxjs';
 import {MatGridList, MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
@@ -39,7 +39,7 @@ import {Tile} from "./models/tile";
     MatIcon,
   ],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
 
   readonly CellType = cellType;
 
@@ -161,10 +161,5 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   onUsernameChange(user: ILaundryUser) {
     this.laundryUser.set(user);
-  }
-
-  ngAfterViewInit(): void {
-    const directive = new ScrollSectionDirective(this.timeTableRef.nativeElement, this.scrollManager);
-    this.scrollManager.register(directive);
   }
 }

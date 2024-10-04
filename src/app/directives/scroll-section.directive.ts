@@ -1,11 +1,11 @@
 import { ScrollManagerDirective } from './scroll-manager.directive';
-import { Directive, ElementRef, Input } from '@angular/core';
+import {Directive, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
 
 @Directive({
   selector: '[appScrollSection]',
   standalone: true,
 })
-export class ScrollSectionDirective {
+export class ScrollSectionDirective implements OnInit, OnDestroy {
   @Input('appScrollSection') id: string | number;
 
   constructor(
@@ -22,8 +22,10 @@ export class ScrollSectionDirective {
   }
 
   scroll() {
-    this.host.nativeElement.scrollIntoView({
-      behavior: 'smooth',
-    });
+    setTimeout(() => {
+      this.host.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }, 100);
   }
 }
