@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {IHour} from "../models/hour";
+import {IHour} from "../../models/hour";
 
 @Component({
   selector: 'app-hour-header',

@@ -3,8 +3,8 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatIcon} from "@angular/material/icon";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {IHour} from "../models/hour";
-import {ILaundryUser} from "../models/user";
+import {IHour} from "../../models/hour";
+import {ILaundryUser} from "../../models/user";
 
 @Component({
   selector: 'app-hour',
