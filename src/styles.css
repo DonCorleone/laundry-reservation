@@ -5,6 +5,7 @@ html,
 body {
   height: 100%;
   background-color: rgb(62, 110, 144);
+  color: rgba(234, 219, 192, 100%) !important;
 }
 body {
   margin: 0;
@@ -12,15 +13,18 @@ body {
 }
 
 .reserved {
-  background-color: #943a4d !important;
-  opacity: 30%;
+  background-color: rgba(76, 66, 61, 0.3) !important; /* 30% opacity */
+  color: rgba(234, 219, 192, 1) !important; /* Full color */
 }
 .reserved-max {
-  opacity: 70% !important;
+  background-color: rgba(76, 66, 61, 0.7) !important; /* 70% opacity */
+  color: rgba(234, 219, 192, 1) !important; /* Full color */
 }
 .reserved-full {
-  opacity: 100% !important;
+  background-color: rgba(76, 66, 61, 1) !important; /* 100% opacity */
+  color: rgba(234, 219, 192, 1) !important; /* Full color */
 }
+
 .mat-calendar-body-selected {
   background-color: #428f70 !important;
 }

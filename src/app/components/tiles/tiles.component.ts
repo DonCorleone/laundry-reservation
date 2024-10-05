@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, input, OnInit, signal} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, input, OnInit} from '@angular/core';
 import {HourComponent} from "../hour/hour.component";
 import {HourHeaderComponent} from "../hour-header/hour-header.component";
 import {MatGridList, MatGridTile} from "@angular/material/grid-list";
@@ -20,6 +20,7 @@ import {ILaundryUser} from "../../models/user";
 @Component({
   selector: 'app-tiles',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HourComponent,
     HourHeaderComponent,
@@ -30,7 +31,6 @@ import {ILaundryUser} from "../../models/user";
     ScrollSectionDirective
   ],
   templateUrl: './tiles.component.html',
-  styles: ``
 })
 export class TilesComponent implements OnInit{
 
@@ -49,11 +49,28 @@ export class TilesComponent implements OnInit{
     protected reservationService: ReservationService,
     private matIconReg: MatIconRegistry,
     private subjectService: SubjectService,
+    protected changeDetectionRef: ChangeDetectorRef
   ) {
     this.matIconReg.registerFontClassAlias('fontawesome', 'fa');
   }
-  clickMachineColumn($event: MouseEvent, subject: ISubject) {
-    console.log($event);
+
+  ngOnInit(): void {
+    combineLatest([
+      this.tileService.tiles$,
+      this.subjectService.subjects$,
+      this.reservationService.getReservations()
+    ]).pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([tiles, subjects, reservations]) => {
+        if (!subjects) {
+          return;
+        }
+        this.tiles = tiles;
+        this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1;
+        this.signalRService.setMessages(reservations);
+        this.changeDetectionRef.markForCheck();
+      });
+  }
+  protected clickMachineColumn($event: MouseEvent, subject: ISubject) {
     const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
       .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
@@ -71,13 +88,14 @@ export class TilesComponent implements OnInit{
             connectionId: this.signalRService.connectionId
           },);
         });
+
+      this.changeDetectionRef.markForCheck();
     } else {
       // Show message to the user
       this.openSnackBar('This machine has already any reservations');
     }
   }
-
-  onHourSelected($event: boolean, tile: Tile) {
+  protected onHourSelected($event: boolean, tile: Tile) {
     const reservation = {
       id: tile.id,
       name: this.laundryUser().key,
@@ -90,9 +108,9 @@ export class TilesComponent implements OnInit{
     } else {
       this.reservationService.deleteReservation(reservation);
     }
+    this.changeDetectionRef.markForCheck();
   }
-
-  clickHourHeader($event: MouseEvent, hour: IHour) {
+  protected clickHourHeader($event: MouseEvent, hour: IHour) {
     console.log($event);
     // verify if all tiles with the same hour are free or mine
     const isFree = this.tiles
@@ -113,31 +131,18 @@ export class TilesComponent implements OnInit{
             connectionId: this.signalRService.connectionId
           },);
         });
+        this.changeDetectionRef.markForCheck();
     } else {
       // Show message to the user
       this.openSnackBar('This hour has already any reservations');
     }
   }
-
-  clickSubjectIcon($event: MouseEvent, subject: ISubject) {
-    console.log($event);
+  protected clickSubjectIcon($event: MouseEvent, subject: ISubject) {
+    $event.preventDefault();
+    $event.stopPropagation();
     this.openSnackBar(subject.name, 'bottom');
   }
   private openSnackBar(message: string, position: 'top' | 'bottom' = 'top') {
     this._snackBar.open(message, '', { duration: 1500, verticalPosition: position });
-  }
-
-  ngOnInit(): void {
-    combineLatest([
-      this.tileService.tiles$,
-      this.subjectService.subjects$,
-      this.reservationService.getReservations()
-    ]).pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([tiles, subjects, reservations]) => {
-        this.tiles = tiles;
-        this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1;
-        this.signalRService.setMessages(reservations);
-     //   this.reservationEntries = reservations;
-      });
   }
 }

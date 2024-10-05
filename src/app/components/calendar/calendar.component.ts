@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, output, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, output, ViewChild} from '@angular/core';
 import { DateSelectorService } from '../../services/date-selector.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
@@ -14,6 +14,7 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './calendar.component.html',
   styles: ``,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
 })
 export class CalendarComponent implements AfterViewInit {
@@ -27,7 +28,10 @@ export class CalendarComponent implements AfterViewInit {
   @ViewChild('calendarFour') calendarFour: MatCalendar<Date>;
   @ViewChild('calendarFive') calendarFive: MatCalendar<Date>;
 
-  constructor(private dateSelectorService: DateSelectorService, private signalRService: SignalRService, private scrollX: ScrollManagerDirective) {
+  constructor(private dateSelectorService: DateSelectorService,
+              private signalRService: SignalRService,
+              private scrollX: ScrollManagerDirective,
+              private changeDetectionRef: ChangeDetectorRef) {
     this.baseDate = new Date();
   }
 
@@ -49,6 +53,7 @@ export class CalendarComponent implements AfterViewInit {
 
   selectionFinished(event: Date | null) {
     this.dateSelectorService.setSelectedDate(new Date(event));
+    this.changeDetectionRef.markForCheck();
     const anchor = new ScrollAnchorDirective(this.scrollX);
     anchor.id = 'timeTable';
     anchor.scroll();

@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal} from '@angular/core';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
@@ -10,13 +10,14 @@ import {ScrollAnchorDirective} from './directives/scroll-anchor.directive';
 import {SignalRService} from './services/signalr.service';
 import {AuthComponent} from "./components/auth/auth.component";
 import {MatIcon, MatIconRegistry} from "@angular/material/icon";
-import {IReservation} from "./models/reservation";
 import {ILaundryUser} from "./models/user";
 import {TilesComponent} from "./components/tiles/tiles.component";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ScrollSectionDirective, ScrollManagerDirective],
   imports: [
     CommonModule,
@@ -35,19 +36,12 @@ import {TilesComponent} from "./components/tiles/tiles.component";
 export class AppComponent implements OnInit {
 
   laundryUser = signal<ILaundryUser>(null);
-  color: string = 'black';
-
-  public reservationEntries: IReservation[];
-
-
-  @ViewChild('gridList') timeTableRef: any;
 
   constructor(
     protected signalRService: SignalRService,
-    private matIconReg: MatIconRegistry
-  ) {
-
-  }
+    private matIconReg: MatIconRegistry,
+    private changeDetectionRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
@@ -58,5 +52,6 @@ export class AppComponent implements OnInit {
 
   onUsernameChange(user: ILaundryUser) {
     this.laundryUser.set(user);
+    this.changeDetectionRef.detectChanges();
   }
 }

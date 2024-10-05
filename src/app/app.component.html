@@ -1,6 +1,9 @@
 <div class="bg-terre-ombre-brule w-full" appScrollManager>
   <app-auth (value)="onUsernameChange($event)" />
-  <app-calendar *ngIf="signalRService.hourPerDate()"
-                appScrollSection="calendar" />
-  <app-tiles [laundryUser]="laundryUser()" />
+  @if (laundryUser()) {
+    @if (signalRService.hourPerDate()) {
+      <app-calendar appScrollSection="calendar" />
+    }
+    <app-tiles [laundryUser]="laundryUser()" />
+  }
 </div>
