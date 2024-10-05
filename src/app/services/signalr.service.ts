@@ -1,4 +1,4 @@
-import {Injectable, signal} from '@angular/core';
+import {Injectable, isDevMode, signal} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {BehaviorSubject, Observable} from "rxjs";
 import {IReservation} from "../models/reservation";
@@ -19,6 +19,14 @@ export class SignalRService {
   connectionId: string;
 
   constructor() {
+
+
+      if (isDevMode()){
+        console.log('Development Mode');
+      }else{
+        console.log('Production Mode');
+      }
+
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${baseUrl}/hub`, {
