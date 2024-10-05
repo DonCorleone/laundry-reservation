@@ -3,13 +3,12 @@ import * as signalR from '@microsoft/signalr';
 import {BehaviorSubject, Observable} from "rxjs";
 import {IReservation} from "../models/reservation";
 
-const baseUrl = 'http://localhost:3000'; // json-server
-// const baseUrl = 'http://localhost:5263'; // dotNet
-// const baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
 @Injectable({
   providedIn: 'root',
 })
 export class SignalRService {
+
+  private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
   private hubConnection: signalR.HubConnection;
   private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
 
@@ -19,17 +18,12 @@ export class SignalRService {
   connectionId: string;
 
   constructor() {
-
-
-      if (isDevMode()){
-        console.log('Development Mode');
-      }else{
-        console.log('Production Mode');
-      }
-
-
+    if (isDevMode()) {
+      this.baseUrl = 'http://localhost:3000'; // json-server
+      this.baseUrl = 'http://localhost:5263'; // dotNet
+    }
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${baseUrl}/hub`, {
+      .withUrl(`${this.baseUrl}/hub`, {
         withCredentials: true,
       })
       .build();
