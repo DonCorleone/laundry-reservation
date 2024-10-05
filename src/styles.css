@@ -31,3 +31,7 @@ body {
 .mat-calendar-previous-button, .mat-calendar-next-button {
   display: none !important;
 }
+
+.mdc-linear-progress__bar-inner{
+  border-color: rgb(146, 148, 148) !important;
+}

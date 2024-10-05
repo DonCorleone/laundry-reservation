@@ -16,6 +16,10 @@ import {SignalRService} from "../../services/signalr.service";
 import {ReservationService} from "../../services/reservation.service";
 import {SubjectService} from "../../services/subject.service";
 import {ILaundryUser} from "../../models/user";
+import {Dialog} from "@angular/cdk/dialog";
+import {SubjectInfoComponent} from "../subject-info/subject-info.component";
+import {IDialogData} from 'src/app/models/dialog-data';
+import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-tiles',
@@ -28,11 +32,14 @@ import {ILaundryUser} from "../../models/user";
     MatGridTile,
     MatIcon,
     ScrollAnchorDirective,
-    ScrollSectionDirective
+    ScrollSectionDirective,
+    MatFabButton,
+    MatMiniFabButton,
+    MatButton
   ],
   templateUrl: './tiles.component.html',
 })
-export class TilesComponent implements OnInit{
+export class TilesComponent implements OnInit {
 
   laundryUser = input<ILaundryUser>();
   tiles: Tile[] = [];
@@ -42,6 +49,7 @@ export class TilesComponent implements OnInit{
 
   private _snackBar = inject(MatSnackBar);
   private destroyRef = inject(DestroyRef);
+  private dialog = inject(Dialog);
 
   constructor(
     private tileService: TileService,
@@ -70,6 +78,7 @@ export class TilesComponent implements OnInit{
         this.changeDetectionRef.markForCheck();
       });
   }
+
   protected clickMachineColumn($event: MouseEvent, subject: ISubject) {
     const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
@@ -92,9 +101,13 @@ export class TilesComponent implements OnInit{
       this.changeDetectionRef.markForCheck();
     } else {
       // Show message to the user
-      this.openSnackBar('This machine has already any reservations');
+      const data: IDialogData = {
+        body: 'This machine has already any reservations',
+      }
+      this.openDialog(data);
     }
   }
+
   protected onHourSelected($event: boolean, tile: Tile) {
     const reservation = {
       id: tile.id,
@@ -110,6 +123,7 @@ export class TilesComponent implements OnInit{
     }
     this.changeDetectionRef.markForCheck();
   }
+
   protected clickHourHeader($event: MouseEvent, hour: IHour) {
     console.log($event);
     // verify if all tiles with the same hour are free or mine
@@ -131,18 +145,30 @@ export class TilesComponent implements OnInit{
             connectionId: this.signalRService.connectionId
           },);
         });
-        this.changeDetectionRef.markForCheck();
+      this.changeDetectionRef.markForCheck();
     } else {
-      // Show message to the user
-      this.openSnackBar('This hour has already any reservations');
+      const data: IDialogData = {
+        body: 'This hour has already any reservations',
+      }
+      this.openDialog(data);
     }
   }
+
   protected clickSubjectIcon($event: MouseEvent, subject: ISubject) {
     $event.preventDefault();
     $event.stopPropagation();
-    this.openSnackBar(subject.name, 'bottom');
+    const data: IDialogData = {
+      body: subject.name,
+      imageUrl: subject.image
+    }
+    this.openDialog(data);
   }
-  private openSnackBar(message: string, position: 'top' | 'bottom' = 'top') {
-    this._snackBar.open(message, '', { duration: 1500, verticalPosition: position });
+
+  private openDialog(data: IDialogData) {
+    const ref = this.dialog.open(
+      SubjectInfoComponent, {
+        minWidth: '300px',
+        data,
+      });
   }
 }

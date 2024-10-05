@@ -3,4 +3,5 @@ export interface ISubject {
   name: string;
   icon: string;
   avatar: string;
+  image: string;
 }
