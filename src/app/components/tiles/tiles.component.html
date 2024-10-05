@@ -22,10 +22,10 @@
         </div>
       } @else if (tile.cellType == CellType.COLUMN_HEADER) {
         <div (click)="clickMachineColumn($event, tile.subject)" class="flex flex-col md:flex-row place-items-center place-content-end md:place-content-center w-full h-full text-terre-ombre-brule bg-ceruleen-moyen hover:bg-opacity-50  cursor-s-resize">
-          <mat-icon (click)="clickSubjectIcon($event, tile.subject)" class="text-terre-ombre-brule cursor-help">{{tile.subject.icon}}</mat-icon>
-          <div (click)="clickSubjectIcon($event, tile.subject)" class="hover:bg-opacity-5 e cursor-help">
+          <button mat-stroked-button (click)="clickSubjectIcon($event, tile.subject)" class="cursor-help bg-bleu-ceruleen-pale text-terre-ombre-brule hover:bg-opacity-50">
             {{ tile.text }}
-          </div>
+            <mat-icon class="">{{tile.subject.icon}}</mat-icon>
+          </button>
         </div>
       }
       @if (tile.cellType == CellType.ROW_HEADER) {
