@@ -1,4 +1,4 @@
-import {Component, OnInit, output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {User} from "netlify-identity-widget";
 import {NetlifyIdentityService} from "../../services/netlify-identity.service";
@@ -12,6 +12,7 @@ import {ILaundryUser} from "../../models/user";
 @Component({
   selector: 'app-auth',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgIf,
     MatFormField,
@@ -21,8 +22,13 @@ import {ILaundryUser} from "../../models/user";
     MatToolbar,
     MatButton
   ],
+  styles: `
+    span.userinfo {
+      text-wrap: auto;
+    }
+  `,
   template: `
-    <mat-toolbar class="justify-between bg-bleu-cerelueen-31">
+    <mat-toolbar class="justify-between bg-bleu-cerelueen-31 text-blanc">
       <span class="userinfo text-base font-light">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
         @if (!user) {
           <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-outremer-moyen text-terre-ombre-brule">
@@ -36,11 +42,6 @@ import {ILaundryUser} from "../../models/user";
           </button>
         }
     </mat-toolbar>
-  `,
-  styles: `
-    span.userinfo {
-      text-wrap: auto;
-    }
   `
 })
 export class AuthComponent implements OnInit {

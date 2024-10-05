@@ -32,7 +32,7 @@ export class TileService {
       this.signalRService.updatedReservation$
     ]).pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([subjects, selectedDate, reservation]) => {
-        if (!selectedDate) {
+        if (!selectedDate || !subjects) {
           return;
         }
 

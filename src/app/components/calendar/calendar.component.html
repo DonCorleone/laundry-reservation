@@ -1,5 +1,5 @@
 <div class="flex flex-row">
-  <div matRipple (click)="previousMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-ocre-rouge">
+  <div matRipple (click)="previousMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-terre-ombre-brule">
     <mat-icon>
       arrow_back_ios
     </mat-icon>
@@ -9,7 +9,7 @@
     #calendarOne
     [startView]="'month'"
     [startAt]="getNewDate(baseDate, 0)"
-    class="cal-first sm:cal-last bg-terre-ombre-brule w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+    class="cal-first sm:cal-last bg-gris-fonce w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
     [(selected)]="selected"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
@@ -17,7 +17,7 @@
     #calendarTwo
     [startView]="'month'"
     [startAt]="getNewDate(baseDate, 1)"
-    class="md:cal-last bg-terre-ombre-brule w-full hidden sm:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+    class="md:cal-last bg-gris-fonce w-full hidden sm:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
     [(selected)]="selected"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
@@ -25,7 +25,7 @@
     #calendarThree
     [startView]="'month'"
     [startAt]="getNewDate(baseDate,2)"
-    class="lg:cal-last bg-terre-ombre-brule w-full hidden md:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+    class="lg:cal-last bg-gris-fonce w-full hidden md:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
     [(selected)]="selected"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
@@ -33,7 +33,7 @@
     #calendarFour
     [startView]="'month'"
     [startAt]="getNewDate(baseDate,3)"
-    class="xl:cal-bg-terre-ombre-brule w-full hidden lg:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+    class="xl:cal-last bg-gris-fonce w-full hidden lg:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
     [(selected)]="selected"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
@@ -41,11 +41,11 @@
     #calendarFive
     [startView]="'month'"
     [startAt]="getNewDate(baseDate,4)"
-    class="2xl:cal-cal-last bg-terre-ombre-brule w-full hidden xl:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+    class="2xl:cal-last bg-gris-fonce w-full hidden xl:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
     [(selected)]="selected"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
-  <div matRipple (click)="nextMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-ocre-rouge">
+  <div matRipple (click)="nextMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-terre-ombre-brule">
     <mat-icon>
       arrow_forward_ios
     </mat-icon>

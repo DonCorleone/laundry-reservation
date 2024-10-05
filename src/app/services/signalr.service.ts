@@ -14,7 +14,7 @@ export class SignalRService {
   private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
 
   hourPerDate = signal<Map<string, number>>(null);
-  updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
+  private updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable< Record<string, string> | null> = this.updatedReservation.asObservable();
   connectionId: string;
 
