@@ -10,14 +10,15 @@
       @if (tile.cellType == CellType.X) {
         <div
           appScrollAnchor="calendar"
-          class="flex md:flex-row md:items-center pl-1 justify-around w-full h-full bg-ceruleen-moyen text-terre-ombre-brule cursor-n-resize hover:bg-opacity-50"
-        >
-          <div class="pr-1">
+          class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-gris-clair-31 hover:bg-opacity-50 cursor-n-resize">
+          <div matRipple
+               class="flex pl-1 md:pl-3 items-center md:flex-grow h-full w-full md:w-auto">
             {{ tile.text }}
           </div>
-          <div class="flex flex-col md:flex-row">
-            <mat-icon>calendar_month</mat-icon>
-            <mat-icon>arrow_circle_up</mat-icon>
+          <div matRipple
+               class="items-center justify-items-center place-content-center flex md:flex-shrink h-full w-full md:w-auto md:px-3">
+            <mat-icon class="m-0">calendar_month</mat-icon>
+            <mat-icon class="m-0">arrow_circle_up</mat-icon>
           </div>
         </div>
       } @else if (tile.cellType == CellType.COLUMN_HEADER) {
@@ -30,7 +31,7 @@
             <mat-icon class="">{{tile.subject.icon}}</mat-icon>
           </div>
           <div matRipple (click)="clickMachineColumn($event, tile.subject)"
-               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-bleu-ceruleen-pale hover:opacity-50 cursor-s-resize">
+               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-rose-clair hover:opacity-50 cursor-s-resize">
             <mat-icon class="m-0">keyboard_double_arrow_down</mat-icon>
           </div>
         </div>

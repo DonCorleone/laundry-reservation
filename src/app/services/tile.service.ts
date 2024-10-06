@@ -7,6 +7,7 @@ import {SubjectService} from "./subject.service";
 import {ISubject} from "../models/subject";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {Tile} from "../models/tile";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 export enum cellType {
   X,
   COLUMN_HEADER,
@@ -24,28 +25,37 @@ export class TileService {
   reservations = this.signalRService.getMessages();
   destroyRef = inject(DestroyRef);
 
-  constructor(private dateSelectionService: DateSelectorService, private signalRService: SignalRService, private subjectService: SubjectService) {
+  constructor(
+    private dateSelectionService: DateSelectorService,
+    private signalRService: SignalRService,
+    private subjectService: SubjectService) {
 
     combineLatest([
       this.subjectService.subjects$,
       this.dateSelectionService.selectedDate$,
-      this.signalRService.updatedReservation$
+      this.signalRService.updatedReservation$,
+      inject(BreakpointObserver)
+        .observe([
+          Breakpoints.Medium,
+          Breakpoints.Large,
+          Breakpoints.XLarge,
+        ])
     ]).pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([subjects, selectedDate, reservation]) => {
+      .subscribe(([subjects, selectedDate, reservation, desktopBreakPoint]) => {
         if (!selectedDate || !subjects) {
           return;
         }
 
-        const colspan = subjects.length > 3 ? 2 : 1;
-        const isMobile = window.innerWidth < 450;
+        const isDesktop = desktopBreakPoint.matches;
+        const colSpan = (isDesktop || subjects.length < 4) ? 1 : 2;
 
         const selectedDateStr = this.formatToISODate(selectedDate);
         const hours = this.getHours(selectedDate);
 
         const tiles = [];
-        this.addRoot(tiles, selectedDateStr, selectedDate, colspan, isMobile);
-        this.addColumnHeaders(tiles, subjects, selectedDateStr, isMobile);
-        this.addRows(tiles, subjects, hours, colspan);
+        this.addRoot(tiles, selectedDateStr, selectedDate, colSpan, !isDesktop);
+        this.addColumnHeaders(tiles, subjects, selectedDateStr, !isDesktop);
+        this.addRows(tiles, subjects, hours, colSpan);
         this.tiles.next(tiles);
 
         if (reservation) {
@@ -61,7 +71,7 @@ export class TileService {
       subject: null,
       text: selectedDate.toLocaleDateString('de-CH', {
         weekday: 'short',
-        year: 'numeric',
+        year: '2-digit',
         month: 'short',
         day: 'numeric'
       }),
