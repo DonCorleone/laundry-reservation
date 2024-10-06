@@ -20,6 +20,7 @@ import {Dialog} from "@angular/cdk/dialog";
 import {SubjectInfoComponent} from "../subject-info/subject-info.component";
 import {IDialogData} from 'src/app/models/dialog-data';
 import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/button";
+import {MatRipple} from "@angular/material/core";
 
 @Component({
   selector: 'app-tiles',
@@ -35,7 +36,8 @@ import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/butto
     ScrollSectionDirective,
     MatFabButton,
     MatMiniFabButton,
-    MatButton
+    MatButton,
+    MatRipple
   ],
   templateUrl: './tiles.component.html',
 })

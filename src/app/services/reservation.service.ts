@@ -9,7 +9,7 @@ export class ReservationService {
   constructor(private httpClient: HttpClient) {
     if (isDevMode()) {
       this.baseUrl = 'http://localhost:3000'; // json-server
-      this.baseUrl = 'http://localhost:5263'; // dotNet
+      // this.baseUrl = 'http://localhost:5263'; // dotNet
     }
   }
 

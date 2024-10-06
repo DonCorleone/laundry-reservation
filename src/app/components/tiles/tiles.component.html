@@ -10,22 +10,29 @@
       @if (tile.cellType == CellType.X) {
         <div
           appScrollAnchor="calendar"
-          class="flex md:flex-row items-end md:items-center pl-1 justify-around w-full h-full bg-ceruleen-moyen text-terre-ombre-brule cursor-n-resize hover:bg-opacity-50"
+          class="flex md:flex-row md:items-center pl-1 justify-around w-full h-full bg-ceruleen-moyen text-terre-ombre-brule cursor-n-resize hover:bg-opacity-50"
         >
           <div class="pr-1">
             {{ tile.text }}
           </div>
           <div class="flex flex-col md:flex-row">
             <mat-icon>calendar_month</mat-icon>
-            <mat-icon>stat_2</mat-icon>
+            <mat-icon>arrow_circle_up</mat-icon>
           </div>
         </div>
       } @else if (tile.cellType == CellType.COLUMN_HEADER) {
-        <div (click)="clickMachineColumn($event, tile.subject)" class="flex flex-col md:flex-row place-items-center place-content-end md:place-content-center w-full h-full text-terre-ombre-brule bg-ceruleen-moyen hover:bg-opacity-50  cursor-s-resize">
-          <button mat-stroked-button (click)="clickSubjectIcon($event, tile.subject)" class="cursor-help bg-bleu-ceruleen-pale text-terre-ombre-brule hover:bg-opacity-50">
+        <div (click)="clickMachineColumn($event, tile.subject)"
+             class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-ceruleen-moyen hover:bg-opacity-50">
+
+          <div matRipple (click)="clickSubjectIcon($event, tile.subject)"
+               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full cursor-help">
             {{ tile.text }}
             <mat-icon class="">{{tile.subject.icon}}</mat-icon>
-          </button>
+          </div>
+          <div matRipple (click)="clickMachineColumn($event, tile.subject)"
+               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-bleu-ceruleen-pale hover:opacity-50 cursor-s-resize">
+            <mat-icon class="m-0">keyboard_double_arrow_down</mat-icon>
+          </div>
         </div>
       }
       @if (tile.cellType == CellType.ROW_HEADER) {
