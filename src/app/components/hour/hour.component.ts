@@ -31,7 +31,7 @@ import {ILaundryUser} from "../../models/user";
           : 'bg-vert-clair text-terre-ombre-brule'
         "
         [ngClass]="{'cursor-all-scroll': isMine, 'cursor-cell': isFree, 'cursor-help': !isMine && !isFree}"
-        class="h-full text-center flex justify-center items-center hover:bg-opacity-50"
+        class="flex justify-center items-center h-full hover:bg-opacity-50"
         (tap)="onTap($event)"
       >
         @if (hour().selectedBy) {

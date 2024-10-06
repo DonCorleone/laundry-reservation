@@ -20,6 +20,8 @@ import {Dialog} from "@angular/cdk/dialog";
 import {SubjectInfoComponent} from "../subject-info/subject-info.component";
 import {IDialogData} from 'src/app/models/dialog-data';
 import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/button";
+import {MatRipple} from "@angular/material/core";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-tiles',
@@ -35,7 +37,8 @@ import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/butto
     ScrollSectionDirective,
     MatFabButton,
     MatMiniFabButton,
-    MatButton
+    MatButton,
+    MatRipple
   ],
   templateUrl: './tiles.component.html',
 })
@@ -47,9 +50,9 @@ export class TilesComponent implements OnInit {
   protected readonly CellType = cellType;
   protected colsAmount: number = 0;
 
-  private _snackBar = inject(MatSnackBar);
   private destroyRef = inject(DestroyRef);
   private dialog = inject(Dialog);
+  private isDesktop: boolean;
 
   constructor(
     private tileService: TileService,
@@ -60,9 +63,20 @@ export class TilesComponent implements OnInit {
     protected changeDetectionRef: ChangeDetectorRef
   ) {
     this.matIconReg.registerFontClassAlias('fontawesome', 'fa');
+    inject(BreakpointObserver)
+      .observe([
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .pipe(takeUntilDestroyed())
+      .subscribe(result => {
+        this.isDesktop = result.matches;
+      });
   }
 
   ngOnInit(): void {
+
     combineLatest([
       this.tileService.tiles$,
       this.subjectService.subjects$,
@@ -73,7 +87,8 @@ export class TilesComponent implements OnInit {
           return;
         }
         this.tiles = tiles;
-        this.colsAmount = subjects.length > 3 ? subjects.length + 2 : subjects.length + 1;
+        const colSpanRowHeader = (this.isDesktop || subjects.length < 4) ? 1 : 2;
+        this.colsAmount = subjects.length + colSpanRowHeader;
         this.signalRService.setMessages(reservations);
         this.changeDetectionRef.markForCheck();
       });
