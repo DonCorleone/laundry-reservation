@@ -8,6 +8,8 @@ import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatToolbar} from "@angular/material/toolbar";
 import {ILaundryUser} from "../../models/user";
+import {MatGridList} from "@angular/material/grid-list";
+import {ScrollSectionDirective} from "../../directives/scroll-section.directive";
 
 @Component({
   selector: 'app-auth',
@@ -20,7 +22,9 @@ import {ILaundryUser} from "../../models/user";
     MatIcon,
     MatFabButton,
     MatToolbar,
-    MatButton
+    MatButton,
+    MatGridList,
+    ScrollSectionDirective
   ],
   styles: `
     span.userinfo {
@@ -28,7 +32,7 @@ import {ILaundryUser} from "../../models/user";
     }
   `,
   template: `
-    <mat-toolbar class="justify-between bg-bleu-cerelueen-31 text-blanc">
+    <mat-toolbar appScrollSection="user" class="justify-between bg-bleu-cerelueen-31 text-blanc">
       <span class="userinfo text-base font-light">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
         @if (!user) {
           <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-outremer-moyen text-terre-ombre-brule">
