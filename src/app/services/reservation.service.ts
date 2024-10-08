@@ -8,8 +8,8 @@ export class ReservationService {
   private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
   constructor(private httpClient: HttpClient) {
     if (isDevMode()) {
-      this.baseUrl = 'http://localhost:3000'; // json-server
-      // this.baseUrl = 'http://localhost:5263'; // dotNet
+      // this.baseUrl = 'http://localhost:3000'; // json-server
+      this.baseUrl = 'http://localhost:5263'; // dotNet
     }
   }
 
