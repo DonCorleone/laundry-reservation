@@ -18,7 +18,7 @@ import {ILaundryUser} from "../../models/user";
 @Component({
   selector: 'app-hour',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, MatIcon],
   template: `
     @if (hour) {
