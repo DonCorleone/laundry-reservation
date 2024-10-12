@@ -1,4 +1,14 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  output,
+  signal,
+  ViewChild
+} from '@angular/core';
 import { DateSelectorService } from '../../services/date-selector.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
@@ -18,7 +28,6 @@ import { MatIcon } from '@angular/material/icon';
   imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
 })
 export class CalendarComponent implements AfterViewInit {
-  selected: Date | null;
   baseDate: Date;
   calendarDates: Date[] = [];
 
