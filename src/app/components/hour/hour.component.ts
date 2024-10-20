@@ -1,12 +1,7 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component, effect,
-  inject,
-  Input,
-  input, OnChanges,
-  OnInit,
-  output, SimpleChanges
+  Component, inject,
+  input, output
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -24,12 +19,10 @@ import {ILaundryUser} from "../../models/user";
     @if (hour) {
       @let isFree = !hour().selectedBy;
       @let isMine = hour().selectedBy == user().key;
+      @let bgColor = isFree ? 'bg-vert-anglais-pale' : isMine ? 'bg-vert-anglais' : 'bg-vert-anglais-claire';
+      @let textColor = isFree ? 'text-terre-ombre-brule' : 'text-blanc';
       <div
-        [class]="
-        hour().selectedBy
-          ? 'bg-rouge-rubia text-blanc'
-          : 'bg-vert-clair text-terre-ombre-brule'
-        "
+        [class]="bgColor + ' ' + textColor"
         [ngClass]="{'cursor-all-scroll': isMine, 'cursor-cell': isFree, 'cursor-help': !isMine && !isFree}"
         class="flex justify-center items-center h-full hover:bg-opacity-50"
         (tap)="onTap($event)"

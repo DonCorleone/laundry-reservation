@@ -30,6 +30,7 @@ import { MatIcon } from '@angular/material/icon';
 export class CalendarComponent implements AfterViewInit {
   baseDate: Date;
   calendarDates: Date[] = [];
+  protected selectedDate: Date;
 
   @ViewChild('calendarOne') calendarOne: MatCalendar<Date>;
   @ViewChild('calendarTwo') calendarTwo: MatCalendar<Date>;
@@ -61,7 +62,8 @@ export class CalendarComponent implements AfterViewInit {
   };
 
   selectionFinished(event: Date | null) {
-    this.dateSelectorService.setSelectedDate(new Date(event));
+    this.selectedDate = new Date(event)
+    this.dateSelectorService.setSelectedDate(this.selectedDate);
     this.changeDetectionRef.markForCheck();
     const anchor = new ScrollAnchorDirective(this.scrollX);
     anchor.id = 'timeTable';

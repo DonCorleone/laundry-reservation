@@ -23,15 +23,15 @@
         </div>
       } @else if (tile.cellType == CellType.COLUMN_HEADER) {
         <div (click)="clickMachineColumn($event, tile.subject)"
-             class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-ceruleen-moyen hover:bg-opacity-50">
+             class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-ocre-rouge-claire hover:bg-opacity-50">
 
           <div matRipple (click)="clickSubjectIcon($event, tile.subject)"
-               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full cursor-help">
+               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full border-r-terre-ombre-brule border-r cursor-help">
             {{ tile.text }}
             <mat-icon class="">{{tile.subject.icon}}</mat-icon>
           </div>
           <div matRipple (click)="clickMachineColumn($event, tile.subject)"
-               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-rose-clair hover:opacity-50 cursor-s-resize">
+               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-terre-sienne-claire-31 hover:opacity-50 cursor-s-resize">
             <mat-icon class="m-0">keyboard_double_arrow_down</mat-icon>
           </div>
         </div>
@@ -40,7 +40,7 @@
         <app-hour-header
           [hour]="tile.hour"
           (click)="clickHourHeader($event, tile.hour)"
-          class="w-full h-full justify-items-center bg-vert-59 text-blanc hover:bg-opacity-50 cursor-e-resize"
+          class="w-full h-full justify-items-center bg-rose-pale text-terre-ombre-brule hover:bg-opacity-50 cursor-e-resize"
         />
       } @else if (tile.cellType == CellType.HOUR) {
         <app-hour
