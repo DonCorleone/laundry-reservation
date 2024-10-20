@@ -32,15 +32,15 @@ import {ScrollSectionDirective} from "../../directives/scroll-section.directive"
     }
   `,
   template: `
-    <mat-toolbar appScrollSection="user" class="justify-between bg-bleu-cerelueen-31 text-blanc">
+    <mat-toolbar appScrollSection="user" class="justify-between bg-outremer-moyen text-terre-ombre-brule">
       <span class="userinfo text-base font-light">{{ user ? 'User: ' + createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
         @if (!user) {
-          <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-outremer-moyen text-terre-ombre-brule">
+          <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-bleu-outremer-31 text-blanc">
             Login
             <mat-icon>login</mat-icon>
           </button>
         } @else {
-          <button mat-stroked-button aria-label="" (click)="logout()" class="bg-outremer-moyen text-terre-ombre-brule">
+          <button mat-stroked-button aria-label="" (click)="logout()" class="bg-bleu-outremer-31 text-blanc">
             Logout
             <mat-icon>logout</mat-icon>
           </button>

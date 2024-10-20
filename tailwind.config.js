@@ -6,11 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'bleu-ceruleen-pale': '#c6d5cc',
-        'terre-ombre-brule': '#4c423d',
-        'vert-59': '#428f70',
-        'rouge-rubia': '#943a4d',
-        'vert-clair': '#abc17a',
+        'bleu-ceruleen-pale': 'rgb(198, 213, 204)',
+        'terre-ombre-brule': 'rgb(76, 66, 61)',
+        'vert-59': 'rgb(66, 143, 112)',
+        'rouge-rubia': 'rgb(148, 58, 77)',
+        'vert-clair': 'rgb(171, 193, 122)',
         'gris-fonce': 'rgb(94, 96, 97)',
         'rose-clair': 'rgb(214, 175, 166)',
         'bleu-outremer-31': 'rgb(77, 106, 168)',
@@ -26,6 +26,7 @@ module.exports = {
         'vert-anglais-claire': 'rgb(145, 175, 161)',
         'vert-anglais-pale': 'rgb(190, 203, 183)',
         'vert-jaune-clair': 'rgb(196, 211, 155)',
+        'ocre': 'rgb(234, 207, 166)',
         'ocre-rouge-moyen': 'rgb(205, 152, 134)',
         'ocre-rouge-claire': 'rgb(219, 190, 170)',
         'ocre-rouge': 'rgb(139, 77, 62)',
@@ -43,6 +44,7 @@ module.exports = {
         'outremer-pale': 'rgb(182, 198, 206)',
         'outremer-moyen': 'rgb(143, 171, 201)',
         'outremer-clair': 'rgb(171, 189, 200)',
+        'outremer-gris':'rgb(198, 213, 204)'
       },
     }
   },

@@ -1,5 +1,5 @@
 <div class="flex flex-row">
-  <div matRipple (click)="previousMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-terre-ombre-brule">
+  <div matRipple (click)="previousMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-bleu-outremer-31">
     <mat-icon>
       arrow_back_ios
     </mat-icon>
@@ -9,7 +9,7 @@
     #calendarOne
     [startView]="'month'"
     [startAt]="getNewDate(baseDate, 0)"
-    class="cal-first sm:cal-last bg-gris-fonce w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
+    class="cal-first sm:cal-last bg-vert-jaune-clair w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-terre-ombre-brule"
     [dateClass]="dateClass"
     [selected]="selectedDate"
     (selectedChange)="selectionFinished($event)"
@@ -18,31 +18,31 @@
     #calendarTwo
     [startView]="'month'"
     [startAt]="getNewDate(baseDate, 1)"
-    class="md:cal-last bg-gris-fonce w-full hidden sm:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
+    class="md:cal-last bg-vert-jaune-clair w-full hidden sm:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-terre-ombre-brule"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
   <mat-calendar
     #calendarThree
     [startView]="'month'"
     [startAt]="getNewDate(baseDate,2)"
-    class="lg:cal-last bg-gris-fonce w-full hidden md:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
+    class="lg:cal-last bg-vert-jaune-clair w-full hidden md:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-terre-ombre-brule"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
   <mat-calendar
     #calendarFour
     [startView]="'month'"
     [startAt]="getNewDate(baseDate,3)"
-    class="xl:cal-last bg-gris-fonce w-full hidden lg:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
+    class="xl:cal-last bg-vert-jaune-clair w-full hidden lg:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-terre-ombre-brule"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
   <mat-calendar
     #calendarFive
     [startView]="'month'"
     [startAt]="getNewDate(baseDate,4)"
-    class="2xl:cal-last bg-gris-fonce w-full hidden xl:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-blanc"
+    class="2xl:cal-last bg-vert-jaune-clair w-full hidden xl:block sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 text-terre-ombre-brule"
     [dateClass]="dateClass"
     (selectedChange)="selectionFinished($event)" />
-  <div matRipple (click)="nextMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-terre-ombre-brule">
+  <div matRipple (click)="nextMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-bleu-outremer-31">
     <mat-icon>
       arrow_forward_ios
     </mat-icon>

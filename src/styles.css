@@ -4,29 +4,43 @@
 html,
 body {
   height: 100%;
-  background-color: rgb(62, 110, 144);
-  color: rgba(234, 219, 192, 100%) !important;
+  background-color: rgb(143, 171, 201);
+  color: rgba(76, 66, 61, 100%) !important;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.mat-calendar,
+.mat-calendar-body-cell-content,
+.mat-calendar-body-label,
+.mat-calendar-body-disabled,
+.mat-calendar-period-button,
+.mat-calendar-table-header,
+th {
+  color: rgb(76, 66, 61) !important; /* Set the desired text color */
+}
+
+.mat-calendar-arrow{
+  fill: rgb(76, 66, 61) !important; /* Set the desired text color */
+}
+
 .reserved {
-  background-color: rgba(76, 66, 61, 0.3) !important; /* 30% opacity */
-  color: rgba(234, 219, 192, 1) !important; /* Full color */
+  background-color: rgb(198, 213, 204) !important; /* 30% opacity */
+  color: rgb(76, 66, 61) !important; /* Full color */
 }
 .reserved-max {
-  background-color: rgba(76, 66, 61, 0.7) !important; /* 70% opacity */
-  color: rgba(234, 219, 192, 1) !important; /* Full color */
+  background-color: rgb(168, 196, 193) !important; /* 70% opacity */
+  color: rgb(76, 66, 61) !important; /* Full color */
 }
 .reserved-full {
-  background-color: rgba(76, 66, 61, 1) !important; /* 100% opacity */
+  background-color: rgb(138, 181, 186) !important; /* 100% opacity */
   color: rgba(234, 219, 192, 1) !important; /* Full color */
 }
 
 .mat-calendar-body-selected {
-  background-color: #428f70 !important;
+  background-color: #b7a392 !important;
 }
 .mat-calendar-previous-button, .mat-calendar-next-button {
   display: none !important;

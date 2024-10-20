@@ -19,7 +19,7 @@ import {ILaundryUser} from "../../models/user";
     @if (hour) {
       @let isFree = !hour().selectedBy;
       @let isMine = hour().selectedBy == user().key;
-      @let bgColor = isFree ? 'bg-vert-anglais-pale' : isMine ? 'bg-vert-anglais' : 'bg-vert-anglais-claire';
+      @let bgColor = isFree ? 'bg-outremer-moyen' : isMine ? 'bg-bleu-cerelueen-31' : 'bg-rouge-carmin';
       @let textColor = isFree ? 'text-terre-ombre-brule' : 'text-blanc';
       <div
         [class]="bgColor + ' ' + textColor"
