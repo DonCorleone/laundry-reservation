@@ -10,7 +10,7 @@
       @if (tile.cellType == CellType.X) {
         <div
           appScrollAnchor="user"
-          class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-gris-clair-31 hover:bg-opacity-50 cursor-n-resize">
+          class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-blanc hover:bg-opacity-50 cursor-n-resize">
           <div matRipple
                class="flex pl-1 md:pl-3 items-center md:flex-grow h-full w-full md:w-auto">
             {{ tile.text }}
@@ -22,11 +22,9 @@
           </div>
         </div>
       } @else if (tile.cellType == CellType.COLUMN_HEADER) {
-        <div (click)="clickMachineColumn($event, tile.subject)"
-             class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-ocre hover:bg-opacity-50">
-
+        <div class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule hover:bg-opacity-50">
           <div matRipple (click)="clickSubjectIcon($event, tile.subject)"
-               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full border-b md:border-b-0 md:border-r border-r-terre-ombre-brule border-b-terre-ombre-brule cursor-help">
+               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-ocre border-b md:border-b-0 md:border-r border-gris-31 cursor-help">
             {{ tile.text }}
             <mat-icon class="">{{tile.subject.icon}}</mat-icon>
           </div>

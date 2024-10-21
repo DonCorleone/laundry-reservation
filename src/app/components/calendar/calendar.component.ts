@@ -57,6 +57,7 @@ export class CalendarComponent implements AfterViewInit {
         }
         return 'reserved';
       }
+      return 'free';
     }
     return '';
   };

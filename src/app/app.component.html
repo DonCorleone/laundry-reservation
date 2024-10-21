@@ -1,9 +1,12 @@
-<div class="bg-terre-ombre-brule w-full" appScrollManager>
+<div class="bg-gris-31 w-full divide-y divide-gris-fonce" appScrollManager>
   <app-auth (value)="onUsernameChange($event)" />
   @if (laundryUser()) {
     @if (signalRService.hourPerDate()) {
-      <app-calendar appScrollSection="calendar" />
+
+      <app-calendar appScrollSection="calendar" class="block" />
     }
+    <div>
     <app-tiles [laundryUser]="laundryUser()" />
+    </div>
   }
 </div>

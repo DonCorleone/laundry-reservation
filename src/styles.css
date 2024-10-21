@@ -4,7 +4,7 @@
 html,
 body {
   height: 100%;
-  background-color: rgb(143, 171, 201);
+  background-color: rgb(188, 187, 182) !important;
   color: rgba(76, 66, 61, 100%) !important;
 }
 body {
@@ -22,8 +22,29 @@ th {
   color: rgb(76, 66, 61) !important; /* Set the desired text color */
 }
 
+.mat-calendar-body-selected {
+  background-color: rgb(146, 148, 148) !important;
+}
+.mat-calendar-previous-button, .mat-calendar-next-button {
+  display: none !important;
+}
+
+.mat-calendar-table-header-divider::after {
+  background: unset !important;
+}
+
+.mat-calendar-content,
+.mat-calendar-header,
+.mat-calendar-body {
+  padding: 0 !important;
+}
 .mat-calendar-arrow{
   fill: rgb(76, 66, 61) !important; /* Set the desired text color */
+}
+
+.free {
+  background-color: rgb(143, 171, 201) !important; /* 30% opacity */
+  color: rgb(76, 66, 61) !important; /* Full color */
 }
 
 .reserved {
@@ -37,13 +58,6 @@ th {
 .reserved-full {
   background-color: rgb(138, 181, 186) !important; /* 100% opacity */
   color: rgba(234, 219, 192, 1) !important; /* Full color */
-}
-
-.mat-calendar-body-selected {
-  background-color: #b7a392 !important;
-}
-.mat-calendar-previous-button, .mat-calendar-next-button {
-  display: none !important;
 }
 
 .mdc-linear-progress__bar-inner{
