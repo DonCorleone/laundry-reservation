@@ -51,13 +51,13 @@ export class CalendarComponent implements AfterViewInit {
       const hourPerDate = this.signalRService.hourPerDate();
       if (hourPerDate.has(cellDate.toISOString())) {
         if (hourPerDate.get(cellDate.toISOString()) >= 20) {
-          return 'reserved reserved-full';
+          return 'lc-reserved lc-reserved-full';
         } else if (hourPerDate.get(cellDate.toISOString()) >= 10) {
-          return 'reserved reserved-max';
+          return 'lc-reserved lc-reserved-max';
         }
-        return 'reserved';
+        return 'lc-reserved';
       }
-      return 'free';
+      return 'lc-free';
     }
     return '';
   };

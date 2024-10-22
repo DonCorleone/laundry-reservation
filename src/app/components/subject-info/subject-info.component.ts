@@ -14,12 +14,14 @@ import { MatProgressBar } from "@angular/material/progress-bar";
     MatProgressBar
   ],
   template: `
-    <mat-progress-bar #progressBar mode="buffer" />
     <button mat-icon-button aria-label="close" (click)="dialogRef.close()">
       <mat-icon>close</mat-icon>
     </button>
+    <mat-progress-bar #progressBar mode="buffer" class="py-5"/>
     <p>{{ data.body }}</p>
-    <img [src]="data.imageUrl" [alt]="data.title" height="auto" width="300px"/>
+    @if (data.imageUrl) {
+      <img [src]="data.imageUrl" [alt]="data.title" height="auto" width="300px"/>
+    }
   `,
   styles: `
     :host {

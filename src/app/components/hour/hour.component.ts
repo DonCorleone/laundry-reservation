@@ -15,24 +15,7 @@ import {ILaundryUser} from "../../models/user";
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, MatIcon],
-  template: `
-    @if (hour) {
-      @let isFree = !hour().selectedBy;
-      @let isMine = hour().selectedBy == user().key;
-      @let bgColor = isFree ? 'bg-outremer-moyen' : isMine ? 'bg-bleu-cerelueen-31' : 'bg-rouge-carmin';
-      @let textColor = isFree ? 'text-terre-ombre-brule' : 'text-blanc';
-      <div
-        [class]="bgColor + ' ' + textColor"
-        [ngClass]="{'cursor-all-scroll': isMine, 'cursor-cell': isFree, 'cursor-help': !isMine && !isFree}"
-        class="flex justify-center items-center h-full hover:bg-opacity-50"
-        (tap)="onTap($event)"
-      >
-        @if (hour().selectedBy) {
-          {{ hour().selectedBy.split('|')[0] }}
-        }
-      </div>
-    }
-  `,
+  templateUrl: './hour.component.html',
 })
 export class HourComponent {
   hour = input.required<IHour>();
@@ -56,6 +39,6 @@ export class HourComponent {
     }
   }
   openSnackBar(message: string) {
-    this._snackBar.open(message, '', { duration: 1500, verticalPosition: 'top' });
+    this._snackBar.open(message, 'OK', { duration: 150000, verticalPosition: 'top', panelClass: ['lc-snackbar'] });
   }
 }

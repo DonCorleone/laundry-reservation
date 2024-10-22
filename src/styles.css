@@ -42,24 +42,44 @@ th {
   fill: rgb(76, 66, 61) !important; /* Set the desired text color */
 }
 
-.free {
+.lc-free {
   background-color: rgb(143, 171, 201) !important; /* 30% opacity */
   color: rgb(76, 66, 61) !important; /* Full color */
 }
 
-.reserved {
+.lc-reserved {
   background-color: rgb(198, 213, 204) !important; /* 30% opacity */
   color: rgb(76, 66, 61) !important; /* Full color */
 }
-.reserved-max {
+.lc-reserved-max {
   background-color: rgb(168, 196, 193) !important; /* 70% opacity */
   color: rgb(76, 66, 61) !important; /* Full color */
 }
-.reserved-full {
+.lc-reserved-full {
   background-color: rgb(138, 181, 186) !important; /* 100% opacity */
   color: rgba(234, 219, 192, 1) !important; /* Full color */
 }
 
 .mdc-linear-progress__bar-inner{
   border-color: rgb(146, 148, 148) !important;
+}
+
+.mat-mdc-snackbar-surface {
+  background-color: rgb(234, 219, 192) !important; /* 30% opacity */
+  color: rgba(76, 66, 61, 100%); /* Full color */
+}
+
+.mat-mdc-snack-bar-action {
+  background-color: rgb(146, 148, 148) !important;
+  color: rgb(234, 219, 192) !important;
+}
+
+.mat-mdc-snack-bar-label, .mat-mdc-snack-bar-action {
+  font-size: large !important;
+  line-height: 28px;
+}
+
+.lc-snackbar {
+  position: relative !important;
+  top: 20vh !important;
 }
