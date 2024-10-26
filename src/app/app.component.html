@@ -1,4 +1,4 @@
-<div class="bg-gris-31 w-full divide-y divide-gris-fonce" appScrollManager>
+<div class="grid gap-0.5 sm:gap-0.5 w-full" appScrollManager>
   <app-auth (value)="onUsernameChange($event)" />
   @if (laundryUser()) {
     @if (signalRService.hourPerDate()) {

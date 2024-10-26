@@ -11,7 +11,7 @@ module.exports = {
         'vert-59': 'rgb(66, 143, 112)',
         'rouge-rubia': 'rgb(148, 58, 77)',
         'vert-clair': 'rgb(171, 193, 122)',
-        'gris-fonce': 'rgb(94, 96, 97)',
+        'gris-fonce-31': 'rgb(94, 96, 97)',
         'rose-clair': 'rgb(214, 175, 166)',
         'bleu-outremer-31': 'rgb(77, 106, 168)',
         'bleu-cerelueen-31': 'rgb(62, 110, 144)',

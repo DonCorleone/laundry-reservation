@@ -5,49 +5,55 @@
   [style.height]="(tiles && tiles.length) ? '100vh' : '100%'"
   appScrollSection="timeTable"
 >
-  @for (tile of tiles; track tile.id) {
-    <mat-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
-      @if (tile.cellType == CellType.X) {
-        <div
-          appScrollAnchor="user"
-          class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-rose-clair hover:bg-opacity-70 cursor-n-resize">
-          <div matRipple
-               class="flex pl-1 md:pl-3 items-center md:flex-grow h-full w-full md:w-auto">
-            {{ tile.text }}
+  @if (!tiles || tiles.length == 0) {
+    <div class="bg-blanc h-14 md:h-16">
+      <app-legend />
+    </div>
+  } @else {
+    @for (tile of tiles; track tile.id) {
+      <mat-grid-tile [colspan]="tile.cols" [rowspan]="tile.rows">
+        @if (tile.cellType == CellType.X) {
+          <div
+            appScrollAnchor="user"
+            class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule bg-rose-clair hover:bg-opacity-90 cursor-n-resize">
+            <div matRipple
+                 class="flex pl-1 md:pl-3 items-center md:flex-grow h-full w-full md:w-auto">
+              {{ tile.text }}
+            </div>
+            <div matRipple
+                 class="items-center justify-items-center place-content-center flex md:flex-shrink h-full w-full hover:bg-opacity-90 md:w-auto md:px-3">
+              <mat-icon class="m-0">calendar_month</mat-icon>
+              <mat-icon class="m-0">arrow_circle_up</mat-icon>
+            </div>
           </div>
-          <div matRipple
-               class="items-center justify-items-center place-content-center flex md:flex-shrink h-full w-full hover:bg-opacity-70 md:w-auto md:px-3">
-            <mat-icon class="m-0">calendar_month</mat-icon>
-            <mat-icon class="m-0">arrow_circle_up</mat-icon>
+        } @else if (tile.cellType == CellType.COLUMN_HEADER) {
+          <div class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule hover:bg-opacity-90">
+            <div matRipple (click)="clickSubjectIcon($event, tile.subject)"
+                 class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-ocre hover:bg-opacity-90 border-b md:border-b-0 md:border-r border-gris-31 cursor-help">
+              {{ tile.text }}
+              <mat-icon class="">{{tile.subject.icon}}</mat-icon>
+            </div>
+            <div matRipple (click)="clickMachineColumn($event, tile.subject)"
+                 class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-ombre-brule-clair hover:bg-opacity-90 cursor-s-resize">
+              <mat-icon class="m-0">keyboard_double_arrow_down</mat-icon>
+            </div>
           </div>
-        </div>
-      } @else if (tile.cellType == CellType.COLUMN_HEADER) {
-        <div class="flex flex-col md:flex-row place-items-center place-content-start md:place-content-center w-full h-full text-terre-ombre-brule hover:bg-opacity-70">
-          <div matRipple (click)="clickSubjectIcon($event, tile.subject)"
-               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-ocre hover:bg-opacity-70 border-b md:border-b-0 md:border-r border-gris-31 cursor-help">
-            {{ tile.text }}
-            <mat-icon class="">{{tile.subject.icon}}</mat-icon>
-          </div>
-          <div matRipple (click)="clickMachineColumn($event, tile.subject)"
-               class="items-center justify-items-center flex-1 flex place-content-center h-full w-full bg-ombre-brule-clair hover:opacity-50 cursor-s-resize">
-            <mat-icon class="m-0">keyboard_double_arrow_down</mat-icon>
-          </div>
-        </div>
-      }
-      @if (tile.cellType == CellType.ROW_HEADER) {
-        <app-hour-header
-          [hour]="tile.hour"
-          (click)="clickHourHeader($event, tile.hour)"
-          class="w-full h-full justify-items-center bg-ombre-brule-clair text-terre-ombre-brule hover:bg-opacity-70 cursor-e-resize"
-        />
-      } @else if (tile.cellType == CellType.HOUR) {
-        <app-hour
-          [hour]="tile.hour"
-          [user]="laundryUser()"
-          (selected)="onHourSelected($event, tile)"
-          class="w-full h-full"
-        />
-      }
-    </mat-grid-tile>
+        }
+        @if (tile.cellType == CellType.ROW_HEADER) {
+          <app-hour-header
+            [hour]="tile.hour"
+            (click)="clickHourHeader($event, tile.hour)"
+            class="w-full h-full justify-items-center bg-ombre-brule-clair text-terre-ombre-brule hover:bg-opacity-90 cursor-e-resize"
+          />
+        } @else if (tile.cellType == CellType.HOUR) {
+          <app-hour
+            [hour]="tile.hour"
+            [user]="laundryUser()"
+            (selected)="onHourSelected($event, tile)"
+            class="w-full h-full"
+          />
+        }
+      </mat-grid-tile>
+    }
   }
 </mat-grid-list>

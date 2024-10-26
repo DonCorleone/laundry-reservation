@@ -1,7 +1,7 @@
-<div class="flex flex-row divide-x divide-gris-fonce">
-  <div matRipple (click)="previousMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-gris-31">
+<div class="flex gap-0.5">
+  <div matRipple (click)="previousMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-gris-fonce-31">
     <mat-icon>
-      arrow_back_ios
+      chevron_left
     </mat-icon>
   </div>
   <!--mat-card class="w-full md:w-80"-->
@@ -46,9 +46,9 @@
     [dateClass]="dateClass"
     [selected]="selectedDate"
     (selectedChange)="selectionFinished($event)" />
-  <div matRipple (click)="nextMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-gris-31">
+  <div matRipple (click)="nextMonth($event)" class="w-12 place-content-center text-center cursor-pointer text-blanc bg-gris-fonce-31">
     <mat-icon>
-      arrow_forward_ios
+      chevron_right
     </mat-icon>
   </div>
 </div>

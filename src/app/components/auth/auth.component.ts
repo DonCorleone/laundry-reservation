@@ -31,22 +31,7 @@ import {ScrollSectionDirective} from "../../directives/scroll-section.directive"
       text-wrap: auto;
     }
   `,
-  template: `
-    <mat-toolbar appScrollSection="user" class="justify-between bg-ocre text-terre-ombre-brule">
-      <span class="userinfo text-base font-normal">{{ user ? createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
-        @if (!user) {
-          <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-gris-31 text-blanc">
-            Login
-            <mat-icon>login</mat-icon>
-          </button>
-        } @else {
-          <button mat-stroked-button aria-label="" (click)="logout()" class="bg-gris-31 text-blanc">
-            Logout
-            <mat-icon>logout</mat-icon>
-          </button>
-        }
-    </mat-toolbar>
-  `
+  templateUrl: 'auth.component.html'
 })
 export class AuthComponent implements OnInit {
   user: User | null = null;

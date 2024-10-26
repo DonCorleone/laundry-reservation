@@ -39,6 +39,6 @@ export class HourComponent {
     }
   }
   openSnackBar(message: string) {
-    this._snackBar.open(message, 'OK', { duration: 150000, verticalPosition: 'top', panelClass: ['lc-snackbar'] });
+    this._snackBar.open(message, 'OK', { duration: 1500, verticalPosition: 'top', panelClass: ['lc-snackbar'] });
   }
 }

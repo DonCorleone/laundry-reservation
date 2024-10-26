@@ -22,6 +22,7 @@ import {IDialogData} from 'src/app/models/dialog-data';
 import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/button";
 import {MatRipple} from "@angular/material/core";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {LegendComponent} from "../legend/legend.component";
 
 @Component({
   selector: 'app-tiles',
@@ -38,7 +39,8 @@ import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
     MatFabButton,
     MatMiniFabButton,
     MatButton,
-    MatRipple
+    MatRipple,
+    LegendComponent
   ],
   templateUrl: './tiles.component.html',
 })
