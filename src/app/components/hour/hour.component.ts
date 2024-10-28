@@ -22,7 +22,7 @@ export class HourComponent {
   user = input.required<ILaundryUser>();
 
   selected = output<boolean>();
-  private _snackBar = inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar);
 
   onTap($event: any) {
     console.log($event);
@@ -39,6 +39,6 @@ export class HourComponent {
     }
   }
   openSnackBar(message: string) {
-    this._snackBar.open(message, 'OK', { duration: 1500, verticalPosition: 'top', panelClass: ['lc-snackbar'] });
+    this.snackBar.open(message, 'OK', { duration: 1500, verticalPosition: 'top', panelClass: ['lc-snackbar'] });
   }
 }

@@ -1,4 +1,4 @@
-import {DestroyRef, inject, Injectable} from '@angular/core';
+import {DestroyRef, inject, Injectable, Signal} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {SignalRService} from "./signalr.service";
@@ -8,6 +8,7 @@ import {ISubject} from "../models/subject";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {Tile} from "../models/tile";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {IReservation} from "../models/reservation";
 export enum cellType {
   X,
   COLUMN_HEADER,
@@ -22,18 +23,14 @@ export class TileService {
   tiles = new BehaviorSubject<Tile[] | null>(null);
   tiles$: Observable<Tile[] | null> = this.tiles.asObservable();
 
-  reservations = this.signalRService.getMessages();
-  destroyRef = inject(DestroyRef);
-
-  constructor(
-    private dateSelectionService: DateSelectorService,
-    private signalRService: SignalRService,
-    private subjectService: SubjectService) {
-
+  private destroyRef = inject(DestroyRef);
+  private signalRService = inject(SignalRService);
+  private reservations: Signal<IReservation[]>;
+  constructor(){
     combineLatest([
-      this.subjectService.subjects$,
-      this.dateSelectionService.selectedDate$,
       this.signalRService.updatedReservation$,
+      inject(SubjectService).subjects$,
+      inject(DateSelectorService).selectedDate$,
       inject(BreakpointObserver)
         .observe([
           Breakpoints.Medium,
@@ -41,11 +38,12 @@ export class TileService {
           Breakpoints.XLarge,
         ])
     ]).pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([subjects, selectedDate, reservation, desktopBreakPoint]) => {
+      .subscribe(([reservation, subjects, selectedDate, desktopBreakPoint]) => {
         if (!selectedDate || !subjects) {
           return;
         }
 
+        this.reservations = this.signalRService.getMessages();
         const isDesktop = desktopBreakPoint.matches;
         const colSpan = (isDesktop || subjects.length < 4) ? 1 : 2;
 

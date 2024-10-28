@@ -35,23 +35,19 @@ import {TilesComponent} from "./components/tiles/tiles.component";
 })
 export class AppComponent implements OnInit {
 
-  laundryUser = signal<ILaundryUser>(null);
-
-  constructor(
-    protected signalRService: SignalRService,
-    private matIconReg: MatIconRegistry,
-    private changeDetectionRef: ChangeDetectorRef
-  ) {}
+  protected laundryUser = signal<ILaundryUser>(null);
+  protected signalRService = inject(SignalRService);
+  private matIconReg = inject(MatIconRegistry);
+  private changeDetectionRef = inject(ChangeDetectorRef);
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
-
     this.signalRService.startConnection();
     this.signalRService.addDataListener();
   }
 
   onUsernameChange(user: ILaundryUser) {
     this.laundryUser.set(user);
-    this.changeDetectionRef.detectChanges();
+    this.changeDetectionRef.detectChanges()
   }
 }

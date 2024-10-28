@@ -1,5 +1,5 @@
 import { ScrollManagerDirective } from './scroll-manager.directive';
-import {Directive, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
+import {Directive, ElementRef, inject, Input, OnDestroy, OnInit} from '@angular/core';
 
 @Directive({
   selector: '[appScrollSection]',
@@ -8,10 +8,8 @@ import {Directive, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
 export class ScrollSectionDirective implements OnInit, OnDestroy {
   @Input('appScrollSection') id: string | number;
 
-  constructor(
-    private host: ElementRef<HTMLElement>,
-    private manager: ScrollManagerDirective
-  ) {}
+  private host = inject(ElementRef<HTMLElement>)
+  private manager = inject(ScrollManagerDirective);
 
   ngOnInit() {
     this.manager.register(this);

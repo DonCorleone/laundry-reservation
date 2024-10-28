@@ -9,7 +9,6 @@ import {cellType, TileService} from "../../services/tile.service";
 import {ISubject} from "../../models/subject";
 import {Tile} from "../../models/tile";
 import {IHour} from "../../models/hour";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {combineLatest} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {SignalRService} from "../../services/signalr.service";
@@ -56,15 +55,14 @@ export class TilesComponent implements OnInit {
   private dialog = inject(Dialog);
   private isDesktop: boolean;
 
-  constructor(
-    private tileService: TileService,
-    protected signalRService: SignalRService,
-    protected reservationService: ReservationService,
-    private matIconReg: MatIconRegistry,
-    private subjectService: SubjectService,
-    protected changeDetectionRef: ChangeDetectorRef
-  ) {
-    this.matIconReg.registerFontClassAlias('fontawesome', 'fa');
+  private tileService = inject(TileService);
+  private signalRService = inject(SignalRService);
+  private reservationService = inject(ReservationService);
+  private subjectService = inject(SubjectService);
+  private changeDetectionRef = inject(ChangeDetectorRef);
+
+  constructor() {
+    inject(MatIconRegistry).registerFontClassAlias('fontawesome', 'fa');
     inject(BreakpointObserver)
       .observe([
         Breakpoints.Medium,
@@ -78,7 +76,6 @@ export class TilesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     combineLatest([
       this.tileService.tiles$,
       this.subjectService.subjects$,
@@ -95,7 +92,6 @@ export class TilesComponent implements OnInit {
         this.changeDetectionRef.markForCheck();
       });
   }
-
   protected clickMachineColumn($event: MouseEvent, subject: ISubject) {
     const isFree = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
@@ -124,7 +120,6 @@ export class TilesComponent implements OnInit {
       this.openDialog(data);
     }
   }
-
   protected onHourSelected($event: boolean, tile: Tile) {
     const reservation = {
       id: tile.id,
@@ -140,7 +135,6 @@ export class TilesComponent implements OnInit {
     }
     this.changeDetectionRef.markForCheck();
   }
-
   protected clickHourHeader($event: MouseEvent, hour: IHour) {
     console.log($event);
     // verify if all tiles with the same hour are free or mine
@@ -170,7 +164,6 @@ export class TilesComponent implements OnInit {
       this.openDialog(data);
     }
   }
-
   protected clickSubjectIcon($event: MouseEvent, subject: ISubject) {
     $event.preventDefault();
     $event.stopPropagation();
@@ -180,7 +173,6 @@ export class TilesComponent implements OnInit {
     }
     this.openDialog(data);
   }
-
   private openDialog(data: IDialogData) {
     const ref = this.dialog.open(
       SubjectInfoComponent, {

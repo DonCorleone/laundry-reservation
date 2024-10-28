@@ -44,8 +44,10 @@ import { MatProgressBar } from "@angular/material/progress-bar";
 export class SubjectInfoComponent implements OnInit {
 
   private readonly timeOut: number = 2500;
-  dialogRef = inject<DialogRef<string>>(DialogRef<string>);
-  data = inject(DIALOG_DATA);
+
+  protected dialogRef = inject<DialogRef<string>>(DialogRef<string>);
+  protected data = inject(DIALOG_DATA);
+
   @ViewChild('progressBar', { static: true }) progressBar!: MatProgressBar;
 
   ngOnInit(): void {

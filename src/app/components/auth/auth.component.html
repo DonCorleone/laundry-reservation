@@ -1,12 +1,12 @@
 <mat-toolbar appScrollSection="user" class="justify-between bg-ocre text-terre-ombre-brule">
   <span class="userinfo text-base font-normal">{{ user ? createUserAvatar(user) + ' - ' + user.email : 'No User found. Please Login.' }}</span>
   @if (!user) {
-    <button mat-stroked-button aria-label="" (click)="openIdentityModal()" class="bg-gris-fonce-31 text-blanc">
+    <button mat-stroked-button aria-label="" (click)="netlifyIdentityService.openModal();" class="bg-gris-fonce-31 text-blanc">
       Login
       <mat-icon>login</mat-icon>
     </button>
   } @else {
-    <button mat-stroked-button aria-label="" (click)="logout()" class="bg-gris-fonce-31 text-blanc">
+    <button mat-stroked-button aria-label="" (click)="netlifyIdentityService.logout();" class="bg-gris-fonce-31 text-blanc">
       Logout
       <mat-icon>logout</mat-icon>
     </button>

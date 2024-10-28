@@ -28,7 +28,7 @@ import { MatIcon } from '@angular/material/icon';
   imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
 })
 export class CalendarComponent implements AfterViewInit {
-  baseDate: Date;
+
   calendarDates: Date[] = [];
   protected selectedDate: Date;
 
@@ -38,12 +38,12 @@ export class CalendarComponent implements AfterViewInit {
   @ViewChild('calendarFour') calendarFour: MatCalendar<Date>;
   @ViewChild('calendarFive') calendarFive: MatCalendar<Date>;
 
-  constructor(private dateSelectorService: DateSelectorService,
-              private signalRService: SignalRService,
-              private scrollX: ScrollManagerDirective,
-              private changeDetectionRef: ChangeDetectorRef) {
-    this.baseDate = new Date();
-  }
+  private signalRService = inject(SignalRService);
+  private dateSelectorService = inject(DateSelectorService);
+  private scrollX = inject(ScrollManagerDirective);
+  private changeDetectionRef = inject(ChangeDetectorRef)
+
+  baseDate = new Date();
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
     if (view === 'month') {

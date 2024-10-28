@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {User} from "netlify-identity-widget";
 import {NetlifyIdentityService} from "../../services/netlify-identity.service";
@@ -36,8 +36,7 @@ import {ScrollSectionDirective} from "../../directives/scroll-section.directive"
 export class AuthComponent implements OnInit {
   user: User | null = null;
   value = output<ILaundryUser>();
-
-  constructor(private netlifyIdentityService: NetlifyIdentityService) {}
+  protected netlifyIdentityService = inject(NetlifyIdentityService);
 
   ngOnInit(): void {
     // Check if the user is logged in when the component initializes
@@ -45,7 +44,7 @@ export class AuthComponent implements OnInit {
 
     if (!this.user) {
       // If the user is not logged in, subscribe to login events
-      this.openIdentityModal();
+      this.netlifyIdentityService.openModal();
     } else {
       this.value.emit({
         ... this.user,
@@ -63,16 +62,8 @@ export class AuthComponent implements OnInit {
 
     this.netlifyIdentityService.onLogout(() => {
       this.user = null;
-      this.openIdentityModal();
+      this.netlifyIdentityService.openModal();
     });
-  }
-
-  openIdentityModal() {
-    this.netlifyIdentityService.openModal();
-  }
-
-  logout() {
-    this.netlifyIdentityService.logout();
   }
 
   createUserAvatar(user: User) {

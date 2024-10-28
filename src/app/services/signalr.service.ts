@@ -1,4 +1,4 @@
-import {Injectable, isDevMode, signal} from '@angular/core';
+import {Injectable, isDevMode, Signal, signal} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {BehaviorSubject, Observable} from "rxjs";
 import {IReservation} from "../models/reservation";
@@ -87,10 +87,10 @@ export class SignalRService {
     );
   }
 
-  public getMessages() {
+  public getMessages(): Signal<IReservation[]> {
     return this.reservationEntries.asReadonly(); // Expose messages as a readonly signal
   }
-  public setMessages(messages: IReservation[]) {
+  public setMessages(messages: IReservation[]):void {
     this.populateHourPerDate(messages);
     this.reservationEntries.set(messages);
   }
