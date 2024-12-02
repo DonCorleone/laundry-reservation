@@ -47,7 +47,7 @@ export class AuthComponent implements OnInit {
       this.netlifyIdentityService.openModal();
     } else {
       this.value.emit({
-        ... this.user,
+        ...this.user,
         key: this.createUserAvatar(this.user) + '|' + this.user.email
       });
     }
@@ -55,7 +55,7 @@ export class AuthComponent implements OnInit {
     this.netlifyIdentityService.onLogin((user) => {
       this.user = user;
       this.value.emit({
-        ... this.user,
+        ...this.user,
         key: this.createUserAvatar(this.user) + '|' + this.user.email
       });
     });
@@ -68,7 +68,7 @@ export class AuthComponent implements OnInit {
 
   createUserAvatar(user: User) {
     let avatar = '';
-    if (!user?.user_metadata?.full_name || !user?.email) {
+    if (!user?.user_metadata?.full_name && !user?.email) {
       return avatar;
     }
     // if the user has a fullname, use the first letter of the first name and the first letter of the last name as the avatar
@@ -79,7 +79,12 @@ export class AuthComponent implements OnInit {
       // if the user does not have a full name, use the split the email by . before the @ or _ or - or @ itself and use the first letter of each part as the avatar
       const [email] = user.email.split('@');
       const parts = email?.split(/[._-]/);
-      avatar = parts?.map(part => part[0]).join('');
+      if (parts.length > 1) {
+        avatar = parts.map(part => part[0]).join('');
+      } else {
+        // if no delimiters are found, use the first two characters of the email
+        avatar = email.substring(0, 2);
+      }
     }
     return avatar?.toUpperCase();
   }
