@@ -12,7 +12,7 @@ import {
 import { DateSelectorService } from '../../services/date-selector.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MatRipple } from '@angular/material/core';
+import {DateAdapter, MatNativeDateModule, MatRipple} from '@angular/material/core';
 import { SignalRService } from '../../services/signalr.service';
 import { ScrollAnchorDirective } from '../../directives/scroll-anchor.directive';
 import { ScrollSectionDirective } from '../../directives/scroll-section.directive';
@@ -45,6 +45,11 @@ export class CalendarComponent implements AfterViewInit {
 
   baseDate = new Date();
 
+  constructor(
+    private dateAdapter: DateAdapter<Date>,
+  ) {
+    this.dateAdapter.getFirstDayOfWeek = () => 1;
+  }
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
     if (view === 'month') {
       cellDate.setHours(0, 0, 0, 0);
