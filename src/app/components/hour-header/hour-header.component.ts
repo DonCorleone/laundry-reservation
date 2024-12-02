@@ -11,7 +11,7 @@ import {MatIcon} from "@angular/material/icon";
   template: `
     @if (hour) {
       <div class="flex flex-row justify-between items-center h-full w-full">
-        <div class="pl-1 md:pl-3">
+        <div class="pl-1 md:pl-3 leading-4">
           {{ hour.begin | date: 'HH:mm' }}-{{ hour.end | date: 'HH:mm' }}
         </div>
        <mat-icon class="pr-1 md:pr-3">keyboard_double_arrow_right</mat-icon>
