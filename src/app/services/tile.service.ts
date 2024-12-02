@@ -68,10 +68,10 @@ export class TileService {
       id: `${selectedDateStr}-x-x`,
       subject: null,
       text: selectedDate.toLocaleDateString('de-CH', {
-        weekday: 'short',
+        weekday: isMobile ? undefined: 'short',
         year: '2-digit',
         month: 'short',
-        day: 'numeric'
+        day: isMobile ? 'numeric' : '2-digit'
       }),
       cellType: cellType.X,
       cols: colspan,
