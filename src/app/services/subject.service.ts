@@ -15,7 +15,7 @@ export class SubjectService {
   constructor() {
     if (isDevMode()) {
       // this.baseUrl = 'http://localhost:3000'; // json-server
-      this.baseUrl = 'http://localhost:5263'; // dotNet
+      // this.baseUrl = 'http://localhost:5263'; // dotNet
     }
     inject(HttpClient).get<ISubject[]>(`${this.baseUrl}/api/Subjects`).pipe(
       take(1)).subscribe(subjects => this._subjects.next(subjects))

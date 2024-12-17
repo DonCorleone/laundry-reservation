@@ -20,7 +20,7 @@ export class SignalRService {
   constructor() {
     if (isDevMode()) {
       // this.baseUrl = 'http://localhost:3000'; // json-server
-      this.baseUrl = 'http://localhost:5263'; // dotNet
+      // this.baseUrl = 'http://localhost:5263'; // dotNet
     }
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}/hub`, {

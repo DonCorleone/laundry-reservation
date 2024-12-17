@@ -46,3 +46,6 @@ data/
 db.json
 db_backup.json
 
+
+# Local Netlify folder
+.netlify
