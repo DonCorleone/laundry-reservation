@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import {NgStyle} from "@angular/common";
 
 @Component({
-  selector: 'app-legend',
-  standalone: true,
-  imports: [
-    NgStyle
-  ],
-  template: `
+    selector: 'app-legend',
+    imports: [
+        NgStyle
+    ],
+    template: `
     <div class="flex flex-row items-center gap-3 h-full pl-4">
       <span>Booked:</span>
       @for (item of legendItems; let index = $index; track item.bgClass) {
@@ -17,7 +16,7 @@ import {NgStyle} from "@angular/common";
         </div>
       }
     </div>
-  `,
+  `
 })
 export class LegendComponent {
   legendItems = [

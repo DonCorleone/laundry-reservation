@@ -4,11 +4,10 @@ import {IHour} from "../../models/hour";
 import {MatIcon} from "@angular/material/icon";
 
 @Component({
-  selector: 'app-hour-header',
-  imports: [DatePipe, MatIcon],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: 'app-hour-header',
+    imports: [DatePipe, MatIcon],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
     @if (hour) {
       <div class="flex flex-row justify-between items-center h-full w-full">
         <div class="pl-1 md:pl-3 leading-4">

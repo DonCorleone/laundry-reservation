@@ -20,12 +20,11 @@ import { ScrollManagerDirective } from '../../directives/scroll-manager.directiv
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-calendar',
-  templateUrl: './calendar.component.html',
-  styles: ``,
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon],
+    selector: 'app-calendar',
+    templateUrl: './calendar.component.html',
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon]
 })
 export class CalendarComponent implements AfterViewInit {
 

@@ -14,24 +14,23 @@ import {ILaundryUser} from "./models/user";
 import {TilesComponent} from "./components/tiles/tiles.component";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ScrollSectionDirective, ScrollManagerDirective],
-  imports: [
-    CommonModule,
-    CalendarComponent,
-    MatGridListModule,
-    HourHeaderComponent,
-    HourComponent,
-    ScrollSectionDirective,
-    ScrollAnchorDirective,
-    ScrollManagerDirective,
-    AuthComponent,
-    MatIcon,
-    TilesComponent,
-  ],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [ScrollSectionDirective, ScrollManagerDirective],
+    imports: [
+        CommonModule,
+        CalendarComponent,
+        MatGridListModule,
+        HourHeaderComponent,
+        HourComponent,
+        ScrollSectionDirective,
+        ScrollAnchorDirective,
+        ScrollManagerDirective,
+        AuthComponent,
+        MatIcon,
+        TilesComponent,
+    ]
 })
 export class AppComponent implements OnInit {
 

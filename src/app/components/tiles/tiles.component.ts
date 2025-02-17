@@ -24,24 +24,23 @@ import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {LegendComponent} from "../legend/legend.component";
 
 @Component({
-  selector: 'app-tiles',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    HourComponent,
-    HourHeaderComponent,
-    MatGridList,
-    MatGridTile,
-    MatIcon,
-    ScrollAnchorDirective,
-    ScrollSectionDirective,
-    MatFabButton,
-    MatMiniFabButton,
-    MatButton,
-    MatRipple,
-    LegendComponent
-  ],
-  templateUrl: './tiles.component.html',
+    selector: 'app-tiles',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        HourComponent,
+        HourHeaderComponent,
+        MatGridList,
+        MatGridTile,
+        MatIcon,
+        ScrollAnchorDirective,
+        ScrollSectionDirective,
+        MatFabButton,
+        MatMiniFabButton,
+        MatButton,
+        MatRipple,
+        LegendComponent
+    ],
+    templateUrl: './tiles.component.html'
 })
 export class TilesComponent implements OnInit {
 

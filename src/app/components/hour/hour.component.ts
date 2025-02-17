@@ -11,11 +11,10 @@ import {IHour} from "../../models/hour";
 import {ILaundryUser} from "../../models/user";
 
 @Component({
-  selector: 'app-hour',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, MatIcon],
-  templateUrl: './hour.component.html',
+    selector: 'app-hour',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, FormsModule, MatIcon],
+    templateUrl: './hour.component.html'
 })
 export class HourComponent {
   hour = input.required<IHour>();

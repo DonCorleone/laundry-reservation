@@ -5,15 +5,14 @@ import { MatIcon } from "@angular/material/icon";
 import { MatIconButton } from "@angular/material/button";
 import { MatProgressBar } from "@angular/material/progress-bar";
 @Component({
-  selector: 'app-subject-info',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    MatIcon,
-    MatIconButton,
-    MatProgressBar
-  ],
-  template: `
+    selector: 'app-subject-info',
+    imports: [
+        NgOptimizedImage,
+        MatIcon,
+        MatIconButton,
+        MatProgressBar
+    ],
+    template: `
     <button mat-icon-button aria-label="close" (click)="dialogRef.close()">
       <mat-icon>close</mat-icon>
     </button>
@@ -23,7 +22,7 @@ import { MatProgressBar } from "@angular/material/progress-bar";
       <img [src]="data.imageUrl" [alt]="data.title" height="auto" width="300px"/>
     }
   `,
-  styles: `
+    styles: `
     :host {
       display: flex;
       flex-direction: column;

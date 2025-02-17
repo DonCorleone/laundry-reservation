@@ -12,26 +12,25 @@ import {MatGridList} from "@angular/material/grid-list";
 import {ScrollSectionDirective} from "../../directives/scroll-section.directive";
 
 @Component({
-  selector: 'app-auth',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgIf,
-    MatFormField,
-    MatInput,
-    MatIcon,
-    MatFabButton,
-    MatToolbar,
-    MatButton,
-    MatGridList,
-    ScrollSectionDirective
-  ],
-  styles: `
+    selector: 'app-auth',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        NgIf,
+        MatFormField,
+        MatInput,
+        MatIcon,
+        MatFabButton,
+        MatToolbar,
+        MatButton,
+        MatGridList,
+        ScrollSectionDirective
+    ],
+    styles: `
     span.userinfo {
       text-wrap: auto;
     }
   `,
-  templateUrl: 'auth.component.html'
+    templateUrl: 'auth.component.html'
 })
 export class AuthComponent implements OnInit {
   user: User | null = null;
