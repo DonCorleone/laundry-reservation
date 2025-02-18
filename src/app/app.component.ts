@@ -3,13 +3,10 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
 import {CommonModule} from '@angular/common';
-import {HourHeaderComponent} from './components/hour-header/hour-header.component';
-import {HourComponent} from './components/hour/hour.component';
 import {ScrollSectionDirective} from './directives/scroll-section.directive';
-import {ScrollAnchorDirective} from './directives/scroll-anchor.directive';
 import {SignalRService} from './services/signalr.service';
 import {AuthComponent} from "./components/auth/auth.component";
-import {MatIcon, MatIconRegistry} from "@angular/material/icon";
+import {MatIconRegistry} from "@angular/material/icon";
 import {ILaundryUser} from "./models/user";
 import {TilesComponent} from "./components/tiles/tiles.component";
 
@@ -22,13 +19,9 @@ import {TilesComponent} from "./components/tiles/tiles.component";
         CommonModule,
         CalendarComponent,
         MatGridListModule,
-        HourHeaderComponent,
-        HourComponent,
         ScrollSectionDirective,
-        ScrollAnchorDirective,
         ScrollManagerDirective,
         AuthComponent,
-        MatIcon,
         TilesComponent,
     ]
 })

@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {MatIcon} from "@angular/material/icon";
+
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {IHour} from "../../models/hour";
 import {ILaundryUser} from "../../models/user";
@@ -13,7 +13,7 @@ import {ILaundryUser} from "../../models/user";
 @Component({
     selector: 'app-hour',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, FormsModule, MatIcon],
+    imports: [CommonModule, FormsModule],
     templateUrl: './hour.component.html'
 })
 export class HourComponent {

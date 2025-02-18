@@ -34,9 +34,6 @@ import {LegendComponent} from "../legend/legend.component";
         MatIcon,
         ScrollAnchorDirective,
         ScrollSectionDirective,
-        MatFabButton,
-        MatMiniFabButton,
-        MatButton,
         MatRipple,
         LegendComponent
     ],

@@ -1,30 +1,25 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, output} from '@angular/core';
-import {NgIf} from "@angular/common";
+
 import {User} from "netlify-identity-widget";
 import {NetlifyIdentityService} from "../../services/netlify-identity.service";
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
+
+
 import {MatIcon} from "@angular/material/icon";
-import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatButton} from "@angular/material/button";
 import {MatToolbar} from "@angular/material/toolbar";
 import {ILaundryUser} from "../../models/user";
-import {MatGridList} from "@angular/material/grid-list";
+
 import {ScrollSectionDirective} from "../../directives/scroll-section.directive";
 
 @Component({
     selector: 'app-auth',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        NgIf,
-        MatFormField,
-        MatInput,
-        MatIcon,
-        MatFabButton,
-        MatToolbar,
-        MatButton,
-        MatGridList,
-        ScrollSectionDirective
-    ],
+    MatIcon,
+    MatToolbar,
+    MatButton,
+    ScrollSectionDirective
+],
     styles: `
     span.userinfo {
       text-wrap: auto;

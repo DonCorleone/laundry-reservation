@@ -15,7 +15,7 @@ import { MatCalendar, MatCalendarCellClassFunction, MatDatepickerModule } from '
 import {DateAdapter, MatNativeDateModule, MatRipple} from '@angular/material/core';
 import { SignalRService } from '../../services/signalr.service';
 import { ScrollAnchorDirective } from '../../directives/scroll-anchor.directive';
-import { ScrollSectionDirective } from '../../directives/scroll-section.directive';
+
 import { ScrollManagerDirective } from '../../directives/scroll-manager.directive';
 import { MatIcon } from '@angular/material/icon';
 
@@ -24,7 +24,7 @@ import { MatIcon } from '@angular/material/icon';
     templateUrl: './calendar.component.html',
     styles: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, ScrollAnchorDirective, ScrollSectionDirective, MatRipple, MatIcon]
+    imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, MatRipple, MatIcon]
 })
 export class CalendarComponent implements AfterViewInit {
 

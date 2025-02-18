@@ -1,17 +1,16 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
-import { NgOptimizedImage } from "@angular/common";
+
 import { MatIcon } from "@angular/material/icon";
 import { MatIconButton } from "@angular/material/button";
 import { MatProgressBar } from "@angular/material/progress-bar";
 @Component({
     selector: 'app-subject-info',
     imports: [
-        NgOptimizedImage,
-        MatIcon,
-        MatIconButton,
-        MatProgressBar
-    ],
+    MatIcon,
+    MatIconButton,
+    MatProgressBar
+],
     template: `
     <button mat-icon-button aria-label="close" (click)="dialogRef.close()">
       <mat-icon>close</mat-icon>

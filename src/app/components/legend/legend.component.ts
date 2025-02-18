@@ -3,9 +3,6 @@ import {NgStyle} from "@angular/common";
 
 @Component({
     selector: 'app-legend',
-    imports: [
-        NgStyle
-    ],
     template: `
     <div class="flex flex-row items-center gap-3 h-full pl-4">
       <span>Booked:</span>
