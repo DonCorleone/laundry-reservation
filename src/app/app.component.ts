@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, s
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
-import {CommonModule} from '@angular/common';
+
 import {ScrollSectionDirective} from './directives/scroll-section.directive';
 import {SignalRService} from './services/signalr.service';
 import {AuthComponent} from "./components/auth/auth.component";
@@ -16,14 +16,13 @@ import {TilesComponent} from "./components/tiles/tiles.component";
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [ScrollSectionDirective, ScrollManagerDirective],
     imports: [
-        CommonModule,
-        CalendarComponent,
-        MatGridListModule,
-        ScrollSectionDirective,
-        ScrollManagerDirective,
-        AuthComponent,
-        TilesComponent,
-    ]
+    CalendarComponent,
+    MatGridListModule,
+    ScrollSectionDirective,
+    ScrollManagerDirective,
+    AuthComponent,
+    TilesComponent
+]
 })
 export class AppComponent implements OnInit {
 

@@ -7,7 +7,7 @@ import {
   OnInit,
   output,
   signal,
-  ViewChild
+  viewChild
 } from '@angular/core';
 import { DateSelectorService } from '../../services/date-selector.service';
 import { MatCardModule } from '@angular/material/card';
@@ -27,15 +27,17 @@ import { MatIcon } from '@angular/material/icon';
     imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, MatRipple, MatIcon]
 })
 export class CalendarComponent implements AfterViewInit {
+  private dateAdapter = inject<DateAdapter<Date>>(DateAdapter);
+
 
   calendarDates: Date[] = [];
   protected selectedDate: Date;
 
-  @ViewChild('calendarOne') calendarOne: MatCalendar<Date>;
-  @ViewChild('calendarTwo') calendarTwo: MatCalendar<Date>;
-  @ViewChild('calendarThree') calendarThree: MatCalendar<Date>;
-  @ViewChild('calendarFour') calendarFour: MatCalendar<Date>;
-  @ViewChild('calendarFive') calendarFive: MatCalendar<Date>;
+  readonly calendarOne = viewChild<MatCalendar<Date>>('calendarOne');
+  readonly calendarTwo = viewChild<MatCalendar<Date>>('calendarTwo');
+  readonly calendarThree = viewChild<MatCalendar<Date>>('calendarThree');
+  readonly calendarFour = viewChild<MatCalendar<Date>>('calendarFour');
+  readonly calendarFive = viewChild<MatCalendar<Date>>('calendarFive');
 
   private signalRService = inject(SignalRService);
   private dateSelectorService = inject(DateSelectorService);
@@ -44,9 +46,7 @@ export class CalendarComponent implements AfterViewInit {
 
   baseDate = new Date();
 
-  constructor(
-    private dateAdapter: DateAdapter<Date>,
-  ) {
+  constructor() {
     this.dateAdapter.getFirstDayOfWeek = () => 1;
   }
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
@@ -85,11 +85,11 @@ export class CalendarComponent implements AfterViewInit {
   }
   updateCalendarDates(baseDate: Date) {
     this.calendarDates = Array.from({ length: 5 }, (_, i) => this.getNewDate(baseDate, i));
-    this.calendarOne.activeDate = this.calendarDates[0];
-    this.calendarTwo.activeDate = this.calendarDates[1];
-    this.calendarThree.activeDate = this.calendarDates[2];
-    this.calendarFour.activeDate = this.calendarDates[3];
-    this.calendarFive.activeDate = this.calendarDates[4];
+    this.calendarOne().activeDate = this.calendarDates[0];
+    this.calendarTwo().activeDate = this.calendarDates[1];
+    this.calendarThree().activeDate = this.calendarDates[2];
+    this.calendarFour().activeDate = this.calendarDates[3];
+    this.calendarFive().activeDate = this.calendarDates[4];
   }
 
   previousMonth($event: MouseEvent) {

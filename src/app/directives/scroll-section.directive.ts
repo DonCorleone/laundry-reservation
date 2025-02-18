@@ -1,12 +1,12 @@
 import { ScrollManagerDirective } from './scroll-manager.directive';
-import {Directive, ElementRef, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Directive, ElementRef, inject, OnDestroy, OnInit, input} from '@angular/core';
 
 @Directive({
   selector: '[appScrollSection]',
   standalone: true,
 })
 export class ScrollSectionDirective implements OnInit, OnDestroy {
-  @Input('appScrollSection') id: string | number;
+  readonly id = input<string | number>(undefined, { alias: "appScrollSection" });
 
   private host = inject(ElementRef<HTMLElement>)
   private manager = inject(ScrollManagerDirective);

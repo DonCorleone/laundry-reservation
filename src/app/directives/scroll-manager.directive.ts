@@ -13,10 +13,10 @@ export class ScrollManagerDirective {
   }
 
   register(section: ScrollSectionDirective) {
-    this.sections.set(section.id, section);
+    this.sections.set(section.id(), section);
   }
 
   remove(section: ScrollSectionDirective) {
-    this.sections.delete(section.id);
+    this.sections.delete(section.id());
   }
 }

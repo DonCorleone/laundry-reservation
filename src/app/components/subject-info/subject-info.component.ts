@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, viewChild } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 
 import { MatIcon } from "@angular/material/icon";
@@ -46,7 +46,7 @@ export class SubjectInfoComponent implements OnInit {
   protected dialogRef = inject<DialogRef<string>>(DialogRef<string>);
   protected data = inject(DIALOG_DATA);
 
-  @ViewChild('progressBar', { static: true }) progressBar!: MatProgressBar;
+  readonly progressBar = viewChild.required<MatProgressBar>('progressBar');
 
   ngOnInit(): void {
     setTimeout(() => {
