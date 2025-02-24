@@ -9,7 +9,7 @@ import {cellType, TileService} from "../../services/tile.service";
 import {ISubject} from "../../models/subject";
 import {Tile} from "../../models/tile";
 import {IHour} from "../../models/hour";
-import {combineLatest} from "rxjs";
+import {combineLatest, take} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {SignalRService} from "../../services/signalr.service";
 import {ReservationService} from "../../services/reservation.service";
@@ -18,15 +18,14 @@ import {ILaundryUser} from "../../models/user";
 import {Dialog} from "@angular/cdk/dialog";
 import {SubjectInfoComponent} from "../subject-info/subject-info.component";
 import {IDialogData} from 'src/app/models/dialog-data';
-import {MatButton, MatFabButton, MatMiniFabButton} from "@angular/material/button";
 import {MatRipple} from "@angular/material/core";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {LegendComponent} from "../legend/legend.component";
+import {ColumnHeaderComponent} from "../column-header/column-header.component";
 
 @Component({
-  selector: 'app-tiles',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-tiles',
+    changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HourComponent,
     HourHeaderComponent,
@@ -35,13 +34,12 @@ import {LegendComponent} from "../legend/legend.component";
     MatIcon,
     ScrollAnchorDirective,
     ScrollSectionDirective,
-    MatFabButton,
-    MatMiniFabButton,
-    MatButton,
     MatRipple,
-    LegendComponent
+    LegendComponent,
+    ColumnHeaderComponent,
+    ColumnHeaderComponent
   ],
-  templateUrl: './tiles.component.html',
+    templateUrl: './tiles.component.html'
 })
 export class TilesComponent implements OnInit {
 
@@ -76,30 +74,46 @@ export class TilesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.reservationService.getReservations().pipe(take(1)).subscribe(x => this.signalRService.setReservations(x))
     combineLatest([
       this.tileService.tiles$,
-      this.subjectService.subjects$,
-      this.reservationService.getReservations()
+      this.subjectService.subjects$
     ]).pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([tiles, subjects, reservations]) => {
+      .subscribe(([tiles, subjects]) => {
         if (!subjects) {
           return;
         }
         this.tiles = tiles;
         const colSpanRowHeader = (this.isDesktop || subjects.length < 4) ? 1 : 2;
         this.colsAmount = subjects.length + colSpanRowHeader;
-        this.signalRService.setMessages(reservations);
         this.changeDetectionRef.markForCheck();
       });
   }
-  protected clickMachineColumn($event: MouseEvent, subject: ISubject) {
+  protected onHourSelected($event: boolean, tile: Tile) {
+    const reservation = {
+      id: tile.id,
+      name: this.laundryUser().key,
+      date: tile.hour.begin.toUTCString(),
+      deviceId: tile.subject.key,
+      connectionId: this.signalRService.connectionId
+    };
+    if ($event) {
+      this.reservationService.addReservation(reservation);
+    } else {
+      this.reservationService.deleteReservation(reservation);
+    }
+    this.changeDetectionRef.markForCheck();
+  }
+
+  protected clickMachineColumn(tile: Tile) {
     const isFree = this.tiles
-      .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
+      .filter((t) => t.cellType == cellType.HOUR && t.subject.key == tile.subject.key)
       .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
 
     if (isFree) {
       this.tiles
-        .filter((t) => t.cellType == cellType.HOUR && t.subject.key == subject.key)
+        .filter((t) => t.cellType == cellType.HOUR && t.subject.key == tile.subject.key)
         .forEach((tile) => {
           tile.hour.selectedBy = this.laundryUser().key;
           this.reservationService.addReservation({
@@ -120,23 +134,8 @@ export class TilesComponent implements OnInit {
       this.openDialog(data);
     }
   }
-  protected onHourSelected($event: boolean, tile: Tile) {
-    const reservation = {
-      id: tile.id,
-      name: this.laundryUser().key,
-      date: tile.hour.begin.toUTCString(),
-      deviceId: tile.subject.key,
-      connectionId: this.signalRService.connectionId
-    };
-    if ($event) {
-      this.reservationService.addReservation(reservation);
-    } else {
-      this.reservationService.deleteReservation(reservation);
-    }
-    this.changeDetectionRef.markForCheck();
-  }
+
   protected clickHourHeader($event: MouseEvent, hour: IHour) {
-    console.log($event);
     // verify if all tiles with the same hour are free or mine
     const isFree = this.tiles
       .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
@@ -163,15 +162,6 @@ export class TilesComponent implements OnInit {
       }
       this.openDialog(data);
     }
-  }
-  protected clickSubjectIcon($event: MouseEvent, subject: ISubject) {
-    $event.preventDefault();
-    $event.stopPropagation();
-    const data: IDialogData = {
-      body: subject.name,
-      imageUrl: subject.image
-    }
-    this.openDialog(data);
   }
   private openDialog(data: IDialogData) {
     const ref = this.dialog.open(

@@ -1,31 +1,34 @@
 import {
   ChangeDetectionStrategy,
-  Component, inject,
+  Component, effect, inject,
   input, output
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {MatIcon} from "@angular/material/icon";
+
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {IHour} from "../../models/hour";
 import {ILaundryUser} from "../../models/user";
 
 @Component({
-  selector: 'app-hour',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, MatIcon],
-  templateUrl: './hour.component.html',
+    selector: 'app-hour',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, FormsModule],
+    templateUrl: './hour.component.html'
 })
 export class HourComponent {
   hour = input.required<IHour>();
   user = input.required<ILaundryUser>();
-
   selected = output<boolean>();
   private snackBar = inject(MatSnackBar);
 
+  constructor() {
+    effect(() => {
+      console.log(`The effected hour is: ${this.hour().id}`);
+    });
+  }
+
   onTap($event: any) {
-    console.log($event);
     if (this.hour().selectedBy) {
       if (this.hour().selectedBy != this.user().key) {
         this.openSnackBar('This hour is already selected by ' + this.hour().selectedBy.split('|')[1]);

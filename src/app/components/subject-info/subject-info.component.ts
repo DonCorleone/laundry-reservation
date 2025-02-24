@@ -1,19 +1,17 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, viewChild } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
-import { NgOptimizedImage } from "@angular/common";
+
 import { MatIcon } from "@angular/material/icon";
 import { MatIconButton } from "@angular/material/button";
 import { MatProgressBar } from "@angular/material/progress-bar";
 @Component({
-  selector: 'app-subject-info',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
+    selector: 'app-subject-info',
+    imports: [
     MatIcon,
     MatIconButton,
     MatProgressBar
-  ],
-  template: `
+],
+    template: `
     <button mat-icon-button aria-label="close" (click)="dialogRef.close()">
       <mat-icon>close</mat-icon>
     </button>
@@ -23,7 +21,7 @@ import { MatProgressBar } from "@angular/material/progress-bar";
       <img [src]="data.imageUrl" [alt]="data.title" height="auto" width="300px"/>
     }
   `,
-  styles: `
+    styles: `
     :host {
       display: flex;
       flex-direction: column;
@@ -48,7 +46,7 @@ export class SubjectInfoComponent implements OnInit {
   protected dialogRef = inject<DialogRef<string>>(DialogRef<string>);
   protected data = inject(DIALOG_DATA);
 
-  @ViewChild('progressBar', { static: true }) progressBar!: MatProgressBar;
+  readonly progressBar = viewChild.required<MatProgressBar>('progressBar');
 
   ngOnInit(): void {
     setTimeout(() => {

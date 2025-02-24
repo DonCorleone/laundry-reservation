@@ -1,4 +1,4 @@
-import {DestroyRef, inject, Injectable, Signal} from '@angular/core';
+import {DestroyRef, effect, inject, Injectable, Signal} from '@angular/core';
 import {DateSelectorService} from './date-selector.service';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {SignalRService} from "./signalr.service";
@@ -23,12 +23,17 @@ export class TileService {
   tiles = new BehaviorSubject<Tile[] | null>(null);
   tiles$: Observable<Tile[] | null> = this.tiles.asObservable();
 
-  private destroyRef = inject(DestroyRef);
-  private signalRService = inject(SignalRService);
-  private reservations: Signal<IReservation[]>;
   constructor(){
+    const destroyRef = inject(DestroyRef);
+    const signalRService = inject(SignalRService);
+    let reservations: Signal<IReservation[]>;
+
+    this.tiles$.pipe(takeUntilDestroyed(destroyRef)).subscribe((tiles) => {
+      console.log('Tiles:', tiles?.length ?? '0');
+    });
+
     combineLatest([
-      this.signalRService.updatedReservation$,
+      signalRService.updatedReservation$,
       inject(SubjectService).subjects$,
       inject(DateSelectorService).selectedDate$,
       inject(BreakpointObserver)
@@ -37,13 +42,13 @@ export class TileService {
           Breakpoints.Large,
           Breakpoints.XLarge,
         ])
-    ]).pipe(takeUntilDestroyed(this.destroyRef))
+    ]).pipe(takeUntilDestroyed(destroyRef))
       .subscribe(([reservation, subjects, selectedDate, desktopBreakPoint]) => {
         if (!selectedDate || !subjects) {
           return;
         }
 
-        this.reservations = this.signalRService.getMessages();
+        reservations = signalRService.getReservations();
         const isDesktop = desktopBreakPoint.matches;
         const colSpan = (isDesktop || subjects.length < 4) ? 1 : 2;
 
@@ -53,7 +58,7 @@ export class TileService {
         const tiles = [];
         this.addRoot(tiles, selectedDateStr, selectedDate, colSpan, !isDesktop);
         this.addColumnHeaders(tiles, subjects, selectedDateStr, !isDesktop);
-        this.addRows(tiles, subjects, hours, colSpan);
+        this.addRows(tiles, subjects, hours, colSpan, reservations);
         this.tiles.next(tiles);
 
         if (reservation) {
@@ -96,7 +101,7 @@ export class TileService {
     });
   }
 
-  private addRows(tiles: any[], subjects: ISubject[], hours: IHour[], colspan: number) {
+  private addRows(tiles: any[], subjects: ISubject[], hours: IHour[], colspan: number, reservations: Signal<IReservation[]> ) {
     hours.forEach((hour) => {
       tiles.push({
         id: `${hour.id}-x`,
@@ -108,16 +113,16 @@ export class TileService {
         header: true,
         hour: hour,
       });
-      this.addCells(tiles, subjects, hour);
+      this.addCells(tiles, subjects, hour, reservations);
     });
   }
 
-  private addCells(tiles: any[], subjects: ISubject[], hour: IHour) {
+  private addCells(tiles: any[], subjects: ISubject[], hour: IHour, reservations: Signal<IReservation[]>) {
     subjects.forEach((subject) => {
       const hourClone = structuredClone(hour);
       const id = `${hourClone.id}-${subject.key}`;
-      if (this.reservations().some((r) => r.id === id)) {
-        hourClone.selectedBy = this.reservations().find((r) => r.id === id).name;
+      if (reservations().some((r) => r.id === id)) {
+        hourClone.selectedBy = reservations().find((r) => r.id === id).name;
       }
       tiles.push({
         id,
