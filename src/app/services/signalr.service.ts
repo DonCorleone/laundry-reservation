@@ -33,16 +33,17 @@ export class SignalRService {
     this.hubConnection
       .start()
       .then(() => this.connectionId = this.hubConnection.connectionId)
-      .catch((err) => console.log('Error while starting connection: ' + err));
+      .catch((err) => {
+        console.error('Error while starting connection: ' + err);
+        // Handle the error appropriately
+      });
   }
 
   public addDataListener() {
     this.hubConnection.on(
       'ReservationAdded',
       (reservationEntry: IReservation) => {
-        console.log(
-          `Reservation with id: ${reservationEntry.id} has been added`
-        );
+        console.log(`Reservation with id: ${reservationEntry.id} has been added`);
         this.reservationEntries.update((reservationEntries) => [
           ...reservationEntries,
           reservationEntry,
@@ -53,9 +54,7 @@ export class SignalRService {
     this.hubConnection.on(
       'ReservationUpdated',
       (reservationEntry: IReservation) => {
-        console.log(
-          `Reservation with id: ${reservationEntry.id} has been updated`
-        );
+        console.log(`Reservation with id: ${reservationEntry.id} has been updated`);
         this.reservationEntries.update((reservationEntries) => [
           ...reservationEntries,
           reservationEntry,
@@ -87,10 +86,10 @@ export class SignalRService {
     );
   }
 
-  public getMessages(): Signal<IReservation[]> {
+  public getReservations(): Signal<IReservation[]> {
     return this.reservationEntries.asReadonly(); // Expose messages as a readonly signal
   }
-  public setMessages(messages: IReservation[]):void {
+  public setReservations(messages: IReservation[]):void {
     this.populateHourPerDate(messages);
     this.reservationEntries.set(messages);
   }

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {NgStyle} from "@angular/common";
 
 @Component({
     selector: 'app-legend',

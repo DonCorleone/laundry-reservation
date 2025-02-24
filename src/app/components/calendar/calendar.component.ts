@@ -22,7 +22,6 @@ import { MatIcon } from '@angular/material/icon';
 @Component({
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
-    styles: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatCardModule, MatDatepickerModule, MatNativeDateModule, MatRipple, MatIcon]
 })

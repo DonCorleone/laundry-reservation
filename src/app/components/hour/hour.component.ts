@@ -1,6 +1,6 @@
 import {
   ChangeDetectionStrategy,
-  Component, inject,
+  Component, effect, inject,
   input, output
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -19,12 +19,16 @@ import {ILaundryUser} from "../../models/user";
 export class HourComponent {
   hour = input.required<IHour>();
   user = input.required<ILaundryUser>();
-
   selected = output<boolean>();
   private snackBar = inject(MatSnackBar);
 
+  constructor() {
+    effect(() => {
+      console.log(`The effected hour is: ${this.hour().id}`);
+    });
+  }
+
   onTap($event: any) {
-    console.log($event);
     if (this.hour().selectedBy) {
       if (this.hour().selectedBy != this.user().key) {
         this.openSnackBar('This hour is already selected by ' + this.hour().selectedBy.split('|')[1]);
