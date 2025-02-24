@@ -74,19 +74,19 @@ export class TilesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.reservationService.getReservations().pipe(take(1)).subscribe(x => this.signalRService.setReservations(x))
     combineLatest([
       this.tileService.tiles$,
-      this.subjectService.subjects$,
-      this.reservationService.getReservations()
-    ]).pipe(take(3))
-      .subscribe(([tiles, subjects, reservations]) => {
+      this.subjectService.subjects$
+    ]).pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([tiles, subjects]) => {
         if (!subjects) {
           return;
         }
         this.tiles = tiles;
         const colSpanRowHeader = (this.isDesktop || subjects.length < 4) ? 1 : 2;
         this.colsAmount = subjects.length + colSpanRowHeader;
-        this.signalRService.setReservations(reservations);
         this.changeDetectionRef.markForCheck();
       });
   }
