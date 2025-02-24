@@ -18,10 +18,6 @@ export class SubjectService {
       // this.baseUrl = 'http://localhost:5263'; // dotNet
     }
 
-    this.subjects$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((subjects) => {
-      console.log('Subjects:', subjects?.length ?? '0');
-    });
-
     inject(HttpClient).get<ISubject[]>(`${this.baseUrl}/api/Subjects`).pipe(
       take(1)).subscribe(subjects => this._subjects.next(subjects))
   }

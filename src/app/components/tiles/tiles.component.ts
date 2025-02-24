@@ -6,7 +6,6 @@ import {MatIcon, MatIconRegistry} from "@angular/material/icon";
 import {ScrollAnchorDirective} from "../../directives/scroll-anchor.directive";
 import {ScrollSectionDirective} from "../../directives/scroll-section.directive";
 import {cellType, TileService} from "../../services/tile.service";
-import {ISubject} from "../../models/subject";
 import {Tile} from "../../models/tile";
 import {IHour} from "../../models/hour";
 import {combineLatest, take} from "rxjs";

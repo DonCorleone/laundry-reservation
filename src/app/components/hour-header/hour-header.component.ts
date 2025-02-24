@@ -20,10 +20,4 @@ import {MatIcon} from "@angular/material/icon";
 })
 export class HourHeaderComponent {
   hour = input<IHour>();
-
-  constructor() {
-    effect(() => {
-      console.log(`The effected hourheader is: ${this.hour().id}`);
-    });
-  }
 }

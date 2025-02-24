@@ -18,9 +18,6 @@ export class ReservationService {
 
   public getReservations(): Observable<IReservation[]> {
     return this.httpClient.get<IReservation[]>(`${this.baseUrl}/api/ReservationEntries`).pipe(
-      tap(reservations => {
-        console.log('Fetched reservations:', reservations?.length ?? '0');
-      }),
       catchError(err => {
         console.error('Error fetching reservations:', err);
         throw err;
@@ -28,9 +25,6 @@ export class ReservationService {
   }
   public addReservation(reservationEntry: IReservation): void {
     this.httpClient.post<IReservation>(`${this.baseUrl}/api/ReservationEntries`, reservationEntry).subscribe({
-      next: reservation => {
-        console.log('Added reservation:', reservation);
-      },
       error: err => {
         console.error('Error adding reservation:', err);
       }
@@ -41,9 +35,6 @@ export class ReservationService {
       body: reservationEntry,
     };
     this.httpClient.delete<string>(`${this.baseUrl}/api/ReservationEntries`, options).subscribe({
-      next: reservationId => {
-        console.log('Deleted reservation:', reservationId);
-      },
       error: err => {
         console.error('Error deleting reservation:', err);
       }

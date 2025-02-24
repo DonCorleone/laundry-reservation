@@ -22,12 +22,6 @@ export class HourComponent {
   selected = output<boolean>();
   private snackBar = inject(MatSnackBar);
 
-  constructor() {
-    effect(() => {
-      console.log(`The effected hour is: ${this.hour().id}`);
-    });
-  }
-
   onTap($event: any) {
     if (this.hour().selectedBy) {
       if (this.hour().selectedBy != this.user().key) {
