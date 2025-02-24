@@ -28,10 +28,6 @@ export class TileService {
     const signalRService = inject(SignalRService);
     let reservations: Signal<IReservation[]>;
 
-    this.tiles$.pipe(takeUntilDestroyed(destroyRef)).subscribe((tiles) => {
-      console.log('Tiles:', tiles?.length ?? '0');
-    });
-
     combineLatest([
       signalRService.updatedReservation$,
       inject(SubjectService).subjects$,

@@ -28,13 +28,6 @@ export class ColumnHeaderComponent {
 
   private dialog = inject(Dialog);
 
-  constructor() {
-    effect(() => {
-      console.log(`The effected columnheader is: ${this.tile().id}`);
-    });
-  }
-
-
   protected clickMachineColumn($event: MouseEvent) {
     this.machineColumnClicked.emit();
   }

@@ -43,7 +43,6 @@ export class SignalRService {
     this.hubConnection.on(
       'ReservationAdded',
       (reservationEntry: IReservation) => {
-        console.log(`Reservation with id: ${reservationEntry.id} has been added`);
         this.reservationEntries.update((reservationEntries) => [
           ...reservationEntries,
           reservationEntry,
@@ -54,7 +53,6 @@ export class SignalRService {
     this.hubConnection.on(
       'ReservationUpdated',
       (reservationEntry: IReservation) => {
-        console.log(`Reservation with id: ${reservationEntry.id} has been updated`);
         this.reservationEntries.update((reservationEntries) => [
           ...reservationEntries,
           reservationEntry,
@@ -65,7 +63,6 @@ export class SignalRService {
     this.hubConnection.on(
       'ReservationDeleted',
       (reservationId: string) => {
-        console.log(`Reservation with id: ${reservationId} has been deleted`);
         const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
 
         this.reservationEntries.update((reservationEntries) =>
@@ -79,7 +76,6 @@ export class SignalRService {
     this.hubConnection.on(
       'ReservationsLoaded',
       (reservations: IReservation[]) => {
-        console.log(`reservations loaded`);
         this.reservationEntries.update((reservationEntries) =>
           (reservationEntries) = reservations);
       }
