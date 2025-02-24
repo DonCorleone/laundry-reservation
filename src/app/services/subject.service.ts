@@ -2,7 +2,6 @@ import {DestroyRef, inject, Injectable, isDevMode} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ISubject} from "../models/subject";
 import {BehaviorSubject, take} from "rxjs";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Injectable({
   providedIn: 'root'
