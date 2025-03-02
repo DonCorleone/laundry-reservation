@@ -23,8 +23,8 @@ import {LegendComponent} from "../legend/legend.component";
 import {ColumnHeaderComponent} from "../column-header/column-header.component";
 
 @Component({
-    selector: 'app-tiles',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-tiles',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HourComponent,
     HourHeaderComponent,
@@ -38,7 +38,7 @@ import {ColumnHeaderComponent} from "../column-header/column-header.component";
     ColumnHeaderComponent,
     ColumnHeaderComponent
   ],
-    templateUrl: './tiles.component.html'
+  templateUrl: './tiles.component.html'
 })
 export class TilesComponent implements OnInit {
 
@@ -89,6 +89,7 @@ export class TilesComponent implements OnInit {
         this.changeDetectionRef.markForCheck();
       });
   }
+
   protected onHourSelected($event: boolean, tile: Tile) {
     const reservation = {
       id: tile.id,
@@ -106,24 +107,47 @@ export class TilesComponent implements OnInit {
   }
 
   protected clickMachineColumn(tile: Tile) {
-    const isFree = this.tiles
-      .filter((t) => t.cellType == cellType.HOUR && t.subject.key == tile.subject.key)
+
+
+    const isFreeOrMine = this.tiles
+      .filter((t) => t.cellType == cellType.HOUR && t.subject && t.subject.key == tile.subject.key)
       .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
 
-    if (isFree) {
-      this.tiles
-        .filter((t) => t.cellType == cellType.HOUR && t.subject.key == tile.subject.key)
-        .forEach((tile) => {
-          tile.hour.selectedBy = this.laundryUser().key;
-          this.reservationService.addReservation({
-            id: tile.id,
-            name: this.laundryUser().key,
-            date: tile.hour.begin.toUTCString(),
-            deviceId: tile.subject.key,
-            connectionId: this.signalRService.connectionId
-          },);
-        });
+    if (isFreeOrMine) {
 
+      const sameMachine = this.tiles.filter((t) => t.cellType == cellType.HOUR && t.subject && t.subject.key == tile.subject.key);
+
+      const allFree = sameMachine.every((t) => t.hour.selectedBy == "");
+
+      const user = allFree ? this.laundryUser().key : "";
+
+      for (let i = 0; i < sameMachine.length; i++) {
+        if (user) {
+          if (sameMachine[i].hour.selectedBy == user) {
+            continue;
+          }
+          sameMachine[i].hour.selectedBy = user;
+          this.reservationService.addReservation({
+            id: sameMachine[i].id,
+            name: this.laundryUser().key,
+            date: sameMachine[i].hour.begin.toUTCString(),
+            deviceId: sameMachine[i].subject.key,
+            connectionId: this.signalRService.connectionId
+          });
+        } else {
+          if (sameMachine[i].hour.selectedBy == user) {
+            continue;
+          }
+          sameMachine[i].hour.selectedBy = user;
+          this.reservationService.deleteReservation({
+            id: sameMachine[i].id,
+            name: this.laundryUser().key,
+            date: sameMachine[i].hour.begin.toUTCString(),
+            deviceId: sameMachine[i].subject.key,
+            connectionId: this.signalRService.connectionId
+          })
+        }
+      }
       this.changeDetectionRef.markForCheck();
     } else {
       // Show message to the user
@@ -136,24 +160,47 @@ export class TilesComponent implements OnInit {
 
   protected clickHourHeader($event: MouseEvent, hour: IHour) {
     // verify if all tiles with the same hour are free or mine
-    const isFree = this.tiles
-      .filter((t) => t.hour && t.hour.begin.getHours() == hour.begin.getHours())
+
+
+    const isFreeOrMine = this.tiles
+      .filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours())
       .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
 
-    if (isFree) {
-      this.tiles
-        .filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours())
-        .forEach((tile) => {
+    if (isFreeOrMine) {
 
-          tile.hour.selectedBy = this.laundryUser().key;
+      const sameHour = this.tiles.filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours());
+
+      const allFree = sameHour.every((t) => t.hour.selectedBy == "");
+
+      const user = allFree ? this.laundryUser().key : "";
+
+      for (let i = 0; i < sameHour.length; i++) {
+        if (user) {
+          if (sameHour[i].hour.selectedBy == user) {
+            continue;
+          }
+          sameHour[i].hour.selectedBy = user;
           this.reservationService.addReservation({
-            id: tile.id,
+            id: sameHour[i].id,
             name: this.laundryUser().key,
-            date: tile.hour.begin.toUTCString(),
-            deviceId: tile.subject.key,
+            date: sameHour[i].hour.begin.toUTCString(),
+            deviceId: sameHour[i].subject.key,
             connectionId: this.signalRService.connectionId
-          },);
-        });
+          });
+        } else {
+          if (sameHour[i].hour.selectedBy == user) {
+            continue;
+          }
+          sameHour[i].hour.selectedBy = user;
+          this.reservationService.deleteReservation({
+            id: sameHour[i].id,
+            name: this.laundryUser().key,
+            date: sameHour[i].hour.begin.toUTCString(),
+            deviceId: sameHour[i].subject.key,
+            connectionId: this.signalRService.connectionId
+          })
+        }
+      }
       this.changeDetectionRef.markForCheck();
     } else {
       const data: IDialogData = {
@@ -162,6 +209,7 @@ export class TilesComponent implements OnInit {
       this.openDialog(data);
     }
   }
+
   private openDialog(data: IDialogData) {
     const ref = this.dialog.open(
       SubjectInfoComponent, {
