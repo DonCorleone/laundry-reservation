@@ -1,0 +1,100 @@
+// Color variables from Tailwind config
+$blanc: rgb(234, 219, 192);
+$gris-fonce-31: rgb(94, 96, 97);
+$gris-31: rgb(146, 148, 148);
+$bleu-cerelueen-31: rgb(62, 110, 144);
+$outremer-moyen: rgb(143, 171, 201);
+$outremer-clair: rgb(171, 189, 200);
+$gris-clair-31: rgb(188, 187, 182);
+$terre-ombre-brule: rgb(76, 66, 61);
+
+.splash-screen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: $blanc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    .title {
+      font-family: 'Montserrat', sans-serif;
+      color: $terre-ombre-brule;
+      font-size: 2.5rem;
+      font-weight: 600;
+      text-align: center;
+      animation: slideDown 0.5s ease-out;
+      letter-spacing: 0.02em;
+    }
+
+    .logo {
+      width: 200px;
+      height: 200px;
+      animation: fadeIn 0.5s ease-in;
+
+      .machine-body {
+        fill: $gris-fonce-31;
+        stroke: $gris-31;
+        stroke-width: 2;
+      }
+
+      .door {
+        fill: $bleu-cerelueen-31;
+        stroke: $gris-31;
+        stroke-width: 2;
+      }
+
+      .window {
+        fill: $outremer-moyen;
+        stroke: $outremer-clair;
+        stroke-width: 1;
+      }
+
+      .water-wave {
+        fill: none;
+        stroke: $gris-clair-31;
+        stroke-width: 3;
+        stroke-linecap: round;
+      }
+    }
+
+    .copyright {
+      font-family: 'Lato', sans-serif;
+      color: $gris-31;
+      font-size: 0.875rem;
+      font-weight: 300;
+      animation: fadeIn 0.5s ease-in;
+      animation-delay: 0.3s;
+      opacity: 0;
+      animation-fill-mode: forwards;
+      letter-spacing: 0.01em;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+  }
+  to { 
+    opacity: 1; 
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

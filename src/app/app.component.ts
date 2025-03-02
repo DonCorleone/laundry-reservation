@@ -2,13 +2,13 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, s
 import {MatGridListModule} from '@angular/material/grid-list';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {ScrollManagerDirective} from './directives/scroll-manager.directive';
-
 import {ScrollSectionDirective} from './directives/scroll-section.directive';
 import {SignalRService} from './services/signalr.service';
 import {AuthComponent} from "./components/auth/auth.component";
 import {MatIconRegistry} from "@angular/material/icon";
 import {ILaundryUser} from "./models/user";
 import {TilesComponent} from "./components/tiles/tiles.component";
+import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 
 @Component({
     selector: 'app-root',
@@ -17,6 +17,7 @@ import {TilesComponent} from "./components/tiles/tiles.component";
     providers: [ScrollSectionDirective, ScrollManagerDirective],
     imports: [
     CalendarComponent,
+    SplashScreenComponent,
     MatGridListModule,
     ScrollSectionDirective,
     ScrollManagerDirective,
@@ -25,7 +26,6 @@ import {TilesComponent} from "./components/tiles/tiles.component";
 ]
 })
 export class AppComponent implements OnInit {
-
   protected laundryUser = signal<ILaundryUser>(null);
   protected signalRService = inject(SignalRService);
   private matIconReg = inject(MatIconRegistry);
