@@ -1,0 +1,24 @@
+<div class="splash-screen">
+  <div class="content">
+    <h1 class="title">Laundry Calendar</h1>
+    <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Washing Machine Body -->
+      <rect x="40" y="40" width="120" height="120" rx="10" class="machine-body" />
+      
+      <!-- Door/Window -->
+      <circle cx="100" cy="100" r="40" class="door" />
+      <circle cx="100" cy="100" r="35" class="window" />
+      
+      <!-- Water Animation -->
+      <path class="water-wave" d="M65 100 Q82.5 85, 100 100 Q117.5 115, 135 100">
+        <animate attributeName="d" 
+                 dur="2s"
+                 repeatCount="indefinite"
+                 values="M65 100 Q82.5 85, 100 100 Q117.5 115, 135 100;
+                         M65 100 Q82.5 115, 100 100 Q117.5 85, 135 100;
+                         M65 100 Q82.5 85, 100 100 Q117.5 115, 135 100" />
+      </path>
+    </svg>
+    <p class="copyright">© 2024 Laundry Calendar</p>
+  </div>
+</div>

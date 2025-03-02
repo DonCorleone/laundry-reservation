@@ -1,6 +1,6 @@
 import { Injectable, isDevMode, Signal, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { IReservation } from '../models/reservation';
 
 @Injectable({
@@ -10,6 +10,8 @@ export class SignalRService {
   private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
   private hubConnection: signalR.HubConnection;
   private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
+  private isLoading = signal<boolean>(true);
+  private loadStartTime: number;
 
   hourPerDate = signal<Map<string, number>>(null);
   private updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
@@ -20,6 +22,7 @@ export class SignalRService {
   private readonly RESERVATION_UPDATED = 'ReservationUpdated';
   private readonly RESERVATION_DELETED = 'ReservationDeleted';
   private readonly RESERVATIONS_LOADED = 'ReservationsLoaded';
+  private readonly MIN_LOADING_TIME = 1500; // minimum loading time in milliseconds
 
   constructor() {
     if (isDevMode()) {
@@ -33,13 +36,29 @@ export class SignalRService {
       .build();
   }
 
+  private ensureMinLoadingTime(): void {
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - this.loadStartTime;
+    const remainingTime = Math.max(0, this.MIN_LOADING_TIME - elapsedTime);
+
+    if (remainingTime > 0) {
+      timer(remainingTime).subscribe(() => {
+        this.isLoading.set(false);
+      });
+    } else {
+      this.isLoading.set(false);
+    }
+  }
+
   startConnection(): void {
+    this.loadStartTime = Date.now();
+    this.isLoading.set(true);
     this.hubConnection
       .start()
       .then(() => (this.connectionId = this.hubConnection.connectionId))
       .catch((err) => {
         console.error('Error while starting connection: ' + err);
-        // Handle the error appropriately
+        this.ensureMinLoadingTime();
       });
   }
 
@@ -63,16 +82,22 @@ export class SignalRService {
     });
     this.hubConnection.on(this.RESERVATIONS_LOADED, (reservations: IReservation[]) => {
       this.reservationEntries.update(() => reservations);
+      this.ensureMinLoadingTime();
     });
   }
 
+  public getLoadingState(): Signal<boolean> {
+    return this.isLoading.asReadonly();
+  }
+
   public getReservations(): Signal<IReservation[]> {
-    return this.reservationEntries.asReadonly(); // Expose messages as a readonly signal
+    return this.reservationEntries.asReadonly();
   }
 
   public setReservations(messages: IReservation[]): void {
     this.populateHourPerDate(messages);
     this.reservationEntries.set(messages);
+    this.ensureMinLoadingTime();
   }
 
   private populateHourPerDate(reservationEntries: IReservation[]): void {

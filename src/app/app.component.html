@@ -1,4 +1,7 @@
 <div class="grid gap-0.5 sm:gap-0.5 w-full" appScrollManager>
+  @if (signalRService.getLoadingState()()) {
+    <app-splash-screen />
+  }
   <app-auth (value)="onUsernameChange($event)" />
   @if (laundryUser()) {
     @defer (){
