@@ -40,46 +40,26 @@ export class SignalRService {
   }
 
   public addDataListener() {
-    this.hubConnection.on(
-      'ReservationAdded',
-      (reservationEntry: IReservation) => {
-        this.reservationEntries.update((reservationEntries) => [
-          ...reservationEntries,
-          reservationEntry,
-        ]);
-        this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
-      }
-    );
-    this.hubConnection.on(
-      'ReservationUpdated',
-      (reservationEntry: IReservation) => {
-        this.reservationEntries.update((reservationEntries) => [
-          ...reservationEntries,
-          reservationEntry,
-        ]);
-        this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
-      }
-    );
-    this.hubConnection.on(
-      'ReservationDeleted',
-      (reservationId: string) => {
-        const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
+    const handleReservation = (reservationEntry: IReservation) => {
+      this.reservationEntries.update((reservationEntries) => [
+        ...reservationEntries,
+        reservationEntry,
+      ]);
+      this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
+    };
 
-        this.reservationEntries.update((reservationEntries) =>
-          // find the reservation with the id and remove it
-          reservationEntries.filter((entry) => entry.id !== reservationId)
-        );
-
-        this.updatedReservation.next({ [reservationEntry.id]: "" });
-      }
-    );
-    this.hubConnection.on(
-      'ReservationsLoaded',
-      (reservations: IReservation[]) => {
-        this.reservationEntries.update((reservationEntries) =>
-          (reservationEntries) = reservations);
-      }
-    );
+    this.hubConnection.on('ReservationAdded', (reservationEntry: IReservation) => handleReservation(reservationEntry));
+    this.hubConnection.on('ReservationUpdated', (reservationEntry: IReservation) => handleReservation(reservationEntry));
+    this.hubConnection.on('ReservationDeleted', (reservationId: string) => {
+      const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
+      this.reservationEntries.update((reservationEntries) =>
+        reservationEntries.filter((entry) => entry.id !== reservationId)
+      );
+      this.updatedReservation.next({ [reservationEntry.id]: '' });
+    });
+    this.hubConnection.on('ReservationsLoaded', (reservations: IReservation[]) => {
+      this.reservationEntries.update((reservationEntries) => (reservationEntries = reservations));
+    });
   }
 
   public getReservations(): Signal<IReservation[]> {
