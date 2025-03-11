@@ -57,6 +57,9 @@ th {
 .mat-calendar-body {
   padding: 0 !important;
 }
+.mat-calendar-controls {
+  border-bottom: 1px solid rgb(94, 96, 97) !important;
+}
 .mat-calendar-arrow{
   fill: rgb(76, 66, 61) !important; /* Set the desired text color */
 }
@@ -101,4 +104,51 @@ th {
 .lc-snackbar {
   position: relative !important;
   top: 20vh !important;
+}
+
+/* Override the current day indicator styles */
+.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+  border: 2px solid rgb(76, 66, 61) !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 1 !important;
+}
+
+/* Remove the default circle and ensure square shape */
+.mat-calendar-body-today.mat-calendar-body-cell::after {
+  display: none !important;
+}
+
+.mat-calendar-body-cell-content {
+  top: 0% !important;
+  left: 0% !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.mat-calendar-body-today .mat-calendar-body-cell-content {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Remove the default circle */
+.mat-calendar-body-today.mat-calendar-body-cell::after {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Add grid lines to calendar */
+.mat-calendar-body-cell {
+  padding: 0 !important;
+  border-right: 1px solid rgba(188, 187, 182, 0.5) !important;
+  border-bottom: 1px solid rgba(188, 187, 182, 0.5) !important;
+}
+
+.mat-calendar mat-month-view table tbody {
+  border-top: 1px solid rgb(94, 96, 97) !important;
 }
