@@ -3,8 +3,17 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "request": "attach",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
       "name": "ng serve",
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
       "url": "http://localhost:4200/"

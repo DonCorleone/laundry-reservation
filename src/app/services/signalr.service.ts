@@ -1,7 +1,7 @@
 import { Injectable, isDevMode, Signal, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
-import { IReservation } from '../models/reservation';
+import { BehaviorSubject, Observable, timer } from "rxjs";
+import { IReservation } from "../models/reservation";
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,11 @@ export class SignalRService {
   private isLoading = signal<boolean>(true);
   private loadStartTime: number;
 
+  /**
+   * Tracks the number of reservations per date.
+   * Key: Date in ISO string format (YYYY-MM-DDT00:00:00.000Z)
+   * Value: Number of reservations for that date
+   */
   hourPerDate = signal<Map<string, number>>(null);
   private updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
   updatedReservation$: Observable<Record<string, string> | null> = this.updatedReservation.asObservable();
@@ -62,12 +67,13 @@ export class SignalRService {
       });
   }
 
-  public addDataListener(): void {
+  public addDataListener() {
     const handleReservation = (reservationEntry: IReservation) => {
       this.reservationEntries.update((reservationEntries) => [
         ...reservationEntries,
         reservationEntry,
       ]);
+      this.updateHourPerDate(reservationEntry);
       this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
     };
 
@@ -78,6 +84,7 @@ export class SignalRService {
       this.reservationEntries.update((reservationEntries) =>
         reservationEntries.filter((entry) => entry.id !== reservationId)
       );
+      this.removeHourPerDate(reservationEntry.date);
       this.updatedReservation.next({ [reservationEntry.id]: '' });
     });
     this.hubConnection.on(this.RESERVATIONS_LOADED, (reservations: IReservation[]) => {
@@ -85,11 +92,9 @@ export class SignalRService {
       this.ensureMinLoadingTime();
     });
   }
-
   public getLoadingState(): Signal<boolean> {
     return this.isLoading.asReadonly();
   }
-
   public getReservations(): Signal<IReservation[]> {
     return this.reservationEntries.asReadonly();
   }
@@ -101,13 +106,46 @@ export class SignalRService {
   }
 
   private populateHourPerDate(reservationEntries: IReservation[]): void {
-    const hourMap = new Map<string, number>();
+    if (reservationEntries.length === 0) {
+      this.hourPerDate.set(new Map());
+      return;
+    }
+
+    if (!this.hourPerDate()) {
+      this.hourPerDate.set(new Map());
+    }
+
     reservationEntries.forEach((reservation) => {
-      const date = new Date(reservation.date);
-      date.setHours(0, 0, 0, 0);
-      const dateString = date.toISOString();
-      hourMap.set(dateString, (hourMap.get(dateString) || 0) + 1);
+
+      this.updateHourPerDate(reservation);
     });
-    this.hourPerDate.set(hourMap);
+  }
+
+  private updateHourPerDate(reservation: IReservation): void {
+    const reservationsDate = new Date(reservation.date);
+    reservationsDate.setHours(0, 0, 0, 0);
+    const dateIsoString = reservationsDate.toISOString();
+    const dailyReservation = this.hourPerDate()?.get(dateIsoString);
+
+    if (dailyReservation === undefined) {
+      this.hourPerDate().set(dateIsoString, 1);
+      return;
+    }
+
+    this.hourPerDate().set(dateIsoString, dailyReservation + 1);
+  }
+
+  private removeHourPerDate(reservationDate: string): void {
+    const date = new Date(reservationDate);
+    date.setHours(0, 0, 0, 0);
+    const dateIsoString = date.toISOString();
+    const dailyReservation = this.hourPerDate()?.get(dateIsoString);
+
+    if (dailyReservation === 1) {
+      this.hourPerDate().delete(dateIsoString);
+      return;
+    }
+
+    this.hourPerDate().set(dateIsoString, dailyReservation - 1);
   }
 }
