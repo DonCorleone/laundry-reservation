@@ -6,10 +6,47 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import dotenv from 'dotenv';
+import { auth } from 'express-openid-connect';
+dotenv.config();
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
+// Auth0 SSR middleware
+app.use(auth({
+  issuerBaseURL: `https://${process.env['AUTH0_DOMAIN']}`,
+  baseURL: process.env['AUTH0_BASE_URL'] || 'http://localhost:4000',
+  clientID: process.env['AUTH0_CLIENT_ID'],
+  secret: process.env['AUTH0_CLIENT_SECRET'],
+  authRequired: false,
+  auth0Logout: true,
+}));
+
+// Auth endpoints for Angular frontend
+app.get('/api/auth/user', (req, res) => {
+  if (req.oidc && req.oidc.isAuthenticated()) {
+    res.json(req.oidc.user);
+  } else {
+    res.status(401).json({});
+  }
+});
+
+app.get('/api/auth/login', (req, res) => {
+  res.oidc.login({ returnTo: '/' });
+});
+
+app.get('/api/auth/logout', (req, res) => {
+  res.oidc.logout({ returnTo: '/' });
+});
+
+// Handle Auth0 callback
+app.get('/callback', (req, res) => {
+  // This route is handled by express-openid-connect automatically
+  // It will process the Auth0 callback and redirect to returnTo URL
+  res.redirect('/');
+});
+
 const angularApp = new AngularNodeAppEngine();
 
 /**

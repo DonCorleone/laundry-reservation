@@ -49,3 +49,4 @@ db_backup.json
 
 # Local Netlify folder
 .netlify
+.env

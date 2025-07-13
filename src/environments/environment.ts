@@ -3,9 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
-};
-
+  production: false,
+  auth0: {
+    domain: 'laundry-calendar.eu.auth0.com', // <-- replace with actual value
+    clientId: 'zjmCa3vVQA11RsNkb44RdE5qqAy9hGnh',   // <-- replace with actual value
+    baseUrl: 'http://localhost:4000/callback'
+  }
+};4
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
