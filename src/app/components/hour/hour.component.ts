@@ -21,18 +21,43 @@ export class HourComponent {
   user = input.required<ILaundryUser>();
   selected = output<boolean>();
   private snackBar = inject(MatSnackBar);
+  private isProcessing = false;
+  private lastClickTime = 0;
+  private readonly DEBOUNCE_TIME = 300; // 300ms debounce
 
   onTap($event: any) {
-    if (this.hour().selectedBy) {
-      if (this.hour().selectedBy != this.user().key) {
-        this.openSnackBar('This hour is already selected by ' + this.hour().selectedBy.split('|')[1]);
-        return;
+    const currentTime = Date.now();
+    
+    // Debounce rapid clicks
+    if (currentTime - this.lastClickTime < this.DEBOUNCE_TIME) {
+      return;
+    }
+    
+    // Prevent multiple processing
+    if (this.isProcessing) {
+      return;
+    }
+    
+    this.lastClickTime = currentTime;
+    this.isProcessing = true;
+    
+    try {
+      if (this.hour().selectedBy) {
+        if (this.hour().selectedBy != this.user().key) {
+          this.openSnackBar('This hour is already selected by ' + this.hour().selectedBy.split('|')[1]);
+          return;
+        }
+        this.hour().selectedBy = null;
+        this.selected.emit(false);
+      } else {
+        this.hour().selectedBy = this.user().key;
+        this.selected.emit(true);
       }
-      this.hour().selectedBy = null;
-      this.selected.emit(false);
-    } else {
-      this.hour().selectedBy = this.user().key;
-      this.selected.emit(true);
+    } finally {
+      // Reset processing flag after a short delay to allow the API call to complete
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, 500);
     }
   }
   openSnackBar(message: string) {

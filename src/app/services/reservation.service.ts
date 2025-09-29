@@ -8,6 +8,7 @@ import { ApiService } from './api.service';
 })
 export class ReservationService {
   private apiService = inject(ApiService);
+  private pendingRequests = new Set<string>();
 
   public getReservations(): Observable<IReservation[]> {
     return this.apiService.get<any[]>('/api/ReservationEntries').pipe(
@@ -32,6 +33,14 @@ export class ReservationService {
   }
   
   public addReservation(reservationEntry: IReservation): void {
+    const requestKey = `add-${reservationEntry.id}`;
+    
+    // Check if this request is already pending
+    if (this.pendingRequests.has(requestKey)) {
+      console.log('Reservation request already pending for:', reservationEntry.id);
+      return;
+    }
+    
     const createReservationRequest = {
       name: reservationEntry.name,
       deviceId: reservationEntry.deviceId,
@@ -39,26 +48,48 @@ export class ReservationService {
       id: reservationEntry.id
     };
 
+    // Mark request as pending
+    this.pendingRequests.add(requestKey);
+
     this.apiService.post<any>('/api/ReservationEntries', createReservationRequest).subscribe({
       next: (response) => {
         // Reservation added successfully
+        this.pendingRequests.delete(requestKey);
       },
       error: err => {
         console.error('Error adding reservation:', err);
+        this.pendingRequests.delete(requestKey);
       }
     });
   }
   
   public deleteReservation(reservationEntry: IReservation): void {
+    const requestKey = `delete-${reservationEntry.id}`;
+    
+    // Check if this request is already pending
+    if (this.pendingRequests.has(requestKey)) {
+      console.log('Deletion request already pending for:', reservationEntry.id);
+      return;
+    }
+    
     const reservationId = encodeURIComponent(reservationEntry.id);
+
+    // Mark request as pending
+    this.pendingRequests.add(requestKey);
 
     this.apiService.delete<string>(`/api/ReservationEntries/${reservationId}`).subscribe({
       next: (response) => {
         // Reservation deleted successfully
+        this.pendingRequests.delete(requestKey);
       },
       error: err => {
         console.error('Error deleting reservation:', err);
+        this.pendingRequests.delete(requestKey);
       }
     });
+  }
+
+  public isRequestPending(reservationId: string): boolean {
+    return this.pendingRequests.has(`add-${reservationId}`) || this.pendingRequests.has(`delete-${reservationId}`);
   }
 }

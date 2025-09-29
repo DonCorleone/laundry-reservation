@@ -94,7 +94,7 @@ export class TilesComponent implements OnInit {
     const reservation = {
       id: tile.id,
       name: this.laundryUser().key,
-      date: tile.hour.begin.toUTCString(),
+      date: tile.hour.begin.toISOString(),
       deviceId: tile.subject.key,
     };
     if ($event) {
@@ -114,7 +114,7 @@ export class TilesComponent implements OnInit {
       this.reservationService.addReservation({
         id: tile.id,
         name: this.laundryUser().key,
-        date: tile.hour.begin.toUTCString(),
+        date: tile.hour.begin.toISOString(),
         deviceId: tile.subject.key,
       });
     } else {
@@ -125,7 +125,7 @@ export class TilesComponent implements OnInit {
       this.reservationService.deleteReservation({
         id: tile.id,
         name: this.laundryUser().key,
-        date: tile.hour.begin.toUTCString(),
+        date: tile.hour.begin.toISOString(),
         deviceId: tile.subject.key,
       })
     }

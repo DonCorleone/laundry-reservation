@@ -17,13 +17,24 @@ export class ApiService {
   }
 
   private getTenantCode(): string {
-    // Option A - Static (simplest for now)
-    return environment.tenantCode || 'default';
+    // Option 1: From URL query parameter (e.g., ?tenant=yourhouse)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryTenant = urlParams.get('tenant');
+    if (queryTenant) {
+      return queryTenant;
+    }
     
-    // Option C - From subdomain (uncomment if needed)
-    // const hostname = window.location.hostname;
-    // const parts = hostname.split('.');
-    // return parts.length > 2 ? parts[0] : 'default';
+    // Option 2: From subdomain (e.g., yourhouse.laundry-app.com)
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+    const subdomain = parts.length > 2 ? parts[0] : null;
+    
+    // Option 3: From environment (development/fallback)
+    if (!subdomain || subdomain === 'localhost' || hostname === 'localhost') {
+      return environment.tenantCode || 'default';
+    }
+    
+    return subdomain;
   }
 
   private getHeaders(): HttpHeaders {

@@ -26,6 +26,9 @@ app.use(auth({
   secret: process.env['AUTH0_CLIENT_SECRET'],
   authRequired: false,
   auth0Logout: true,
+  authorizationParams: {
+    acr_value: `tenant:${process.env['TENANT_CODE'] || 'default'}`,
+  }
 }));
 
 // Auth endpoints for Angular frontend
