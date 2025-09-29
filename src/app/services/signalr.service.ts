@@ -1,17 +1,21 @@
-import { Injectable, isDevMode, Signal, signal } from '@angular/core';
+import { Injectable, isDevMode, Signal, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { BehaviorSubject, Observable, timer, firstValueFrom } from 'rxjs';
 import { IReservation } from '../models/reservation';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignalRService {
-  private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
-  private hubConnection: signalR.HubConnection;
+  private hubConnection: signalR.HubConnection | null = null;
   private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
   private isLoading = signal<boolean>(true);
   private loadStartTime: number;
+  private platformId = inject(PLATFORM_ID);
+  private http = inject(HttpClient);
 
   hourPerDate = signal<Map<string, number>>(null);
   private updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
@@ -25,16 +29,46 @@ export class SignalRService {
   private readonly MIN_LOADING_TIME = 1500; // minimum loading time in milliseconds
 
   constructor() {
-    if (isDevMode()) {
-      // this.baseUrl = 'http://localhost:3000'; // json-server
-      // this.baseUrl = 'http://localhost:5263'; // dotNet
-    }
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrl}/hub`, {
-        withCredentials: true,
-      })
-      .build();
+    // SignalR will be initialized when startConnection is called
   }
+
+  private async initializeHubConnection(): Promise<void> {
+    if (this.hubConnection) {
+      return; // Already initialized
+    }
+
+    try {
+      // Fetch configuration from server
+      const config = await firstValueFrom(
+        this.http.get<{backendUrl: string, tenantCode: string}>('/api/config')
+      );
+      
+      this.hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(`${config.backendUrl}/hub`, {
+          withCredentials: true,
+          headers: {
+            'X-Tenant-Code': config.tenantCode
+          }
+        })
+        .build();
+
+      console.log('SignalR Hub URL:', `${config.backendUrl}/hub`);
+    } catch (error) {
+      console.error('Failed to fetch backend configuration:', error);
+      // Fallback to default production URL
+      const fallbackUrl = 'https://laundrysignalr-init.onrender.com';
+      this.hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(`${fallbackUrl}/hub`, {
+          withCredentials: true,
+          headers: {
+            'X-Tenant-Code': 'default'
+          }
+        })
+        .build();
+      console.log('SignalR Hub URL (fallback):', `${fallbackUrl}/hub`);
+    }
+  }
+
 
   private ensureMinLoadingTime(): void {
     const currentTime = Date.now();
@@ -50,9 +84,18 @@ export class SignalRService {
     }
   }
 
-  startConnection(): void {
+  async startConnection(): Promise<void> {  
+    // Only start connection on the browser side
+    if (!isPlatformBrowser(this.platformId)) {
+      this.ensureMinLoadingTime();
+      return;
+    }
+
     this.loadStartTime = Date.now();
     this.isLoading.set(true);
+    
+    await this.initializeHubConnection();
+    
     this.hubConnection
       .start()
       .then(() => (this.connectionId = this.hubConnection.connectionId))
@@ -63,11 +106,17 @@ export class SignalRService {
   }
 
   public addDataListener(): void {
+    // Only add listeners on the browser side and if hub connection exists
+    if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      return;
+    }
+
     const handleReservation = (reservationEntry: IReservation) => {
       this.reservationEntries.update((reservationEntries) => [
         ...reservationEntries,
         reservationEntry,
       ]);
+      // Backend now sends connectionId as the id field directly
       this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
     };
 
@@ -78,7 +127,8 @@ export class SignalRService {
       this.reservationEntries.update((reservationEntries) =>
         reservationEntries.filter((entry) => entry.id !== reservationId)
       );
-      this.updatedReservation.next({ [reservationEntry.id]: '' });
+      // Backend now sends connectionId as the id field directly
+      this.updatedReservation.next({ [reservationId]: '' });
     });
     this.hubConnection.on(this.RESERVATIONS_LOADED, (reservations: IReservation[]) => {
       this.reservationEntries.update(() => reservations);

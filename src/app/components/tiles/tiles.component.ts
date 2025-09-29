@@ -96,7 +96,6 @@ export class TilesComponent implements OnInit {
       name: this.laundryUser().key,
       date: tile.hour.begin.toUTCString(),
       deviceId: tile.subject.key,
-      connectionId: this.signalRService.connectionId
     };
     if ($event) {
       this.reservationService.addReservation(reservation);
@@ -117,7 +116,6 @@ export class TilesComponent implements OnInit {
         name: this.laundryUser().key,
         date: tile.hour.begin.toUTCString(),
         deviceId: tile.subject.key,
-        connectionId: this.signalRService.connectionId
       });
     } else {
       if (tile.hour.selectedBy == user) {
@@ -129,7 +127,6 @@ export class TilesComponent implements OnInit {
         name: this.laundryUser().key,
         date: tile.hour.begin.toUTCString(),
         deviceId: tile.subject.key,
-        connectionId: this.signalRService.connectionId
       })
     }
   }

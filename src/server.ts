@@ -13,6 +13,11 @@ dotenv.config();
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
+
+// Add JSON body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Auth0 SSR middleware
 app.use(auth({
   issuerBaseURL: `https://${process.env['AUTH0_DOMAIN']}`,
@@ -40,11 +45,94 @@ app.get('/api/auth/logout', (req, res) => {
   res.oidc.logout({ returnTo: '/' });
 });
 
+// Configuration endpoint for client-side services
+app.get('/api/config', (req, res) => {
+  res.json({
+    backendUrl: process.env['BACKEND_URL'] || 'https://laundrysignalr-init.onrender.com',
+    tenantCode: 'default'
+  });
+});
+
 // Handle Auth0 callback
 app.get('/callback', (req, res) => {
   // This route is handled by express-openid-connect automatically
   // It will process the Auth0 callback and redirect to returnTo URL
   res.redirect('/');
+});
+
+// API Proxy endpoints for multi-tenant backend
+const BACKEND_URL = process.env['NODE_ENV'] === 'production' 
+  ? 'https://laundrysignalr-init.onrender.com' 
+  : 'http://localhost:5263';
+
+// CORS middleware for API routes
+app.use('/api', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Tenant-Code');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+    return;
+  }
+  
+  next();
+});
+
+// Proxy API calls to backend with tenant headers
+app.use('/api', async (req, res, next) => {
+  try {
+    // Skip proxy for OPTIONS requests (already handled above)
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
+    
+    const backendUrl = `${BACKEND_URL}${req.originalUrl}`;
+    const requestBody = req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined;
+    
+    // Enhanced logging
+    console.log('=== API Proxy Request ===');
+    console.log('Method:', req.method);
+    console.log('URL:', backendUrl);
+    console.log('Headers:', {
+      'X-Tenant-Code': 'default',
+      'Content-Type': 'application/json'
+    });
+    console.log('Body:', requestBody);
+    
+    const response = await fetch(backendUrl, {
+      method: req.method,
+      headers: {
+        'X-Tenant-Code': 'default',
+        'Content-Type': 'application/json'
+      },
+      body: requestBody
+    });
+    
+    const responseText = await response.text();
+    console.log('=== Backend Response ===');
+    console.log('Status:', response.status);
+    console.log('Response:', responseText);
+    
+    if (!response.ok) {
+      console.error('Backend Error Response:', responseText);
+      throw new Error(`Backend responded with status: ${response.status} - ${responseText}`);
+    }
+    
+    // Try to parse as JSON, fallback to text
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      data = responseText;
+    }
+    
+    res.json(data);
+  } catch (error) {
+    console.error('API Proxy Error:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
 });
 
 const angularApp = new AngularNodeAppEngine();
