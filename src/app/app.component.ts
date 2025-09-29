@@ -33,8 +33,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
+    // Start connection - data listeners will be added automatically after connection is established
     this.signalRService.startConnection();
-    this.signalRService.addDataListener();
   }
 
   onUsernameChange(user: ILaundryUser) {

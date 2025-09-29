@@ -95,20 +95,34 @@ export class SignalRService {
     
     this.hubConnection
       .start()
-      .then(() => (this.connectionId = this.hubConnection.connectionId))
+      .then(() => {
+        this.connectionId = this.hubConnection.connectionId;
+        console.log('SignalR connected with connection ID:', this.connectionId);
+        // Add data listeners AFTER connection is established
+        this.setupDataListeners();
+      })
       .catch((err) => {
         console.error('Error while starting connection: ' + err);
         this.ensureMinLoadingTime();
       });
   }
 
-  public addDataListener(): void {
+  private setupDataListeners(): void {
     // Only add listeners on the browser side and if hub connection exists
     if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      console.log('SignalR: Cannot add data listeners - not in browser or no connection');
       return;
     }
 
+    console.log('SignalR: Adding data listeners for events:', {
+      added: this.RESERVATION_ADDED,
+      updated: this.RESERVATION_UPDATED,
+      deleted: this.RESERVATION_DELETED,
+      loaded: this.RESERVATIONS_LOADED
+    });
+
     const handleReservation = (reservationEntry: IReservation) => {
+      console.log('SignalR: Received reservation update:', reservationEntry);
       this.reservationEntries.update((reservationEntries) => [
         ...reservationEntries,
         reservationEntry,
@@ -117,9 +131,16 @@ export class SignalRService {
       this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
     };
 
-    this.hubConnection.on(this.RESERVATION_ADDED, handleReservation);
-    this.hubConnection.on(this.RESERVATION_UPDATED, handleReservation);
+    this.hubConnection.on(this.RESERVATION_ADDED, (reservation) => {
+      console.log('SignalR: Reservation added event received:', reservation);
+      handleReservation(reservation);
+    });
+    this.hubConnection.on(this.RESERVATION_UPDATED, (reservation) => {
+      console.log('SignalR: Reservation updated event received:', reservation);
+      handleReservation(reservation);
+    });
     this.hubConnection.on(this.RESERVATION_DELETED, (reservationId: string) => {
+      console.log('SignalR: Reservation deleted event received:', reservationId);
       const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
       this.reservationEntries.update((reservationEntries) =>
         reservationEntries.filter((entry) => entry.id !== reservationId)
@@ -128,9 +149,21 @@ export class SignalRService {
       this.updatedReservation.next({ [reservationId]: '' });
     });
     this.hubConnection.on(this.RESERVATIONS_LOADED, (reservations: IReservation[]) => {
+      console.log('SignalR: Reservations loaded event received:', reservations);
       this.reservationEntries.update(() => reservations);
       this.ensureMinLoadingTime();
     });
+
+    // Add a test listener to see if ANY events are being received
+    this.hubConnection.onreconnected(() => {
+      console.log('SignalR: Reconnected');
+    });
+    
+    this.hubConnection.onclose(() => {
+      console.log('SignalR: Connection closed');
+    });
+
+    console.log('SignalR: Data listeners added successfully');
   }
 
   public getLoadingState(): Signal<boolean> {
@@ -156,5 +189,35 @@ export class SignalRService {
       hourMap.set(dateString, (hourMap.get(dateString) || 0) + 1);
     });
     this.hourPerDate.set(hourMap);
+  }
+
+  // Hub method to create a reservation directly through SignalR
+  public async createReservation(reservationData: any): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      return;
+    }
+
+    try {
+      console.log('SignalR: Creating reservation via hub method:', reservationData);
+      await this.hubConnection.invoke('CreateReservation', reservationData);
+    } catch (error) {
+      console.error('SignalR: Error creating reservation:', error);
+      throw error;
+    }
+  }
+
+  // Hub method to delete a reservation directly through SignalR
+  public async deleteReservation(reservationId: string): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      return;
+    }
+
+    try {
+      console.log('SignalR: Deleting reservation via hub method:', reservationId);
+      await this.hubConnection.invoke('DeleteReservation', reservationId);
+    } catch (error) {
+      console.error('SignalR: Error deleting reservation:', error);
+      throw error;
+    }
   }
 }

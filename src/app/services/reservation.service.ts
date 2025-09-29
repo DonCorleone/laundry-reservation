@@ -2,12 +2,14 @@ import {inject, Injectable} from '@angular/core';
 import {IReservation} from "../models/reservation";
 import {catchError, Observable, map} from "rxjs";
 import { ApiService } from './api.service';
+import { SignalRService } from './signalr.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
   private apiService = inject(ApiService);
+  private signalRService = inject(SignalRService);
   private pendingRequests = new Set<string>();
 
   public getReservations(): Observable<IReservation[]> {
@@ -32,7 +34,7 @@ export class ReservationService {
     };
   }
   
-  public addReservation(reservationEntry: IReservation): void {
+  public async addReservation(reservationEntry: IReservation): Promise<void> {
     const requestKey = `add-${reservationEntry.id}`;
     
     // Check if this request is already pending
@@ -51,19 +53,27 @@ export class ReservationService {
     // Mark request as pending
     this.pendingRequests.add(requestKey);
 
-    this.apiService.post<any>('/api/ReservationEntries', createReservationRequest).subscribe({
-      next: (response) => {
-        // Reservation added successfully
-        this.pendingRequests.delete(requestKey);
-      },
-      error: err => {
-        console.error('Error adding reservation:', err);
-        this.pendingRequests.delete(requestKey);
-      }
-    });
+    try {
+      // Primary approach: Use SignalR hub method
+      await this.signalRService.createReservation(createReservationRequest);
+      this.pendingRequests.delete(requestKey);
+    } catch (signalRError) {
+      console.warn('SignalR reservation creation failed, falling back to API:', signalRError);
+      
+      // Fallback approach: Use REST API
+      this.apiService.post<any>('/api/ReservationEntries', createReservationRequest).subscribe({
+        next: (response) => {
+          this.pendingRequests.delete(requestKey);
+        },
+        error: err => {
+          console.error('Error adding reservation via API fallback:', err);
+          this.pendingRequests.delete(requestKey);
+        }
+      });
+    }
   }
   
-  public deleteReservation(reservationEntry: IReservation): void {
+  public async deleteReservation(reservationEntry: IReservation): Promise<void> {
     const requestKey = `delete-${reservationEntry.id}`;
     
     // Check if this request is already pending
@@ -71,22 +81,29 @@ export class ReservationService {
       console.log('Deletion request already pending for:', reservationEntry.id);
       return;
     }
-    
-    const reservationId = encodeURIComponent(reservationEntry.id);
 
     // Mark request as pending
     this.pendingRequests.add(requestKey);
 
-    this.apiService.delete<string>(`/api/ReservationEntries/${reservationId}`).subscribe({
-      next: (response) => {
-        // Reservation deleted successfully
-        this.pendingRequests.delete(requestKey);
-      },
-      error: err => {
-        console.error('Error deleting reservation:', err);
-        this.pendingRequests.delete(requestKey);
-      }
-    });
+    try {
+      // Primary approach: Use SignalR hub method
+      await this.signalRService.deleteReservation(reservationEntry.id);
+      this.pendingRequests.delete(requestKey);
+    } catch (signalRError) {
+      console.warn('SignalR reservation deletion failed, falling back to API:', signalRError);
+      
+      // Fallback approach: Use REST API
+      const reservationId = encodeURIComponent(reservationEntry.id);
+      this.apiService.delete<string>(`/api/ReservationEntries/${reservationId}`).subscribe({
+        next: (response) => {
+          this.pendingRequests.delete(requestKey);
+        },
+        error: err => {
+          console.error('Error deleting reservation via API fallback:', err);
+          this.pendingRequests.delete(requestKey);
+        }
+      });
+    }
   }
 
   public isRequestPending(reservationId: string): boolean {

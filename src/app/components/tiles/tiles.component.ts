@@ -17,6 +17,7 @@ import {ILaundryUser} from "../../models/user";
 import {Dialog} from "@angular/cdk/dialog";
 import {SubjectInfoComponent} from "../subject-info/subject-info.component";
 import {IDialogData} from 'src/app/models/dialog-data';
+import {IReservation} from "../../models/reservation";
 import {MatRipple} from "@angular/material/core";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {LegendComponent} from "../legend/legend.component";
@@ -90,44 +91,56 @@ export class TilesComponent implements OnInit {
       });
   }
 
-  protected onHourSelected($event: boolean, tile: Tile) {
-    const reservation = {
+  async onHourSelected(tile: Tile, $event: boolean) {
+    const reservation: IReservation = {
       id: tile.id,
       name: this.laundryUser().key,
       date: tile.hour.begin.toISOString(),
       deviceId: tile.subject.key,
     };
-    if ($event) {
-      this.reservationService.addReservation(reservation);
-    } else {
-      this.reservationService.deleteReservation(reservation);
+    try {
+      if ($event) {
+        await this.reservationService.addReservation(reservation);
+      } else {
+        await this.reservationService.deleteReservation(reservation);
+      }
+    } catch (error) {
+      console.error('Error handling reservation:', error);
     }
     this.changeDetectionRef.markForCheck();
   }
 
-  private handleReservation(tile: Tile, user: string) {
+  private async handleReservation(tile: Tile, user: string) {
     if (user) {
       if (tile.hour.selectedBy == user) {
         return;
       }
       tile.hour.selectedBy = user;
-      this.reservationService.addReservation({
-        id: tile.id,
-        name: this.laundryUser().key,
-        date: tile.hour.begin.toISOString(),
-        deviceId: tile.subject.key,
-      });
+      try {
+        await this.reservationService.addReservation({
+          id: tile.id,
+          name: this.laundryUser().key,
+          date: tile.hour.begin.toISOString(),
+          deviceId: tile.subject.key,
+        });
+      } catch (error) {
+        console.error('Error adding reservation in handleReservation:', error);
+      }
     } else {
       if (tile.hour.selectedBy == user) {
         return;
       }
       tile.hour.selectedBy = user;
-      this.reservationService.deleteReservation({
-        id: tile.id,
-        name: this.laundryUser().key,
-        date: tile.hour.begin.toISOString(),
-        deviceId: tile.subject.key,
-      })
+      try {
+        await this.reservationService.deleteReservation({
+          id: tile.id,
+          name: this.laundryUser().key,
+          date: tile.hour.begin.toISOString(),
+          deviceId: tile.subject.key,
+        });
+      } catch (error) {
+        console.error('Error deleting reservation in handleReservation:', error);
+      }
     }
   }
 
