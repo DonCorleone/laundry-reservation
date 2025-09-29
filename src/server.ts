@@ -90,17 +90,7 @@ app.use('/api', async (req, res, next) => {
     
     const backendUrl = `${BACKEND_URL}${req.originalUrl}`;
     const requestBody = req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined;
-    
-    // Enhanced logging
-    console.log('=== API Proxy Request ===');
-    console.log('Method:', req.method);
-    console.log('URL:', backendUrl);
-    console.log('Headers:', {
-      'X-Tenant-Code': 'default',
-      'Content-Type': 'application/json'
-    });
-    console.log('Body:', requestBody);
-    
+        
     const response = await fetch(backendUrl, {
       method: req.method,
       headers: {
@@ -111,9 +101,6 @@ app.use('/api', async (req, res, next) => {
     });
     
     const responseText = await response.text();
-    console.log('=== Backend Response ===');
-    console.log('Status:', response.status);
-    console.log('Response:', responseText);
     
     if (!response.ok) {
       console.error('Backend Error Response:', responseText);

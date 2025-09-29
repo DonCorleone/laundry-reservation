@@ -51,8 +51,6 @@ export class SignalRService {
           }
         })
         .build();
-
-      console.log('SignalR Hub URL:', `${config.backendUrl}/hub`);
     } catch (error) {
       console.error('Failed to fetch backend configuration:', error);
       // Fallback to default production URL
@@ -65,7 +63,6 @@ export class SignalRService {
           }
         })
         .build();
-      console.log('SignalR Hub URL (fallback):', `${fallbackUrl}/hub`);
     }
   }
 

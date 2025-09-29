@@ -32,39 +32,32 @@ export class ReservationService {
   }
   
   public addReservation(reservationEntry: IReservation): void {
-    // Use camelCase to match your original working payload format
     const createReservationRequest = {
       name: reservationEntry.name,
       deviceId: reservationEntry.deviceId,
-      date: reservationEntry.date, // Keep original date format
-      id: reservationEntry.id // Optional field
+      date: reservationEntry.date,
+      id: reservationEntry.id
     };
-
-    console.log('POST payload (camelCase like original):', JSON.stringify(createReservationRequest, null, 2));
 
     this.apiService.post<any>('/api/ReservationEntries', createReservationRequest).subscribe({
       next: (response) => {
-        console.log('Reservation added successfully:', response);
+        // Reservation added successfully
       },
       error: err => {
         console.error('Error adding reservation:', err);
-        console.error('Response:', err.error);
       }
     });
   }
   
   public deleteReservation(reservationEntry: IReservation): void {
-    // Use the reservation ID in the URL path instead of request body
     const reservationId = encodeURIComponent(reservationEntry.id);
-    console.log('DELETE URL with ID:', `/api/ReservationEntries/${reservationId}`);
 
     this.apiService.delete<string>(`/api/ReservationEntries/${reservationId}`).subscribe({
       next: (response) => {
-        console.log('Reservation deleted successfully:', response);
+        // Reservation deleted successfully
       },
       error: err => {
         console.error('Error deleting reservation:', err);
-        console.error('Response:', err.error);
       }
     });
   }
