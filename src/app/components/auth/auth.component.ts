@@ -76,8 +76,8 @@ export class AuthComponent implements OnInit {
     };
 
     // Determine the source of the avatar
-    if (user.user_metadata?.full_name) {
-      return getInitials(user.user_metadata.full_name);
+    if (user.name) {
+      return getInitials(user.name);
     }
     if (user.email) {
       const emailNamePart = user.email.split("@")[0];
@@ -85,7 +85,7 @@ export class AuthComponent implements OnInit {
     }
 
     // Fallback: generate deterministic initials from user ID
-    const fallbackHash = user.id || "fallback";
+    const fallbackHash = user.sid || "fallback";
     return getInitials(fallbackHash.slice(0, 2));
   }
 }
