@@ -8,6 +8,15 @@ import express from 'express';
 import { join } from 'node:path';
 import dotenv from 'dotenv';
 import { auth } from 'express-openid-connect';
+
+// Extend Express Request interface to include tenant information
+declare global {
+  namespace Express {
+    interface Request {
+      tenantCode?: string;
+    }
+  }
+}
 dotenv.config();
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
@@ -18,18 +27,38 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Auth0 SSR middleware
-app.use(auth({
-  issuerBaseURL: `https://${process.env['AUTH0_DOMAIN']}`,
-  baseURL: process.env['AUTH0_BASE_URL'] || 'https://slotwi.se',
-  clientID: process.env['AUTH0_CLIENT_ID'],
-  secret: process.env['AUTH0_CLIENT_SECRET'],
-  authRequired: false,
-  auth0Logout: true,
-  authorizationParams: {
-    acr_value: `tenant:${process.env['TENANT_CODE'] || 'default'}`,
+// Auth0 SSR middleware with dynamic baseURL
+app.use((req, res, next) => {
+  // Extract tenant from subdomain and determine baseURL
+  const host = req.get('host') || 'localhost:4000';
+  const protocol = req.secure || req.get('x-forwarded-proto') === 'https' ? 'https' : 'http';
+  const baseURL = `${protocol}://${host}`;
+  
+  // Extract tenant code from subdomain (e.g., museggstrasse-18.slotwi.se -> museggstrasse-18)
+  const hostParts = host.split('.');
+  let tenantCode = 'default';
+  if (hostParts.length > 2 && !host.includes('localhost') && !host.includes('onrender.com')) {
+    tenantCode = hostParts[0]; // First part is the tenant code
   }
-}));
+  
+  // Create Auth0 middleware with dynamic configuration
+  const authMiddleware = auth({
+    issuerBaseURL: `https://${process.env['AUTH0_DOMAIN']}`,
+    baseURL: baseURL,
+    clientID: process.env['AUTH0_CLIENT_ID'],
+    secret: process.env['AUTH0_CLIENT_SECRET'],
+    authRequired: false,
+    auth0Logout: true,
+    authorizationParams: {
+      acr_value: `tenant:${tenantCode}`,
+    }
+  });
+  
+  // Store tenant info for later use
+  req.tenantCode = tenantCode;
+  
+  authMiddleware(req, res, next);
+});
 
 // Auth endpoints for Angular frontend
 app.get('/api/auth/user', (req, res) => {
@@ -52,7 +81,7 @@ app.get('/api/auth/logout', (req, res) => {
 app.get('/api/config', (req, res) => {
   res.json({
     backendUrl: process.env['BACKEND_URL'] || 'https://laundrysignalr-mongodb.onrender.com',
-    tenantCode: 'default'
+    tenantCode: req.tenantCode || 'default'
   });
 });
 
@@ -97,7 +126,7 @@ app.use('/api', async (req, res, next) => {
     const response = await fetch(backendUrl, {
       method: req.method,
       headers: {
-        'X-Tenant-Code': 'default',
+        'X-Tenant-Code': req.tenantCode || 'default',
         'Content-Type': 'application/json'
       },
       body: requestBody
