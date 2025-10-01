@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 // Auth0 SSR middleware
 app.use(auth({
   issuerBaseURL: `https://${process.env['AUTH0_DOMAIN']}`,
-  baseURL: process.env['AUTH0_BASE_URL'] || 'http://localhost:4000',
+  baseURL: process.env['AUTH0_BASE_URL'] || 'https://slotwi.se',
   clientID: process.env['AUTH0_CLIENT_ID'],
   secret: process.env['AUTH0_CLIENT_SECRET'],
   authRequired: false,
