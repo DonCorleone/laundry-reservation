@@ -52,7 +52,6 @@ export class SignalRService {
         })
         .build();
     } catch (error) {
-      console.error('Failed to fetch backend configuration:', error);
       // Fallback to default production URL
       const fallbackUrl = 'https://laundrysignalr-mongodb.onrender.com';
       this.hubConnection = new signalR.HubConnectionBuilder()
@@ -97,12 +96,9 @@ export class SignalRService {
       .start()
       .then(() => {
         this.connectionId = this.hubConnection.connectionId;
-        console.log('SignalR connected with connection ID:', this.connectionId);
-        // Add data listeners AFTER connection is established
         this.setupDataListeners();
       })
-      .catch((err) => {
-        console.error('Error while starting connection: ' + err);
+      .catch(() => {
         this.ensureMinLoadingTime();
       });
   }
@@ -110,60 +106,35 @@ export class SignalRService {
   private setupDataListeners(): void {
     // Only add listeners on the browser side and if hub connection exists
     if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
-      console.log('SignalR: Cannot add data listeners - not in browser or no connection');
       return;
     }
 
-    console.log('SignalR: Adding data listeners for events:', {
-      added: this.RESERVATION_ADDED,
-      updated: this.RESERVATION_UPDATED,
-      deleted: this.RESERVATION_DELETED,
-      loaded: this.RESERVATIONS_LOADED
-    });
-
     const handleReservation = (reservationEntry: IReservation) => {
-      console.log('SignalR: Received reservation update:', reservationEntry);
       this.reservationEntries.update((reservationEntries) => [
         ...reservationEntries,
         reservationEntry,
       ]);
-      // Backend now sends connectionId as the id field directly
       this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
     };
 
     this.hubConnection.on(this.RESERVATION_ADDED, (reservation) => {
-      console.log('SignalR: Reservation added event received:', reservation);
       handleReservation(reservation);
     });
     this.hubConnection.on(this.RESERVATION_UPDATED, (reservation) => {
-      console.log('SignalR: Reservation updated event received:', reservation);
       handleReservation(reservation);
     });
     this.hubConnection.on(this.RESERVATION_DELETED, (reservationId: string) => {
-      console.log('SignalR: Reservation deleted event received:', reservationId);
-      const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
       this.reservationEntries.update((reservationEntries) =>
         reservationEntries.filter((entry) => entry.id !== reservationId)
       );
-      // Backend now sends connectionId as the id field directly
       this.updatedReservation.next({ [reservationId]: '' });
     });
     this.hubConnection.on(this.RESERVATIONS_LOADED, (reservations: IReservation[]) => {
-      console.log('SignalR: Reservations loaded event received:', reservations);
       this.reservationEntries.update(() => reservations);
       this.ensureMinLoadingTime();
     });
 
-    // Add a test listener to see if ANY events are being received
-    this.hubConnection.onreconnected(() => {
-      console.log('SignalR: Reconnected');
-    });
-    
-    this.hubConnection.onclose(() => {
-      console.log('SignalR: Connection closed');
-    });
 
-    console.log('SignalR: Data listeners added successfully');
   }
 
   public getLoadingState(): Signal<boolean> {
@@ -198,10 +169,8 @@ export class SignalRService {
     }
 
     try {
-      console.log('SignalR: Creating reservation via hub method:', reservationData);
       await this.hubConnection.invoke('CreateReservation', reservationData);
     } catch (error) {
-      console.error('SignalR: Error creating reservation:', error);
       throw error;
     }
   }
@@ -213,10 +182,8 @@ export class SignalRService {
     }
 
     try {
-      console.log('SignalR: Deleting reservation via hub method:', reservationId);
       await this.hubConnection.invoke('DeleteReservation', reservationId);
     } catch (error) {
-      console.error('SignalR: Error deleting reservation:', error);
       throw error;
     }
   }

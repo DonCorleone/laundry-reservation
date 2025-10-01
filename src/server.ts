@@ -120,11 +120,6 @@ app.use('/api', async (req, res, next) => {
       return next();
     }
     
-    // Log API proxy requests for debugging
-    console.log(`🔄 API PROXY: ${req.method} ${req.originalUrl}`);
-    console.log(`🏢 Tenant Code: ${req.tenantCode || 'default'}`);
-    console.log(`🌐 Host: ${req.get('host')}`);
-    
     const backendUrl = `${BACKEND_URL}${req.originalUrl}`;
     const requestBody = req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined;
         
@@ -140,7 +135,6 @@ app.use('/api', async (req, res, next) => {
     const responseText = await response.text();
     
     if (!response.ok) {
-      console.error('Backend Error Response:', responseText);
       throw new Error(`Backend responded with status: ${response.status} - ${responseText}`);
     }
     
@@ -154,7 +148,6 @@ app.use('/api', async (req, res, next) => {
     
     res.json(data);
   } catch (error) {
-    console.error('API Proxy Error:', error);
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
