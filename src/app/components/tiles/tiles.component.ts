@@ -74,8 +74,12 @@ export class TilesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    // Load subjects for the current tenant
+    this.subjectService.loadSubjects();
+    
+    // Load reservations for the current tenant  
     this.reservationService.getReservations().pipe(take(1)).subscribe(x => this.signalRService.setReservations(x))
+    
     combineLatest([
       this.tileService.tiles$,
       this.subjectService.subjects$
