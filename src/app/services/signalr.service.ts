@@ -44,7 +44,7 @@ export class SignalRService {
       );
       
       this.hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl(`${config.backendUrl}/hub`, {
+        .withUrl(`${config.backendUrl}/hub?tenant=${encodeURIComponent(config.tenantCode)}`, {
           withCredentials: true,
           headers: {
             'X-Tenant-Code': config.tenantCode
