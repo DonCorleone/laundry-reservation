@@ -91,9 +91,6 @@ export class SignalRService {
     this.loadStartTime = Date.now();
     this.isLoading.set(true);
     
-    // Clear existing data to ensure fresh tenant-specific data
-    this.reservationEntries.set([]);
-    
     await this.initializeHubConnection();
     
     this.hubConnection

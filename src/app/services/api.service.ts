@@ -1,7 +1,8 @@
-import { Injectable, inject, isDevMode } from '@angular/core';
+import { Injectable, inject, isDevMode, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   private baseUrl = ''; // Use relative URLs for SSR
   private httpClient = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
   
   constructor() {
     // For SSR, all API calls should go through the SSR server
@@ -17,6 +19,12 @@ export class ApiService {
   }
 
   private getTenantCode(): string {
+    // During SSR, window is not available, so default to 'default'
+    // The SSR server will handle tenant resolution and proxy with correct headers
+    if (!isPlatformBrowser(this.platformId)) {
+      return 'default'; // SSR will handle tenant via server proxy
+    }
+    
     // Option 1: From URL query parameter (e.g., ?tenant=yourhouse)
     const urlParams = new URLSearchParams(window.location.search);
     const queryTenant = urlParams.get('tenant');
