@@ -1,0 +1,50 @@
+<svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Inline styles for standalone use -->
+  <defs>
+    <style>
+      <![CDATA[
+        .logo {
+          background: transparent;
+        }
+        .machine-body {
+          fill: rgb(94, 96, 97);
+          stroke: rgb(146, 148, 148);
+          stroke-width: 2;
+        }
+        .door {
+          fill: rgb(62, 110, 144);
+          stroke: rgb(146, 148, 148);
+          stroke-width: 2;
+        }
+        .window {
+          fill: rgb(143, 171, 201);
+          stroke: rgb(171, 189, 200);
+          stroke-width: 1;
+        }
+        .water-wave {
+          fill: none;
+          stroke: rgb(188, 187, 182);
+          stroke-width: 3;
+          stroke-linecap: round;
+        }
+      ]]>
+    </style>
+  </defs>
+  
+  <!-- Washing Machine Body -->
+  <rect x="40" y="40" width="120" height="120" rx="10" class="machine-body" />
+  
+  <!-- Door/Window -->
+  <circle cx="100" cy="100" r="40" class="door" />
+  <circle cx="100" cy="100" r="35" class="window" />
+  
+  <!-- Water Animation -->
+  <path class="water-wave" d="M65 100 Q82.5 85, 100 100 Q117.5 115, 135 100">
+    <animate attributeName="d" 
+             dur="2s"
+             repeatCount="indefinite"
+             values="M65 100 Q82.5 85, 100 100 Q117.5 115, 135 100;
+                     M65 100 Q82.5 115, 100 100 Q117.5 85, 135 100;
+                     M65 100 Q82.5 85, 100 100 Q117.5 115, 135 100" />
+  </path>
+</svg>
