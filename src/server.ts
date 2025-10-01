@@ -51,7 +51,7 @@ app.get('/api/auth/logout', (req, res) => {
 // Configuration endpoint for client-side services
 app.get('/api/config', (req, res) => {
   res.json({
-    backendUrl: process.env['BACKEND_URL'] || 'https://laundrysignalr-init.onrender.com',
+    backendUrl: process.env['BACKEND_URL'] || 'https://laundrysignalr-mongodb.onrender.com',
     tenantCode: 'default'
   });
 });
@@ -65,7 +65,7 @@ app.get('/callback', (req, res) => {
 
 // API Proxy endpoints for multi-tenant backend
 const BACKEND_URL = process.env['NODE_ENV'] === 'production' 
-  ? 'https://laundrysignalr-init.onrender.com' 
+  ? 'https://laundrysignalr-mongodb.onrender.com' 
   : 'http://localhost:5263';
 
 // CORS middleware for API routes

@@ -54,7 +54,7 @@ export class SignalRService {
     } catch (error) {
       console.error('Failed to fetch backend configuration:', error);
       // Fallback to default production URL
-      const fallbackUrl = 'https://laundrysignalr-init.onrender.com';
+      const fallbackUrl = 'https://laundrysignalr-mongodb.onrender.com';
       this.hubConnection = new signalR.HubConnectionBuilder()
         .withUrl(`${fallbackUrl}/hub`, {
           withCredentials: true,
