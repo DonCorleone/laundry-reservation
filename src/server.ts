@@ -120,6 +120,11 @@ app.use('/api', async (req, res, next) => {
       return next();
     }
     
+    // Log API proxy requests for debugging
+    console.log(`🔄 API PROXY: ${req.method} ${req.originalUrl}`);
+    console.log(`🏢 Tenant Code: ${req.tenantCode || 'default'}`);
+    console.log(`🌐 Host: ${req.get('host')}`);
+    
     const backendUrl = `${BACKEND_URL}${req.originalUrl}`;
     const requestBody = req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined;
         

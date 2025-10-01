@@ -4,6 +4,11 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
 
+export interface AppConfig {
+  backendUrl: string;
+  tenantCode: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +16,7 @@ export class ApiService {
   private baseUrl = ''; // Use relative URLs for SSR
   private httpClient = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+  private appConfig: AppConfig | null = null;
   
   constructor() {
     // For SSR, all API calls should go through the SSR server
@@ -18,7 +24,16 @@ export class ApiService {
     this.baseUrl = '';
   }
 
+  public setAppConfig(config: AppConfig): void {
+    this.appConfig = config;
+  }
+
   private getTenantCode(): string {
+    // If we have app config from server, use it
+    if (this.appConfig) {
+      return this.appConfig.tenantCode;
+    }
+
     // During SSR, window is not available, so default to 'default'
     // The SSR server will handle tenant resolution and proxy with correct headers
     if (!isPlatformBrowser(this.platformId)) {
