@@ -27,24 +27,28 @@ export class HourComponent {
 
   onTap($event: any) {
     const currentTime = Date.now();
-    
+
     // Debounce rapid clicks
     if (currentTime - this.lastClickTime < this.DEBOUNCE_TIME) {
       return;
     }
-    
+
     // Prevent multiple processing
     if (this.isProcessing) {
       return;
     }
-    
+
     this.lastClickTime = currentTime;
     this.isProcessing = true;
-    
+
     try {
       if (this.hour().selectedBy) {
-        if (this.hour().selectedBy != this.user().key) {
-          this.openSnackBar('This hour is already selected by ' + this.hour().selectedBy.split('|')[1]);
+        // Compare emails (second part after pipe) instead of full key
+        const selectedByEmail = this.hour().selectedBy.split('|')[1];
+        const currentUserEmail = this.user().key.split('|')[1];
+
+        if (selectedByEmail !== currentUserEmail) {
+          this.openSnackBar('This hour is already selected by ' + selectedByEmail);
           return;
         }
         this.hour().selectedBy = null;

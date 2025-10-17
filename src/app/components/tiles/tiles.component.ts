@@ -145,9 +145,14 @@ export class TilesComponent implements OnInit {
   }
 
   protected clickMachineColumn(tile: Tile) {
+    const currentUserEmail = this.laundryUser().key.split('|')[1];
     const isFreeOrMine = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.subject && t.subject.key == tile.subject.key)
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
+      .every((t) => {
+        if (!t.hour.selectedBy) return true; // Free slot
+        const slotEmail = t.hour.selectedBy.split('|')[1];
+        return slotEmail === currentUserEmail; // Compare emails
+      });
 
     if (isFreeOrMine) {
       const sameMachine = this.tiles.filter((t) => t.cellType == cellType.HOUR && t.subject && t.subject.key == tile.subject.key);
@@ -166,9 +171,14 @@ export class TilesComponent implements OnInit {
 
   protected clickHourHeader($event: MouseEvent, hour: IHour) {
     // verify if all tiles with the same hour are free or mine
+    const currentUserEmail = this.laundryUser().key.split('|')[1];
     const isFreeOrMine = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours())
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
+      .every((t) => {
+        if (!t.hour.selectedBy) return true; // Free slot
+        const slotEmail = t.hour.selectedBy.split('|')[1];
+        return slotEmail === currentUserEmail; // Compare emails
+      });
 
     if (isFreeOrMine) {
       const sameHour = this.tiles.filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours());

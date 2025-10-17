@@ -1,6 +1,6 @@
-@if (hour) {
+@if (hour()) {
   @let isFree = !hour().selectedBy;
-  @let isMine = hour().selectedBy == user().key;
+  @let isMine = hour().selectedBy && hour().selectedBy.split('|')[1] === user().key.split('|')[1];
   @let bgColor = isFree ? 'bg-outremer-moyen' : isMine ? 'bg-bleu-cerelueen-31' : 'bg-rouge-carmin';
   @let textColor = isFree ? 'text-terre-ombre-brule' : 'text-blanc';
   <div
