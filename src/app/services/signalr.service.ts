@@ -1,17 +1,21 @@
-import { Injectable, isDevMode, Signal, signal } from '@angular/core';
+import { Injectable, isDevMode, Signal, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { BehaviorSubject, Observable, timer, firstValueFrom } from 'rxjs';
 import { IReservation } from '../models/reservation';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignalRService {
-  private baseUrl = 'https://laundrysignalr-init.onrender.com'; // render
-  private hubConnection: signalR.HubConnection;
+  private hubConnection: signalR.HubConnection | null = null;
   private reservationEntries = signal<IReservation[]>([]); // Signal to store messages
   private isLoading = signal<boolean>(true);
   private loadStartTime: number;
+  private platformId = inject(PLATFORM_ID);
+  private http = inject(HttpClient);
 
   hourPerDate = signal<Map<string, number>>(null);
   private updatedReservation = new BehaviorSubject<Record<string, string> | null>(null);
@@ -25,16 +29,42 @@ export class SignalRService {
   private readonly MIN_LOADING_TIME = 1500; // minimum loading time in milliseconds
 
   constructor() {
-    if (isDevMode()) {
-      // this.baseUrl = 'http://localhost:3000'; // json-server
-      // this.baseUrl = 'http://localhost:5263'; // dotNet
-    }
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrl}/hub`, {
-        withCredentials: true,
-      })
-      .build();
+    // SignalR will be initialized when startConnection is called
   }
+
+  private async initializeHubConnection(): Promise<void> {
+    if (this.hubConnection) {
+      return; // Already initialized
+    }
+
+    try {
+      // Fetch configuration from server
+      const config = await firstValueFrom(
+        this.http.get<{backendUrl: string, tenantCode: string}>('/api/config')
+      );
+      
+      this.hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(`${config.backendUrl}/hub?tenant=${encodeURIComponent(config.tenantCode)}`, {
+          withCredentials: true,
+          headers: {
+            'X-Tenant-Code': config.tenantCode
+          }
+        })
+        .build();
+    } catch (error) {
+      // Fallback to default production URL
+      const fallbackUrl = 'https://laundrysignalr-mongodb.onrender.com';
+      this.hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(`${fallbackUrl}/hub`, {
+          withCredentials: true,
+          headers: {
+            'X-Tenant-Code': 'default'
+          }
+        })
+        .build();
+    }
+  }
+
 
   private ensureMinLoadingTime(): void {
     const currentTime = Date.now();
@@ -50,19 +80,35 @@ export class SignalRService {
     }
   }
 
-  startConnection(): void {
+  async startConnection(): Promise<void> {  
+    // Only start connection on the browser side
+    if (!isPlatformBrowser(this.platformId)) {
+      this.ensureMinLoadingTime();
+      return;
+    }
+
     this.loadStartTime = Date.now();
     this.isLoading.set(true);
+    
+    await this.initializeHubConnection();
+    
     this.hubConnection
       .start()
-      .then(() => (this.connectionId = this.hubConnection.connectionId))
-      .catch((err) => {
-        console.error('Error while starting connection: ' + err);
+      .then(() => {
+        this.connectionId = this.hubConnection.connectionId;
+        this.setupDataListeners();
+      })
+      .catch(() => {
         this.ensureMinLoadingTime();
       });
   }
 
-  public addDataListener(): void {
+  private setupDataListeners(): void {
+    // Only add listeners on the browser side and if hub connection exists
+    if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      return;
+    }
+
     const handleReservation = (reservationEntry: IReservation) => {
       this.reservationEntries.update((reservationEntries) => [
         ...reservationEntries,
@@ -71,19 +117,24 @@ export class SignalRService {
       this.updatedReservation.next({ [reservationEntry.id]: reservationEntry.name });
     };
 
-    this.hubConnection.on(this.RESERVATION_ADDED, handleReservation);
-    this.hubConnection.on(this.RESERVATION_UPDATED, handleReservation);
+    this.hubConnection.on(this.RESERVATION_ADDED, (reservation) => {
+      handleReservation(reservation);
+    });
+    this.hubConnection.on(this.RESERVATION_UPDATED, (reservation) => {
+      handleReservation(reservation);
+    });
     this.hubConnection.on(this.RESERVATION_DELETED, (reservationId: string) => {
-      const reservationEntry = this.reservationEntries().find((entry) => entry.id === reservationId);
       this.reservationEntries.update((reservationEntries) =>
         reservationEntries.filter((entry) => entry.id !== reservationId)
       );
-      this.updatedReservation.next({ [reservationEntry.id]: '' });
+      this.updatedReservation.next({ [reservationId]: '' });
     });
     this.hubConnection.on(this.RESERVATIONS_LOADED, (reservations: IReservation[]) => {
       this.reservationEntries.update(() => reservations);
       this.ensureMinLoadingTime();
     });
+
+
   }
 
   public getLoadingState(): Signal<boolean> {
@@ -109,5 +160,31 @@ export class SignalRService {
       hourMap.set(dateString, (hourMap.get(dateString) || 0) + 1);
     });
     this.hourPerDate.set(hourMap);
+  }
+
+  // Hub method to create a reservation directly through SignalR
+  public async createReservation(reservationData: any): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      return;
+    }
+
+    try {
+      await this.hubConnection.invoke('CreateReservation', reservationData);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Hub method to delete a reservation directly through SignalR
+  public async deleteReservation(reservationId: string): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !this.hubConnection) {
+      return;
+    }
+
+    try {
+      await this.hubConnection.invoke('DeleteReservation', reservationId);
+    } catch (error) {
+      throw error;
+    }
   }
 }

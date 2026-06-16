@@ -1,7 +1,6 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, output} from '@angular/core';
-
-import {User} from "netlify-identity-widget";
-import {NetlifyIdentityService} from "../../services/netlify-identity.service";
+import {ChangeDetectionStrategy, Component, inject, OnInit, output, PLATFORM_ID} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {HttpClient} from '@angular/common/http';
 
 
 import {MatIcon} from "@angular/material/icon";
@@ -28,39 +27,43 @@ import {ScrollSectionDirective} from "../../directives/scroll-section.directive"
     templateUrl: 'auth.component.html'
 })
 export class AuthComponent implements OnInit {
-  user: User | null = null;
+  user: ILaundryUser | null = null;
   value = output<ILaundryUser>();
-  protected netlifyIdentityService = inject(NetlifyIdentityService);
+  protected http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
-    // Check if the user is logged in when the component initializes
-    this.user = this.netlifyIdentityService.getCurrentUser();
-
-    if (!this.user) {
-      // If the user is not logged in, subscribe to login events
-      this.netlifyIdentityService.openModal();
-    } else {
-      this.value.emit({
-        ...this.user,
-        key: this.createUserAvatar(this.user) + '|' + this.user.email
+    // Only fetch user data on the browser side
+    if (isPlatformBrowser(this.platformId)) {
+      // Fetch current user from SSR backend
+      this.http.get<ILaundryUser>('/api/auth/user').subscribe({
+        next: (user) => {
+          this.user = user;
+          this.value.emit({
+            ...user,
+            key: this.createUserAvatar(user) + '|' + user.email
+          });
+        },
+        error: () => {
+          this.user = null;
+        }
       });
     }
-    // Subscribe to login/logout events
-    this.netlifyIdentityService.onLogin((user) => {
-      this.user = user;
-      this.value.emit({
-        ...this.user,
-        key: this.createUserAvatar(this.user) + '|' + this.user.email
-      });
-    });
-
-    this.netlifyIdentityService.onLogout(() => {
-      this.user = null;
-      this.netlifyIdentityService.openModal();
-    });
   }
 
-  createUserAvatar(user: User): string {
+  login() {
+    if (isPlatformBrowser(this.platformId)) {
+      window.location.href = '/api/auth/login'; // SSR endpoint for Auth0 login
+    }
+  }
+
+  logout() {
+    if (isPlatformBrowser(this.platformId)) {
+      window.location.href = '/api/auth/logout'; // SSR endpoint for Auth0 logout
+    }
+  }
+
+  createUserAvatar(user: ILaundryUser): string {
     // Helper function to extract initials from a string
     const getInitials = (str: string): string => {
       const words = str.split(/\s+/).filter(Boolean); // Split by whitespace and remove empty parts
@@ -73,8 +76,8 @@ export class AuthComponent implements OnInit {
     };
 
     // Determine the source of the avatar
-    if (user.user_metadata?.full_name) {
-      return getInitials(user.user_metadata.full_name);
+    if (user.name) {
+      return getInitials(user.name);
     }
     if (user.email) {
       const emailNamePart = user.email.split("@")[0];
@@ -82,7 +85,7 @@ export class AuthComponent implements OnInit {
     }
 
     // Fallback: generate deterministic initials from user ID
-    const fallbackHash = user.id || "fallback";
+    const fallbackHash = user.sid || "fallback";
     return getInitials(fallbackHash.slice(0, 2));
   }
 }

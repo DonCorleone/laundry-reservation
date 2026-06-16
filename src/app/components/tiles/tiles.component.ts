@@ -17,6 +17,7 @@ import {ILaundryUser} from "../../models/user";
 import {Dialog} from "@angular/cdk/dialog";
 import {SubjectInfoComponent} from "../subject-info/subject-info.component";
 import {IDialogData} from 'src/app/models/dialog-data';
+import {IReservation} from "../../models/reservation";
 import {MatRipple} from "@angular/material/core";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {LegendComponent} from "../legend/legend.component";
@@ -90,54 +91,68 @@ export class TilesComponent implements OnInit {
       });
   }
 
-  protected onHourSelected($event: boolean, tile: Tile) {
-    const reservation = {
+  async onHourSelected(tile: Tile, $event: boolean) {
+    const reservation: IReservation = {
       id: tile.id,
       name: this.laundryUser().key,
-      date: tile.hour.begin.toUTCString(),
+      date: tile.hour.begin.toISOString(),
       deviceId: tile.subject.key,
-      connectionId: this.signalRService.connectionId
     };
-    if ($event) {
-      this.reservationService.addReservation(reservation);
-    } else {
-      this.reservationService.deleteReservation(reservation);
+    try {
+      if ($event) {
+        await this.reservationService.addReservation(reservation);
+      } else {
+        await this.reservationService.deleteReservation(reservation);
+      }
+    } catch (error) {
+      console.error('Error handling reservation:', error);
     }
     this.changeDetectionRef.markForCheck();
   }
 
-  private handleReservation(tile: Tile, user: string) {
+  private async handleReservation(tile: Tile, user: string) {
     if (user) {
       if (tile.hour.selectedBy == user) {
         return;
       }
       tile.hour.selectedBy = user;
-      this.reservationService.addReservation({
-        id: tile.id,
-        name: this.laundryUser().key,
-        date: tile.hour.begin.toUTCString(),
-        deviceId: tile.subject.key,
-        connectionId: this.signalRService.connectionId
-      });
+      try {
+        await this.reservationService.addReservation({
+          id: tile.id,
+          name: this.laundryUser().key,
+          date: tile.hour.begin.toISOString(),
+          deviceId: tile.subject.key,
+        });
+      } catch (error) {
+        console.error('Error adding reservation in handleReservation:', error);
+      }
     } else {
       if (tile.hour.selectedBy == user) {
         return;
       }
       tile.hour.selectedBy = user;
-      this.reservationService.deleteReservation({
-        id: tile.id,
-        name: this.laundryUser().key,
-        date: tile.hour.begin.toUTCString(),
-        deviceId: tile.subject.key,
-        connectionId: this.signalRService.connectionId
-      })
+      try {
+        await this.reservationService.deleteReservation({
+          id: tile.id,
+          name: this.laundryUser().key,
+          date: tile.hour.begin.toISOString(),
+          deviceId: tile.subject.key,
+        });
+      } catch (error) {
+        console.error('Error deleting reservation in handleReservation:', error);
+      }
     }
   }
 
   protected clickMachineColumn(tile: Tile) {
+    const currentUserEmail = this.laundryUser().key.split('|')[1];
     const isFreeOrMine = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.subject && t.subject.key == tile.subject.key)
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
+      .every((t) => {
+        if (!t.hour.selectedBy) return true; // Free slot
+        const slotEmail = t.hour.selectedBy.split('|')[1];
+        return slotEmail === currentUserEmail; // Compare emails
+      });
 
     if (isFreeOrMine) {
       const sameMachine = this.tiles.filter((t) => t.cellType == cellType.HOUR && t.subject && t.subject.key == tile.subject.key);
@@ -156,9 +171,14 @@ export class TilesComponent implements OnInit {
 
   protected clickHourHeader($event: MouseEvent, hour: IHour) {
     // verify if all tiles with the same hour are free or mine
+    const currentUserEmail = this.laundryUser().key.split('|')[1];
     const isFreeOrMine = this.tiles
       .filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours())
-      .every((t) => t.hour.selectedBy == "" || t.hour.selectedBy == this.laundryUser().key);
+      .every((t) => {
+        if (!t.hour.selectedBy) return true; // Free slot
+        const slotEmail = t.hour.selectedBy.split('|')[1];
+        return slotEmail === currentUserEmail; // Compare emails
+      });
 
     if (isFreeOrMine) {
       const sameHour = this.tiles.filter((t) => t.cellType == cellType.HOUR && t.hour && t.hour.begin.getHours() == hour.begin.getHours());

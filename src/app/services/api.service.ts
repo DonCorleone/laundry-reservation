@@ -1,0 +1,99 @@
+import { Injectable, inject, isDevMode, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
+
+export interface AppConfig {
+  backendUrl: string;
+  tenantCode: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  private baseUrl = ''; // Use relative URLs for SSR
+  private httpClient = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
+  private appConfig: AppConfig | null = null;
+  
+  constructor() {
+    // For SSR, all API calls should go through the SSR server
+    // The server will proxy these to the actual backend
+    this.baseUrl = '';
+  }
+
+  public setAppConfig(config: AppConfig): void {
+    this.appConfig = config;
+  }
+
+  private getTenantCode(): string {
+    // If we have app config from server, use it
+    if (this.appConfig) {
+      return this.appConfig.tenantCode;
+    }
+
+    // During SSR, window is not available, so default to 'default'
+    // The SSR server will handle tenant resolution and proxy with correct headers
+    if (!isPlatformBrowser(this.platformId)) {
+      return 'default'; // SSR will handle tenant via server proxy
+    }
+    
+    // Option 1: From URL query parameter (e.g., ?tenant=yourhouse)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryTenant = urlParams.get('tenant');
+    if (queryTenant) {
+      return queryTenant;
+    }
+    
+    // Option 2: From subdomain (e.g., yourhouse.laundry-app.com)
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+    const subdomain = parts.length > 2 ? parts[0] : null;
+    
+    // Option 3: From environment (development/fallback)
+    if (!subdomain || subdomain === 'localhost' || hostname === 'localhost') {
+      return environment.tenantCode || 'default';
+    }
+    
+    return subdomain;
+  }
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'X-Tenant-Code': this.getTenantCode(),
+      'Content-Type': 'application/json'
+    });
+  }
+
+  public get<T>(endpoint: string): Observable<T> {
+    return this.httpClient.get<T>(`${this.baseUrl}${endpoint}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  public post<T>(endpoint: string, data: any): Observable<T> {
+    return this.httpClient.post<T>(`${this.baseUrl}${endpoint}`, data, {
+      headers: this.getHeaders()
+    });
+  }
+
+  public put<T>(endpoint: string, data: any): Observable<T> {
+    return this.httpClient.put<T>(`${this.baseUrl}${endpoint}`, data, {
+      headers: this.getHeaders()
+    });
+  }
+
+  public delete<T>(endpoint: string, body?: any): Observable<T> {
+    const options = {
+      headers: this.getHeaders(),
+      ...(body && { body })
+    };
+    return this.httpClient.delete<T>(`${this.baseUrl}${endpoint}`, options);
+  }
+
+  public getBaseUrl(): string {
+    return this.baseUrl;
+  }
+}

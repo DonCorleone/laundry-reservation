@@ -4,8 +4,6 @@ import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { appConfig } from './app/app.config';
 
-import 'hammerjs';
-
 if (environment.production) {
   enableProdMode();
 }

@@ -49,7 +49,7 @@
               <app-hour
                 [hour]="tile.hour"
                 [user]="laundryUser()"
-                (selected)="onHourSelected($event, tile)"
+                (selected)="onHourSelected(tile, $event)"
                 class="w-full h-full"
               />
             }
