@@ -9,7 +9,7 @@ export const environment = {
   auth0: {
     domain: 'laundry-calendar.eu.auth0.com',
     clientId: 'zjmCa3vVQA11RsNkb44RdE5qqAy9hGnh',
-    baseUrl: 'http://localhost:4000/callback'
+    baseUrl: 'http://localhost:4200/callback'
   }
 };
 /*
