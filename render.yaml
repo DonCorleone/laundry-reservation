@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: laundry-reservation
+    runtime: node
+    nodeVersion: 26.12.1
+    buildCommand: npm install && npm run build
+    startCommand: npm run serve:ssr:laundry
+    envVars:
+      - key: NODE_ENV
+        value: production
